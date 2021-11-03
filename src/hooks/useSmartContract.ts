@@ -1,324 +1,209 @@
+import { Actions, ITierData } from '@intersola/onchain-program-sdk';
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Transaction } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import Decimal from 'decimal.js';
+import moment from 'moment';
+import { useState } from 'react';
+import { envConfig } from '../configs';
+import { fakeWithClaimablePercentage, mappingPoolOnChainResponse } from '../sdk/pool';
 import { IPool } from '../sdk/pool/interface';
-import { ERROR_MESSAGES } from '../utils/constants';
-import { transformLamportsToSOL } from '../utils/helper';
+import { transformLamportsToSOL, transformUnit } from '../utils/helper';
+import { useGlobal } from './useGlobal';
+import { usePool } from './usePool';
 
 function useSmartContract() {
+  const [loading, setLoading] = useState(false);
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
+  const { now } = useGlobal();
+  const { getTokenInfo } = usePool();
 
   const handleUserJoinPool = (pool: IPool, amount: number): Promise<string> => {
     return new Promise(async (resolve, reject) => {
       if (!publicKey) {
-        throw new WalletNotConnectedError()
+        throw new WalletNotConnectedError();
       }
 
+      let txId: string;
       const actions = new Actions(connection);
-        const smActions = new SmartContractActions(connection, wallet);
-        const walletAddress = wallet!.publicKey!;
 
-        setLoading(true);
-        if (
-          pool.private_join_enabled &&
-          moment
-            .unix(now)
-            .isBetween(pool.private_join_start, pool.private_join_end)
-        ) {
-          await handleCloseWrapAccount();
-          return actions
-            .earlyJoin(
-              walletAddress,
-              walletAddress,
-              new PublicKey(pool.contract_address),
-              amount
-            )
-            .then(({ rawTx }) => {
-              return smActions.parseAndSendTransaction(rawTx);
-            })
-            .then(txId => {
-              resolve(txId.toString());
-            })
-            .catch(err => {
-              const error = handleTransactionErrors(err);
-              if (error === Errors.TransactionCancelled) {
-                reject({ message: error.message });
-              } else {
-                reject({ message: 'Error while early join pool' });
-              }
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-        } else if (
-          pool.exclusive_join_enable &&
-          moment
-            .unix(now)
-            .isBetween(pool.exclusive_join_start, pool.exclusive_join_end)
-        ) {
-          await handleCloseWrapAccount();
-          return actions
-            .exclusiveJoin(
-              walletAddress,
-              walletAddress,
-              new PublicKey(pool.contract_address),
-              amount
-            )
-            .then(({ rawTx, txFee }) => {
-              return smActions.parseAndSendTransaction(rawTx);
-            })
-            .then(txId => {
-              resolve(txId.toString());
-            })
-            .catch(err => {
-              const error = handleTransactionErrors(err);
-              if (error === Errors.TransactionCancelled) {
-                reject({ message: error.message });
-              } else {
-                reject({ message: 'Error while exclusive join pool' });
-              }
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-        } else if (
-          pool.fcfs_join_for_staker_enabled &&
-          moment
-            .unix(now)
-            .isBetween(
-              pool.fcfs_join_for_staker_start,
-              pool.fcfs_join_for_staker_end
-            )
-        ) {
-          await handleCloseWrapAccount();
-          return actions
-            .fcfsStakeJoin(
-              walletAddress,
-              walletAddress,
-              new PublicKey(pool.contract_address),
-              amount
-            )
-            .then(({ rawTx }) => {
-              return smActions.parseAndSendTransaction(rawTx);
-            })
-            .then(txId => {
-              resolve(txId.toString());
-            })
-            .catch(err => {
-              const error = handleTransactionErrors(err);
-              if (error === Errors.TransactionCancelled) {
-                reject({ message: error.message });
-              } else {
-                reject({ message: 'Error while fcfs staker join pool' });
-              }
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-        } else if (
-          pool.public_join_enabled &&
-          moment
-            .unix(now)
-            .isBetween(pool.public_join_start, pool.public_join_end)
-        ) {
-          await handleCloseWrapAccount();
-          return actions
-            .join(
-              walletAddress,
-              walletAddress,
-              new PublicKey(pool.contract_address),
-              amount
-            )
-            .then(({ rawTx, txFee }) => {
-              return smActions.parseAndSendTransaction(rawTx);
-            })
-            .then(txId => {
-              resolve(txId.toString());
-            })
-            .catch(err => {
-              const error = handleTransactionErrors(err);
-              if (error === Errors.TransactionCancelled) {
-                reject({ message: error.message });
-              } else {
-                reject({ message: 'Error while public join pool' });
-              }
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-        }
+      setLoading(true);
+      await handleCloseWrapAccount();
 
-        reject({ message: 'Join pool not available' });
+      if (
+        pool.private_join_enabled &&
+        moment.unix(now).isBetween(pool.private_join_start, pool.private_join_end)
+      ) {
+        const { rawTx } = await actions.earlyJoin(
+          publicKey,
+          publicKey,
+          new PublicKey(pool.contract_address),
+          amount,
+        );
+        txId = await parseAndSendTransaction(rawTx);
+      } else if (
+        pool.exclusive_join_enable &&
+        moment.unix(now).isBetween(pool.exclusive_join_start, pool.exclusive_join_end)
+      ) {
+        const { rawTx } = await actions.exclusiveJoin(
+          publicKey,
+          publicKey,
+          new PublicKey(pool.contract_address),
+          amount,
+        );
+        txId = await parseAndSendTransaction(rawTx);
+      } else if (
+        pool.fcfs_join_for_staker_enabled &&
+        moment.unix(now).isBetween(pool.fcfs_join_for_staker_start, pool.fcfs_join_for_staker_end)
+      ) {
+        const { rawTx } = await actions.fcfsStakeJoin(
+          publicKey,
+          publicKey,
+          new PublicKey(pool.contract_address),
+          amount,
+        );
+        txId = await parseAndSendTransaction(rawTx);
+      } else if (
+        pool.public_join_enabled &&
+        moment.unix(now).isBetween(pool.public_join_start, pool.public_join_end)
+      ) {
+        const { rawTx } = await actions.join(
+          publicKey,
+          publicKey,
+          new PublicKey(pool.contract_address),
+          amount,
+        );
+        txId = await parseAndSendTransaction(rawTx);
+      } else {
+        setLoading(false);
+        return reject({ message: 'Join pool not available' });
+      }
+
+      setLoading(false);
+
+      return resolve(txId);
     });
   };
 
   const handleCloseWrapAccount = async () => {
     const actions = new Actions(connection);
-    const smActions = new SmartContractActions(connection, wallet);
-    const walletAddress = wallet!.publicKey!;
-    if (connected) {
-      const res = await actions.closeAssociatedTokenAccount(
-        walletAddress,
-        walletAddress
-      );
-      if (res.needClose) {
-        await smActions.sendAndConfirmTransaction(res.transaction!);
-      }
-    } else {
-      throw new Error(ERROR_MESSAGES.WALLET_NOT_CONNECT);
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
+
+    const res = await actions.closeAssociatedTokenAccount(publicKey, publicKey);
+    if (res.needClose) {
+      // await smActions.sendAndConfirmTransaction(res.transaction!);
+      // TODO: should update send and confirm transaction
     }
   };
 
-  const handleUserClaimToken = (
-    poolContractAccount: PublicKey
-  ): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      if (connected) {
-        const actions = new Actions(connection);
-        const smActions = new SmartContractActions(connection, wallet);
-        const walletAddress = wallet!.publicKey!;
+  const handleUserClaimToken = (poolContractAccount: PublicKey): Promise<string> => {
+    return new Promise(async (resolve, reject) => {
+      if (!publicKey) {
+        throw new WalletNotConnectedError();
+      }
 
-        setLoading(true);
-        return actions
-          .claimToken(walletAddress, walletAddress, poolContractAccount)
-          .then(({ rawTx }) => {
-            return smActions.parseAndSendTransaction(rawTx);
-          })
-          .then(txId => {
-            resolve(txId);
-          })
-          .catch(err => {
-            const error = handleTransactionErrors(err);
-            if (error === Errors.TransactionCancelled) {
-              reject({ message: error.message });
-            } else {
-              reject({ message: 'Error while claim token' });
-            }
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      } else {
-        reject({ message: ERROR_MESSAGES.WALLET_NOT_CONNECT });
+      const actions = new Actions(connection);
+
+      setLoading(true);
+      try {
+        const { rawTx } = await actions.claimToken(publicKey, publicKey, poolContractAccount);
+        const txId = await parseAndSendTransaction(rawTx);
+        setLoading(false);
+        return resolve(txId);
+      } catch (err) {
+        setLoading(false);
+        return reject({ err });
       }
     });
   };
 
   const handleUserStake = (amount: number): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      if (connected) {
-        const actions = new Actions(connection);
-        const smActions = new SmartContractActions(connection, wallet);
-        const walletAddress = wallet!.publicKey!;
+    return new Promise(async (resolve, reject) => {
+      if (!publicKey) {
+        throw new WalletNotConnectedError();
+      }
 
-        setLoading(true);
-        actions
-          .stake(walletAddress, walletAddress, amount)
-          .then(({ rawTx }) => {
-            return smActions.parseAndSendTransaction(rawTx);
-          })
-          .then(txId => {
-            resolve(txId.toString());
-          })
-          .catch(err => {
-            const error = handleTransactionErrors(err);
-            if (error === Errors.TransactionCancelled) {
-              reject({ message: error.message });
-            } else {
-              reject({ message: 'Error while stake ISOLA token' });
-            }
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      } else {
-        reject({ message: ERROR_MESSAGES.WALLET_NOT_CONNECT });
+      const actions = new Actions(connection);
+
+      setLoading(true);
+      try {
+        const { rawTx } = await actions.stake(publicKey, publicKey, amount);
+        const txId = await parseAndSendTransaction(rawTx);
+        setLoading(false);
+        return resolve(txId);
+      } catch (err) {
+        setLoading(false);
+        return reject({ err });
       }
     });
   };
 
   const handleUserUnStake = (amount: number): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      if (connected) {
-        const actions = new Actions(connection);
-        const smActions = new SmartContractActions(connection, wallet);
-        const walletAddress = wallet!.publicKey!;
+    return new Promise(async (resolve, reject) => {
+      if (!publicKey) {
+        throw new WalletNotConnectedError();
+      }
 
-        setLoading(true);
-        actions
-          .unstake(walletAddress, walletAddress, amount)
-          .then(({ rawTx }) => {
-            return smActions.parseAndSendTransaction(rawTx);
-          })
-          .then(txId => {
-            resolve(txId);
-          })
-          .catch(err => {
-            const error = handleTransactionErrors(err);
-            if (error === Errors.TransactionCancelled) {
-              reject({ message: error.message });
-            } else {
-              reject({ message: 'Error while unStake ISOLA' });
-            }
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      } else {
-        reject({ message: ERROR_MESSAGES.WALLET_NOT_CONNECT });
+      const actions = new Actions(connection);
+
+      setLoading(true);
+      try {
+        const { rawTx } = await actions.unstake(publicKey, publicKey, amount);
+        const txId = await parseAndSendTransaction(rawTx);
+        setLoading(false);
+        return resolve(txId);
+      } catch (err) {
+        setLoading(false);
+        return reject({ err });
       }
     });
   };
 
   const getParticipantAddress = async (
-    poolAddress: PublicKey
+    poolAddress: PublicKey,
   ): Promise<{
     accountDataWithSeed: PublicKey;
     exists: boolean;
   }> => {
-    return new Promise((resolve, reject) => {
-      if (connected) {
-        const actions = new Actions(connection);
-        const walletAddress = wallet!.publicKey!;
+    return new Promise(async (resolve, reject) => {
+      if (!publicKey) {
+        throw new WalletNotConnectedError();
+      }
 
-        setLoading(true);
-        actions
-          .getPoolAssociatedAccountInfo(walletAddress, poolAddress)
-          .then(data => {
-            resolve({
-              accountDataWithSeed: data.associatedAddress,
-              exists: data.exists,
-            });
-          })
-          .catch(err => {
-            if (!err.message || err.message !== 'Transaction cancelled') {
-              reject({
-                message: 'Can not get participants address',
-                err,
-              });
-            }
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      } else {
-        reject({ message: ERROR_MESSAGES.WALLET_NOT_CONNECT });
+      setLoading(true);
+      const actions = new Actions(connection);
+
+      try {
+        const { associatedAddress, exists } = await actions.getPoolAssociatedAccountInfo(
+          publicKey,
+          poolAddress,
+        );
+        setLoading(false);
+        return resolve({
+          accountDataWithSeed: associatedAddress,
+          exists,
+        });
+      } catch (err) {
+        setLoading(false);
+        return reject({ err });
       }
     });
   };
 
   const getMaxAmountUserCanJoin = async (poolAddress: string) => {
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
+
     setLoading(true);
     const actions = new Actions(connection);
-    const walletAddress = wallet!.publicKey!;
 
+    setLoading(true);
     try {
-      const amount = await actions.getMaxJoinAmount(
-        walletAddress,
-        new PublicKey(poolAddress)
-      );
+      const amount = await actions.getMaxJoinAmount(publicKey, new PublicKey(poolAddress));
       setLoading(false);
       return amount;
     } catch (e) {
@@ -328,38 +213,36 @@ function useSmartContract() {
     }
   };
 
-  const getMaxAmountUserCanStake = (tokenDecimal: number): Promise<number> => {
+  const getMaxAmountUserCanStake = async (tokenDecimal: number): Promise<number> => {
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
+
     setLoading(true);
-    return getUserTokenBalance(envConfig.ISOLA_TOKEN_ADDRESS)
-      .then(data => {
-        return Promise.resolve(data);
-      })
-      .catch(err => {
-        console.log({ err });
-        return Promise.reject({
-          message: 'Can not get max amount user can stake',
-        });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+
+    try {
+      const data = await getUserTokenBalance();
+      setLoading(false);
+      return data;
+    } catch (err) {
+      setLoading(false);
+      return 0;
+    }
   };
 
-  const getMaxAmountUserCanUnStake = (): Promise<number> => {
+  const getMaxAmountUserCanUnStake = async (): Promise<number> => {
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
+
     setLoading(true);
-    return getUserStakeData()
-      .then(data => {
-        return Promise.resolve(data.total_staked);
-      })
-      .catch(err => {
-        console.log({ err });
-        return Promise.reject({
-          message: 'Can not get max amount user can unStake',
-        });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const { total_staked } = await getUserStakeData();
+      return total_staked;
+    } catch (err) {
+      setLoading(false);
+      return 0;
+    }
   };
 
   const getUserStakeData = async (): Promise<{
@@ -367,68 +250,67 @@ function useSmartContract() {
     total_staked: number;
     start_staked: number; // Start stake time in unix
   }> => {
-    return new Promise((resolve, reject) => {
-      if (connected) {
-        const actions = new Actions(connection);
-        const walletAddress = wallet!.publicKey!;
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
 
-        setLoading(true);
-        actions
-          .readStakeMember(walletAddress)
-          .then(data => {
-            if (data && data.is_initialized) {
-              const level = data.level5.is_active
-                ? 5
-                : data.level4.is_active
-                ? 4
-                : data.level3.is_active
-                ? 3
-                : data.level2.is_active
-                ? 2
-                : data.level1.is_active
-                ? 1
-                : 0;
+    setLoading(true);
+    const actions = new Actions(connection);
 
-              const start_staked = data.level5.is_active
-                ? moment(data.level5.active_at).unix()
-                : data.level4.is_active
-                ? moment(data.level4.active_at).unix()
-                : data.level3.is_active
-                ? moment(data.level3.active_at).unix()
-                : data.level2.is_active
-                ? moment(data.level2.active_at).unix()
-                : data.level1.is_active
-                ? moment(data.level1.active_at).unix()
-                : 0;
+    try {
+      const data = await actions.readStakeMember(publicKey);
+      let result: { allocation_level: number; total_staked: number; start_staked: number } = {
+        allocation_level: 0,
+        total_staked: 0,
+        start_staked: 0,
+      };
+      if (data && data.is_initialized) {
+        const level = data.level5.is_active
+          ? 5
+          : data.level4.is_active
+          ? 4
+          : data.level3.is_active
+          ? 3
+          : data.level2.is_active
+          ? 2
+          : data.level1.is_active
+          ? 1
+          : 0;
 
-              resolve({
-                allocation_level: level,
-                total_staked: data.amount,
-                start_staked,
-              });
-            } else {
-              resolve({
-                allocation_level: 0,
-                total_staked: 0,
-                start_staked: 0,
-              });
-            }
-          })
-          .catch(err => {
-            console.log({ err });
-            reject({ message: 'Can not fetch user allocation level' });
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      } else {
-        reject({ message: ERROR_MESSAGES.WALLET_NOT_CONNECT });
+        const start_staked = data.level5.is_active
+          ? moment(data.level5.active_at).unix()
+          : data.level4.is_active
+          ? moment(data.level4.active_at).unix()
+          : data.level3.is_active
+          ? moment(data.level3.active_at).unix()
+          : data.level2.is_active
+          ? moment(data.level2.active_at).unix()
+          : data.level1.is_active
+          ? moment(data.level1.active_at).unix()
+          : 0;
+
+        result = {
+          allocation_level: level,
+          total_staked: data.amount,
+          start_staked,
+        };
       }
-    });
+
+      setLoading(false);
+
+      return result;
+    } catch (err) {
+      setLoading(false);
+      return {
+        allocation_level: 0,
+        total_staked: 0,
+        start_staked: 0,
+      };
+    }
   };
 
   const getUserTiersData = async (
-    tokenDecimal: number
+    tokenDecimal: number,
   ): Promise<{
     user_staking_amount: number;
     min_days_stake: number;
@@ -440,353 +322,341 @@ function useSmartContract() {
     tier4: ITierData;
     tier5: ITierData;
   }> => {
-    return new Promise((resolve, reject) => {
-      if (connected) {
-        const actions = new Actions(connection);
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
 
-        setLoading(true);
-        actions
-          .readTiers()
-          .then(data => {
-            const userStakingAmount = transformUnit(
-              data.user_staking_amount,
-              tokenDecimal,
-              'on-chain-to-token'
-            );
-
-            resolve({
-              user_staking_amount: userStakingAmount,
-              min_days_stake: data.min_days_stake,
-              penalty_withdraw: data.penalty_withdraw,
-              min_amount_tier5: data.tier5.min_amount,
-              tier1: data.tier1,
-              tier2: data.tier2,
-              tier3: data.tier3,
-              tier4: data.tier4,
-              tier5: data.tier5,
-            });
-          })
-          .catch(err => {
-            console.log({ err });
-            reject({ message: 'Can not fetch user allocation level' });
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      } else {
-        reject({ message: ERROR_MESSAGES.WALLET_NOT_CONNECT });
-      }
-    });
-  };
-
-  const getTokenDecimals = (tokenAddress: PublicKey): Promise<number> => {
     setLoading(true);
-    return getTokenInfo(tokenAddress.toString())
-      .then(data => {
-        return Promise.resolve(data.token_decimals);
-      })
-      .catch(err => {
-        console.log({ err });
-        return Promise.reject({ message: 'Can not get token decimals' });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    const actions = new Actions(connection);
+    try {
+      const {
+        user_staking_amount,
+        min_days_stake,
+        penalty_withdraw,
+        tier1,
+        tier2,
+        tier3,
+        tier4,
+        tier5,
+      } = await actions.readTiers();
+      setLoading(false);
+      return {
+        user_staking_amount: transformUnit(user_staking_amount, tokenDecimal, 'on-chain-to-token'),
+        min_days_stake: min_days_stake,
+        penalty_withdraw: penalty_withdraw,
+        min_amount_tier5: tier5.min_amount,
+        tier1: tier1,
+        tier2: tier2,
+        tier3: tier3,
+        tier4: tier4,
+        tier5: tier5,
+      };
+    } catch (err) {
+      setLoading(false);
+      return Promise.reject({ err });
+    }
   };
 
-  const getUserTokenBalance = (tokenAddress: PublicKey): Promise<number> => {
-    return new Promise((resolve, reject) => {
-      if (connected) {
-        const actions = new Actions(connection);
-        const walletAddress = wallet!.publicKey!;
+  const getTokenDecimals = async (tokenAddress: PublicKey): Promise<number> => {
+    setLoading(true);
 
-        actions
-          .getAssociatedAccountInfo(
-            walletAddress,
-            envConfig.ISOLA_TOKEN_ADDRESS
-          )
-          .then(data => {
-            if (!data.exists) {
-              resolve(0);
-            } else {
-              return connection
-                .getTokenAccountBalance(data.associatedAddress)
-                .then(data => {
-                  resolve(data.value.uiAmount || 0);
-                });
-            }
-          });
-      } else {
-        reject({ message: ERROR_MESSAGES.WALLET_NOT_CONNECT });
+    try {
+      const { token_decimals } = await getTokenInfo(tokenAddress.toString());
+      setLoading(false);
+      return token_decimals;
+    } catch (err) {
+      setLoading(false);
+      return Promise.reject({ err });
+    }
+  };
+
+  const getUserTokenBalance = async (): Promise<number> => {
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
+
+    const actions = new Actions(connection);
+    setLoading(true);
+
+    try {
+      const { exists, associatedAddress } = await actions.getAssociatedAccountInfo(
+        publicKey,
+        envConfig.ISOLA_TOKEN_ADDRESS,
+      );
+
+      if (!exists) {
+        return 0;
       }
-    });
+
+      const data = await connection.getTokenAccountBalance(associatedAddress);
+
+      setLoading(false);
+
+      return data.value.uiAmount || 0;
+    } catch (err) {
+      setLoading(false);
+      return Promise.reject({ err });
+    }
   };
 
-  const getUserMaxContributeSize = (
+  const getUserMaxContributeSize = async (pool: IPool, currLevel: number): Promise<number> => {
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
+
+    const actions = new Actions(connection);
+    let total: Decimal;
+    let remain: Decimal;
+    let availableSwap: Decimal;
+    let totalMaxContributeSize: Decimal;
+    let maxIndividualFCFSStakerAlloc: number = 0;
+
+    setLoading(true);
+
+    try {
+      const data = await actions.readPool(new PublicKey(pool.contract_address));
+      const poolResult = mappingPoolOnChainResponse(pool, data, now);
+      total = new Decimal(poolResult.token_total_raise);
+      remain = new Decimal(poolResult.token_total_raise).minus(poolResult.token_current_raise);
+
+      if (
+        poolResult.private_join_enabled &&
+        moment.unix(now).isBetween(poolResult.private_join_start, poolResult.private_join_end)
+      ) {
+        totalMaxContributeSize = new Decimal(
+          poolResult.campaign.early_join_phase.max_individual_alloc,
+        );
+      } else if (
+        poolResult.exclusive_join_enable &&
+        moment.unix(now).isBetween(poolResult.exclusive_join_start, poolResult.exclusive_join_end)
+      ) {
+        switch (currLevel) {
+          case 1:
+            totalMaxContributeSize = new Decimal(
+              poolResult.campaign.exclusive_phase!.level1.max_individual_amount || 0,
+            );
+            maxIndividualFCFSStakerAlloc = new Decimal(
+              poolResult.campaign.exclusive_phase!.level1.max_individual_amount || 0,
+            ).toNumber();
+            break;
+          case 2:
+            totalMaxContributeSize = new Decimal(
+              poolResult.campaign.exclusive_phase!.level2.max_individual_amount || 0,
+            );
+            maxIndividualFCFSStakerAlloc = new Decimal(
+              poolResult.campaign.exclusive_phase!.level2.max_individual_amount || 0,
+            ).toNumber();
+            break;
+          case 3:
+            totalMaxContributeSize = new Decimal(
+              poolResult.campaign.exclusive_phase!.level3.max_individual_amount || 0,
+            );
+            maxIndividualFCFSStakerAlloc = new Decimal(
+              poolResult.campaign.exclusive_phase!.level3.max_individual_amount || 0,
+            ).toNumber();
+            break;
+          case 4:
+            totalMaxContributeSize = new Decimal(
+              poolResult.campaign.exclusive_phase!.level4.max_individual_amount || 0,
+            );
+            maxIndividualFCFSStakerAlloc = new Decimal(
+              poolResult.campaign.exclusive_phase!.level4.max_individual_amount || 0,
+            ).toNumber();
+            break;
+          case 5:
+            totalMaxContributeSize = new Decimal(
+              poolResult.campaign.exclusive_phase!.level5.max_individual_amount || 0,
+            );
+            maxIndividualFCFSStakerAlloc = new Decimal(
+              poolResult.campaign.exclusive_phase!.level5.max_individual_amount || 0,
+            ).toNumber();
+            break;
+          default:
+            totalMaxContributeSize = new Decimal(0);
+            maxIndividualFCFSStakerAlloc = 0;
+            break;
+        }
+      } else if (
+        poolResult.fcfs_join_for_staker_enabled &&
+        moment
+          .unix(now)
+          .isBetween(poolResult.fcfs_join_for_staker_start, poolResult.fcfs_join_for_staker_end)
+      ) {
+        let multiplicationRate: number = 1;
+        if (poolResult.campaign?.fcfs_stake_phase?.is_active) {
+          multiplicationRate = poolResult.campaign!.fcfs_stake_phase!.multiplication_rate;
+        }
+        switch (currLevel) {
+          case 1:
+            maxIndividualFCFSStakerAlloc = new Decimal(
+              poolResult.campaign.exclusive_phase!.level1.max_individual_amount || 0,
+            ).toNumber();
+            break;
+          case 2:
+            maxIndividualFCFSStakerAlloc = new Decimal(
+              poolResult.campaign.exclusive_phase!.level2.max_individual_amount || 0,
+            ).toNumber();
+            break;
+          case 3:
+            maxIndividualFCFSStakerAlloc = new Decimal(
+              poolResult.campaign.exclusive_phase!.level3.max_individual_amount || 0,
+            ).toNumber();
+            break;
+          case 4:
+            maxIndividualFCFSStakerAlloc = new Decimal(
+              poolResult.campaign.exclusive_phase!.level4.max_individual_amount || 0,
+            ).toNumber();
+            break;
+          case 5:
+            maxIndividualFCFSStakerAlloc = new Decimal(
+              poolResult.campaign.exclusive_phase!.level5.max_individual_amount || 0,
+            ).toNumber();
+            break;
+          default:
+            maxIndividualFCFSStakerAlloc = 0;
+            break;
+        }
+
+        totalMaxContributeSize = new Decimal(maxIndividualFCFSStakerAlloc).times(
+          multiplicationRate,
+        );
+      } else {
+        totalMaxContributeSize = new Decimal(poolResult.campaign.public_phase.max_individual_alloc);
+      }
+
+      const { allocation } = await refreshAllocation(poolResult);
+      availableSwap = new Decimal(total).minus(allocation || 0);
+
+      setLoading(false);
+
+      return Decimal.min(remain, availableSwap, totalMaxContributeSize)
+        .dividedBy(pool.token_ratio)
+        .toNumber();
+    } catch (err) {
+      setLoading(false);
+      return Promise.reject({ err });
+    }
+  };
+
+  const getUserAllocationLevel = async (pool: IPool): Promise<number> => {
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
+
+    const actions = new Actions(connection);
+    setLoading(true);
+
+    try {
+      const data = await actions.readStakeMember(publicKey);
+      let level = 0;
+      if (data && data.is_initialized) {
+        if (
+          data.level5.is_active &&
+          moment(data.level5.active_at).isBefore(pool.campaign.exclusive_phase?.snapshot_at)
+        ) {
+          level = 5;
+        } else if (
+          data.level4.is_active &&
+          moment(data.level4.active_at).isBefore(pool.campaign.exclusive_phase?.snapshot_at)
+        ) {
+          level = 4;
+        } else if (
+          data.level3.is_active &&
+          moment(data.level3.active_at).isBefore(pool.campaign.exclusive_phase?.snapshot_at)
+        ) {
+          level = 3;
+        } else if (
+          data.level2.is_active &&
+          moment(data.level2.active_at).isBefore(pool.campaign.exclusive_phase?.snapshot_at)
+        ) {
+          level = 2;
+        } else if (
+          data.level1.is_active &&
+          moment(data.level1.active_at).isBefore(pool.campaign.exclusive_phase?.snapshot_at)
+        ) {
+          level = 1;
+        } else {
+          level = 0;
+        }
+      }
+
+      setLoading(false);
+
+      return level;
+    } catch (err) {
+      setLoading(false);
+      return Promise.reject({ err });
+    }
+  };
+
+  const refreshWalletBalance = async (): Promise<number | null> => {
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
+
+    try {
+      const accInfo = await connection.getAccountInfo(publicKey);
+      if (accInfo && accInfo.lamports) {
+        const balanceResult = transformLamportsToSOL(accInfo.lamports || 0);
+
+        return balanceResult;
+      } else {
+        return Promise.reject({ message: 'Account not found' });
+      }
+    } catch (err) {
+      return Promise.reject({ err });
+    }
+  };
+
+  const refreshAllocation = async (
     pool: IPool,
-    currLevel: number
-  ): Promise<number> => {
-    return new Promise((resolve, reject) => {
-      if (connected) {
-        const actions = new Actions(connection);
-        let total: Decimal;
-        let remain: Decimal;
-        let availableSwap: Decimal;
-        let totalMaxContributeSize: Decimal;
-        let maxIndividualFCFSStakerAlloc: number = 0;
+  ): Promise<{
+    allocation: number | null;
+    amountToken: number | null;
+  }> => {
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
 
-        actions
-          .readPool(new PublicKey(pool.contract_address))
-          .then(data => {
-            const poolResult = mappingPoolOnChainResponse(pool, data, now);
-            total = new Decimal(poolResult.token_total_raise);
-            remain = new Decimal(poolResult.token_total_raise).minus(
-              poolResult.token_current_raise
-            );
+    const actions = new Actions(connection);
+    setLoading(true);
 
-            if (
-              poolResult.private_join_enabled &&
-              moment
-                .unix(now)
-                .isBetween(
-                  poolResult.private_join_start,
-                  poolResult.private_join_end
-                )
-            ) {
-              totalMaxContributeSize = new Decimal(
-                poolResult.campaign.early_join_phase.max_individual_alloc
-              );
-            } else if (
-              poolResult.exclusive_join_enable &&
-              moment
-                .unix(now)
-                .isBetween(
-                  poolResult.exclusive_join_start,
-                  poolResult.exclusive_join_end
-                )
-            ) {
-              switch (currLevel) {
-                case 1:
-                  totalMaxContributeSize = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level1
-                      .max_individual_amount || 0
-                  );
-                  maxIndividualFCFSStakerAlloc = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level1
-                      .max_individual_amount || 0
-                  ).toNumber();
-                  break;
-                case 2:
-                  totalMaxContributeSize = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level2
-                      .max_individual_amount || 0
-                  );
-                  maxIndividualFCFSStakerAlloc = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level2
-                      .max_individual_amount || 0
-                  ).toNumber();
-                  break;
-                case 3:
-                  totalMaxContributeSize = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level3
-                      .max_individual_amount || 0
-                  );
-                  maxIndividualFCFSStakerAlloc = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level3
-                      .max_individual_amount || 0
-                  ).toNumber();
-                  break;
-                case 4:
-                  totalMaxContributeSize = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level4
-                      .max_individual_amount || 0
-                  );
-                  maxIndividualFCFSStakerAlloc = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level4
-                      .max_individual_amount || 0
-                  ).toNumber();
-                  break;
-                case 5:
-                  totalMaxContributeSize = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level5
-                      .max_individual_amount || 0
-                  );
-                  maxIndividualFCFSStakerAlloc = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level5
-                      .max_individual_amount || 0
-                  ).toNumber();
-                  break;
-                default:
-                  totalMaxContributeSize = new Decimal(0);
-                  maxIndividualFCFSStakerAlloc = 0;
-                  break;
-              }
-            } else if (
-              poolResult.fcfs_join_for_staker_enabled &&
-              moment
-                .unix(now)
-                .isBetween(
-                  poolResult.fcfs_join_for_staker_start,
-                  poolResult.fcfs_join_for_staker_end
-                )
-            ) {
-              let multiplicationRate: number = 1;
-              if (poolResult.campaign?.fcfs_stake_phase?.is_active) {
-                multiplicationRate =
-                  poolResult.campaign!.fcfs_stake_phase!.multiplication_rate;
-              }
-              switch (currLevel) {
-                case 1:
-                  maxIndividualFCFSStakerAlloc = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level1
-                      .max_individual_amount || 0
-                  ).toNumber();
-                  break;
-                case 2:
-                  maxIndividualFCFSStakerAlloc = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level2
-                      .max_individual_amount || 0
-                  ).toNumber();
-                  break;
-                case 3:
-                  maxIndividualFCFSStakerAlloc = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level3
-                      .max_individual_amount || 0
-                  ).toNumber();
-                  break;
-                case 4:
-                  maxIndividualFCFSStakerAlloc = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level4
-                      .max_individual_amount || 0
-                  ).toNumber();
-                  break;
-                case 5:
-                  maxIndividualFCFSStakerAlloc = new Decimal(
-                    poolResult.campaign.exclusive_phase!.level5
-                      .max_individual_amount || 0
-                  ).toNumber();
-                  break;
-                default:
-                  maxIndividualFCFSStakerAlloc = 0;
-                  break;
-              }
+    try {
+      const data = await actions.readInvestorData(publicKey, new PublicKey(pool.contract_address));
+      let result: {
+        allocation: number | null;
+        amountToken: number | null;
+      } = {
+        allocation: null,
+        amountToken: null,
+      };
+      if (data) {
+        const user_allocation = fakeWithClaimablePercentage(
+          transformUnit(data.user_allocation, pool.token_decimals, 'on-chain-to-token'),
+          pool.claimable_percentage,
+        );
 
-              totalMaxContributeSize = new Decimal(
-                maxIndividualFCFSStakerAlloc
-              ).times(multiplicationRate);
-            } else {
-              totalMaxContributeSize = new Decimal(
-                poolResult.campaign.public_phase.max_individual_alloc
-              );
-            }
+        const amount_token = fakeWithClaimablePercentage(
+          transformUnit(data.amount_token_y, pool.token_decimals, 'on-chain-to-token'),
+          pool.claimable_percentage,
+        );
 
-            return refreshAllocation(poolResult);
-          })
-          .then(data => {
-            availableSwap = new Decimal(total).minus(data.allocation || 0);
-            resolve(
-              Decimal.min(remain, availableSwap, totalMaxContributeSize)
-                .dividedBy(pool.token_ratio)
-                .toNumber()
-            );
-          });
-      } else {
-        reject({ message: ERROR_MESSAGES.WALLET_NOT_CONNECT });
+        result = {
+          allocation: user_allocation,
+          amountToken: amount_token,
+        };
       }
-    });
+
+      setLoading(false);
+
+      return result;
+    } catch (err) {
+      setLoading(false);
+      return Promise.reject({ err });
+    }
   };
 
-  const getUserAllocationLevel = (pool: IPool): Promise<number> => {
-    return new Promise((resolve, reject) => {
-      if (connected) {
-        const actions = new Actions(connection);
-        const walletAddress = wallet!.publicKey!;
-
-        setLoading(true);
-        actions
-          .readStakeMember(walletAddress)
-          .then(data => {
-            if (data && data.is_initialized) {
-              let level = 0;
-              if (
-                data.level5.is_active &&
-                moment(data.level5.active_at).isBefore(
-                  pool.campaign.exclusive_phase?.snapshot_at
-                )
-              ) {
-                level = 5;
-              } else if (
-                data.level4.is_active &&
-                moment(data.level4.active_at).isBefore(
-                  pool.campaign.exclusive_phase?.snapshot_at
-                )
-              ) {
-                level = 4;
-              } else if (
-                data.level3.is_active &&
-                moment(data.level3.active_at).isBefore(
-                  pool.campaign.exclusive_phase?.snapshot_at
-                )
-              ) {
-                level = 3;
-              } else if (
-                data.level2.is_active &&
-                moment(data.level2.active_at).isBefore(
-                  pool.campaign.exclusive_phase?.snapshot_at
-                )
-              ) {
-                level = 2;
-              } else if (
-                data.level1.is_active &&
-                moment(data.level1.active_at).isBefore(
-                  pool.campaign.exclusive_phase?.snapshot_at
-                )
-              ) {
-                level = 1;
-              } else {
-                level = 0;
-              }
-
-              resolve(level);
-            } else {
-              resolve(0);
-            }
-          })
-          .catch(err => {
-            console.log({ err });
-            reject({ message: 'Can not fetch user allocation level' });
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      } else {
-        reject({ message: ERROR_MESSAGES.WALLET_NOT_CONNECT });
-      }
-    });
-  };
-
-  const refreshWalletBalance = (): Promise<number | null> => {
-    return new Promise(async (resolve, reject) => {
-      if (publicKey) {
-        try {
-          const accInfo = await connection.getAccountInfo(publicKey);
-          if (accInfo && accInfo.lamports) {
-            const balanceResult = transformLamportsToSOL(accInfo.lamports || 0);
-
-            resolve(balanceResult);
-          } else {
-            reject({ message: 'Account not found' });
-          }
-        } catch (err) {}
-      } else {
-        reject({ message: ERROR_MESSAGES.WALLET_NOT_CONNECT });
-      }
-    });
-  };
-
-  const parseAndSendTransaction = async (
-    rawTransaction: any
-  ): Promise<string> => {
+  const parseAndSendTransaction = async (rawTransaction: any): Promise<string> => {
     if (!publicKey || !signTransaction) {
       throw new WalletNotConnectedError();
     }
@@ -801,14 +671,30 @@ function useSmartContract() {
     const txId = await connection.sendRawTransaction(signed.serialize(), {
       skipPreflight: false,
       preflightCommitment: 'recent',
-    })
+    });
     await connection.confirmTransaction(txId);
 
     return txId;
   };
 
   return {
+    loading,
     refreshWalletBalance,
+    handleUserJoinPool,
+    handleUserClaimToken,
+    handleUserStake,
+    handleUserUnStake,
+    getParticipantAddress,
+    getMaxAmountUserCanJoin,
+    getMaxAmountUserCanStake,
+    getMaxAmountUserCanUnStake,
+    getUserStakeData,
+    getUserTiersData,
+    getTokenDecimals,
+    getUserTokenBalance,
+    getUserMaxContributeSize,
+    getUserAllocationLevel,
+    refreshAllocation,
   };
 }
 

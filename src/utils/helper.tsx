@@ -5,7 +5,12 @@ import { envConfig } from '../configs';
 import { IPool, IPoolStatus, IPoolVoting } from '../sdk/pool/interface';
 import { PoolStatusType, PoolVotingStatusType } from '../shared/enum';
 import { MIN_PROGRESS_PASS_FULL, SOL_DECIMALS } from './constants';
-import { IExtractPoolData, IExtractPoolV2Data, IPoolV3ContractData, IPoolV4ContractData } from '@intersola/onchain-program-sdk';
+import {
+  IExtractPoolData,
+  IExtractPoolV2Data,
+  IPoolV3ContractData,
+  IPoolV4ContractData,
+} from '@intersola/onchain-program-sdk';
 import { IAllocationLevel } from '../shared/interface';
 
 const { SOLLET_ENV, SOLANA_EXPLORER_URL } = envConfig;
@@ -76,10 +81,7 @@ export const getPoolStatus = ({
     diff = '';
     message = '';
   } else if (
-    moment(start_date).isBetween(
-      new Date(moment.unix(now).toISOString()),
-      join_pool_start
-    )
+    moment(start_date).isBetween(new Date(moment.unix(now).toISOString()), join_pool_start)
   ) {
     // DRAFT
     type = PoolStatusType.DRAFT;
@@ -88,23 +90,17 @@ export const getPoolStatus = ({
   } else if (moment.unix(now).isBetween(start_date, join_pool_start)) {
     // UPCOMING
     type = PoolStatusType.UPCOMING;
-    diff = getDiffWithCurrent(
-      new Date(join_pool_start),
-      new Date(moment.unix(now).toISOString())
-    );
+    diff = getDiffWithCurrent(new Date(join_pool_start), new Date(moment.unix(now).toISOString()));
     message = `Open in ${getDiffWithCurrent(
       new Date(join_pool_start),
-      new Date(moment.unix(now).toISOString())
+      new Date(moment.unix(now).toISOString()),
     )}`;
   } else if (moment.unix(now).isBetween(join_pool_start, join_pool_end)) {
     // OPEN | FILL
-    diff = getDiffWithCurrent(
-      new Date(moment.unix(now).toISOString()),
-      new Date(start_date)
-    );
+    diff = getDiffWithCurrent(new Date(moment.unix(now).toISOString()), new Date(start_date));
     message = `Published ${getDiffWithCurrent(
       new Date(moment.unix(now).toISOString()),
-      new Date(start_date)
+      new Date(start_date),
     )} ago`;
 
     if (progress >= MIN_PROGRESS_PASS_FULL) {
@@ -125,30 +121,22 @@ export const getPoolStatus = ({
     // }
     type = PoolStatusType.CLOSED;
 
-    diff = getDiffWithCurrent(
-      new Date(moment.unix(now).toISOString()),
-      new Date(join_pool_end)
-    );
+    diff = getDiffWithCurrent(new Date(moment.unix(now).toISOString()), new Date(join_pool_end));
     message = `Closed ${getDiffWithCurrent(
       new Date(moment.unix(now).toISOString()),
-      new Date(join_pool_end)
+      new Date(join_pool_end),
     )} ago`;
   }
 
   return { type, diff, message };
 };
 
-export const getPoolVotingStatus = (
-  poolVoting: IPoolVoting,
-  now: number
-): PoolVotingStatusType => {
+export const getPoolVotingStatus = (poolVoting: IPoolVoting, now: number): PoolVotingStatusType => {
   if (moment.unix(now).isBefore(poolVoting.voting_start)) {
     return PoolVotingStatusType.UPCOMING;
   }
 
-  if (
-    moment.unix(now).isBetween(poolVoting.voting_start, poolVoting.voting_end)
-  ) {
+  if (moment.unix(now).isBetween(poolVoting.voting_start, poolVoting.voting_end)) {
     if (
       poolVoting.voting_total_up - poolVoting.voting_total_down >=
       poolVoting.voting_min_can_active
@@ -200,20 +188,14 @@ export const getListPageFromTotalPage = (totalPage: number): number[] => {
   return listPage;
 };
 
-export const convertUnixTimestampToDate = (
-  timestamp: number,
-  format?: string
-): string => {
+export const convertUnixTimestampToDate = (timestamp: number, format?: string): string => {
   return `${moment
     .unix(timestamp)
     .utc()
     .format(format || 'ddd MMM DD, YYYY LT')} (UTC)`;
 };
 
-export const generateOnChainUrl = (
-  variant: 'tx' | 'address',
-  value: string
-): string => {
+export const generateOnChainUrl = (variant: 'tx' | 'address', value: string): string => {
   return `${SOLANA_EXPLORER_URL}/${variant}/${value}?cluster=${SOLLET_ENV}`;
 };
 
@@ -244,10 +226,9 @@ export const formatNumber = {
   },
 };
 
-
 export function renderTokenBalance(
   balance: string | number | Decimal | null | undefined,
-  tokenDecimals: number
+  tokenDecimals: number,
 ): number {
   if (balance === null || balance === undefined) {
     return 0;
@@ -257,13 +238,11 @@ export function renderTokenBalance(
     return parseFloat(parseFloat(balance).toFixed(tokenDecimals));
   }
 
-  return new Decimal(
-    parseFloat(balance.toString()).toFixed(tokenDecimals)
-  ).toNumber();
+  return new Decimal(parseFloat(balance.toString()).toFixed(tokenDecimals)).toNumber();
 }
 
 export function isPoolV2Version(
-  pool: IExtractPoolV2Data | IPoolV3ContractData | IExtractPoolData
+  pool: IExtractPoolV2Data | IPoolV3ContractData | IExtractPoolData,
 ): pool is IExtractPoolV2Data {
   if ((pool as IExtractPoolV2Data).version === 2) {
     return true;
@@ -273,7 +252,7 @@ export function isPoolV2Version(
 }
 
 export function isPoolV3Version(
-  pool: IExtractPoolV2Data | IPoolV3ContractData | IExtractPoolData
+  pool: IExtractPoolV2Data | IPoolV3ContractData | IExtractPoolData,
 ): pool is IPoolV3ContractData {
   if ((pool as IPoolV3ContractData).version === 3) {
     return true;
@@ -283,11 +262,7 @@ export function isPoolV3Version(
 }
 
 export function isPoolV4Version(
-  pool:
-    | IExtractPoolV2Data
-    | IPoolV3ContractData
-    | IExtractPoolData
-    | IPoolV4ContractData
+  pool: IExtractPoolV2Data | IPoolV3ContractData | IExtractPoolData | IPoolV4ContractData,
 ): pool is IPoolV4ContractData {
   if ((pool as IPoolV4ContractData).version === 4) {
     return true;
@@ -298,11 +273,11 @@ export function isPoolV4Version(
 
 export const getUserAllocationLevel = (
   userTokenAllocation: number,
-  levels: IAllocationLevel[]
+  levels: IAllocationLevel[],
 ): number => {
   let result: number = 0;
 
-  levels.forEach(lv => {
+  levels.forEach((lv) => {
     if (userTokenAllocation >= lv.minAllocation) {
       result = lv.level;
     }
@@ -312,7 +287,7 @@ export const getUserAllocationLevel = (
 };
 
 export const getClaimableField = (
-  claimable_percentage: number
+  claimable_percentage: number,
 ): {
   left: JSX.Element;
   right: JSX.Element;
@@ -330,10 +305,10 @@ export const getClaimableField = (
 
 export const roundNumberByDecimal = (
   input: number | string | Decimal,
-  decimal: number
+  decimal: number,
 ): Decimal => {
   return new Decimal(
-    parseInt(new Decimal(input).times(Decimal.pow(10, decimal)).toString())
+    parseInt(new Decimal(input).times(Decimal.pow(10, decimal)).toString()),
   ).dividedBy(Decimal.pow(10, decimal));
 };
 
@@ -345,8 +320,8 @@ export const isInExclusiveRound = (pool: IPool, now: number): boolean => {
         .unix(now)
         .isBetween(
           pool.campaign?.exclusive_phase?.start_at,
-          pool.campaign?.exclusive_phase?.end_at
-        )
+          pool.campaign?.exclusive_phase?.end_at,
+        ),
     )
   );
 };
@@ -358,8 +333,8 @@ export const isInFCFSForStakerRound = (pool: IPool, now: number): boolean => {
         .unix(now)
         .isBetween(
           pool.campaign?.fcfs_stake_phase?.start_at,
-          pool.campaign?.fcfs_stake_phase?.end_at
-        )
+          pool.campaign?.fcfs_stake_phase?.end_at,
+        ),
     )
   );
 };
@@ -369,10 +344,30 @@ export const isInFCFSRound = (pool: IPool, now: number): boolean => {
     Boolean(
       moment
         .unix(now)
-        .isBetween(
-          pool.campaign?.public_phase?.start_at,
-          pool.campaign?.public_phase?.end_at
-        )
+        .isBetween(pool.campaign?.public_phase?.start_at, pool.campaign?.public_phase?.end_at),
     )
   );
+};
+
+/**
+ * Convert on chain unit to number of token
+ * Or number of token to on chain unit
+ *
+ * @param value number
+ * @param decimals number
+ * @param variant 'on-chain-to-token' | 'token-to-on-chain'
+ * @returns number
+ */
+export const transformUnit = (
+  value: number,
+  decimals: number,
+  variant: 'on-chain-to-token' | 'token-to-on-chain',
+): number => {
+  if (variant === 'on-chain-to-token') {
+    return new Decimal(value).dividedBy(Decimal.pow(10, decimals)).toNumber();
+    // return value / Math.pow(10, decimals);
+  }
+
+  return new Decimal(value).times(Decimal.pow(10, decimals)).toNumber();
+  // return value * Math.pow(10, decimals);
 };
