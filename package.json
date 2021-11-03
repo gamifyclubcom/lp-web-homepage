@@ -15,6 +15,7 @@
     "@solana/wallet-adapter-wallets": "^0.11.1",
     "@solana/web3.js": "^1.30.2",
     "buffer-layout": "^1.2.2",
+    "clsx": "^1.1.1",
     "moment": "^2.29.1",
     "next": "12.0.2",
     "nprogress": "0.2.0",

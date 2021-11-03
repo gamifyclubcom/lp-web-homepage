@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
@@ -37,13 +39,7 @@ module.exports = {
     },
     fontFamily: {
       sans: ['Gilroy', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-      serif: [
-        'ui-serif',
-        'Georgia',
-        'Cambria',
-        'Times New Roman',
-        'Times, serif',
-      ],
+      serif: ['ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times, serif'],
       mono: [
         'ui-monospace',
         'Menlo',
@@ -53,6 +49,10 @@ module.exports = {
         'Courier New',
         'monospace',
       ],
+    },
+    screens: {
+      xs: '475px',
+      ...defaultTheme.screens,
     },
   },
   variants: {
