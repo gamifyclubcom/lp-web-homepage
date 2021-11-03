@@ -1,5 +1,6 @@
 import { AccountInfo as TokenAccountInfo } from '@solana/spl-token';
 import { AccountInfo, PublicKey } from '@solana/web3.js';
+import { PoolsSectionFilter, PoolsVotingFilter } from './enum';
 
 export type TAllocationLevel = 1 | 2 | 3 | 4 | 5;
 
@@ -26,4 +27,11 @@ export interface IFounder {
     icon: JSX.Element;
     link: string;
   }[];
+}
+
+export interface INavbarPoolMenu {
+  label: string;
+  key: string;
+  section?: PoolsSectionFilter | PoolsVotingFilter;
+  needConnectWallet: boolean;
 }

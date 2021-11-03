@@ -10,7 +10,6 @@ import {
 import { PublicKey } from '@solana/web3.js';
 import moment from 'moment';
 import queryString from 'query-string';
-import { envConfig } from '../../config';
 import {
   getPercent,
   isPoolV2Version,
@@ -27,6 +26,7 @@ import {
 } from './interface';
 import { Connection } from '@solana/web3.js';
 import Decimal from 'decimal.js';
+import { envConfig } from '../../configs';
 
 const baseBackendUrl = `${envConfig.API_URL_BACKEND}/api/pools`;
 
