@@ -27,3 +27,10 @@ export enum PoolsVotingFilter {
   IN_VOTING = 'in-voting',
   DEACTIVATED = 'deactivated',
 }
+
+export enum PageTitle {
+  HomePage = 'Gamify Club - The All-In-One Hub for the Solana Metaverse',
+  PoolsPage = 'Gamify Club | Pools Dashboard',
+  PoolsVotingPage = 'Gamify Club | Pools Voting',
+  StakingPage = 'Gamify Club | Staking',
+}

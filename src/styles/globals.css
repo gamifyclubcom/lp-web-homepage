@@ -55,6 +55,39 @@ body {
   margin: 0;
 }
 
+.layout-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 640px) {
+  .layout-container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+@media (min-width: 640px) {
+  .layout-container {
+    max-width: 620px;
+  }
+}
+@media (min-width: 768px) {
+  .layout-container {
+    max-width: 750px;
+  }
+}
+@media (min-width: 1024px) {
+  .layout-container {
+    max-width: 1000px;
+  }
+}
+@media (min-width: 1280px) {
+  .layout-container {
+    max-width: 1200px;
+  }
+}
+
 a {
   color: inherit;
   text-decoration: none;
