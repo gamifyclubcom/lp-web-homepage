@@ -17,7 +17,7 @@ const Layout: React.FC<Props> = ({ title = PageTitle.HomePage, children }) => {
 
       <Header />
 
-      <main className="mx-auto layout-container">{children}</main>
+      <main className="mx-auto">{children}</main>
 
       <Footer />
     </>
