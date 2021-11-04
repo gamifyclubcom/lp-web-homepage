@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, Zoom } from 'react-toastify';
 import '../styles/globals.css';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import { GlobalProvider } from '../contexts/global';
 
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -16,12 +17,10 @@ NProgress.configure({ showSpinner: false });
 
 const WalletConnectionProvider = dynamic<{ children: React.ReactNode }>(
   () =>
-    import('../contexts/wallet').then(
-      ({ WalletConnectionProvider }) => WalletConnectionProvider
-    ),
+    import('../contexts/wallet').then(({ WalletConnectionProvider }) => WalletConnectionProvider),
   {
     ssr: false,
-  }
+  },
 );
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -47,13 +46,15 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <WalletConnectionProvider>
-        <WalletModalProvider logo='/icons/apple-touch-icon.png'>
-          <Component {...pageProps} />
+        <WalletModalProvider logo="/icons/apple-touch-icon.png">
+          <GlobalProvider>
+            <Component {...pageProps} />
+          </GlobalProvider>
         </WalletModalProvider>
       </WalletConnectionProvider>
       <ToastContainer
         hideProgressBar
-        position='bottom-left'
+        position="bottom-left"
         limit={2}
         newestOnTop
         closeButton={false}
