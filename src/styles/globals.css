@@ -10,6 +10,7 @@
     font-weight: 100;
     font-display: swap;
   }
+
   @font-face {
     font-family: 'Gilroy';
     src: url('/fonts/Gilroy/Gilroy-Regular.otf');
@@ -17,6 +18,7 @@
     font-weight: 300;
     font-display: swap;
   }
+
   @font-face {
     font-family: 'Gilroy';
     src: url('/fonts/Gilroy/Gilroy-Medium.otf');
@@ -24,6 +26,7 @@
     font-weight: 400;
     font-display: swap;
   }
+
   @font-face {
     font-family: 'Gilroy';
     src: url('/fonts/Gilroy/Gilroy-SemiBold.otf');
@@ -31,6 +34,7 @@
     font-weight: 600;
     font-display: swap;
   }
+
   @font-face {
     font-family: 'Gilroy';
     src: url('/fonts/Gilroy/Gilroy-Bold.otf');
@@ -42,6 +46,7 @@
   strong {
     @apply font-semibold;
   }
+
   b {
     @apply font-bold;
   }
@@ -55,36 +60,63 @@ body {
   margin: 0;
 }
 
-.layout-container {
+.layout-container,
+.layout-container-full {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
 }
 
 @media (max-width: 640px) {
-  .layout-container {
+
+  .layout-container,
+  .layout-container-full {
     padding-left: 20px;
     padding-right: 20px;
   }
 }
+
 @media (min-width: 640px) {
-  .layout-container {
+
+  .layout-container,
+  .layout-container-full {
     max-width: 620px;
   }
 }
+
 @media (min-width: 768px) {
-  .layout-container {
+
+  .layout-container,
+  .layout-container-full {
     max-width: 750px;
   }
 }
+
 @media (min-width: 1024px) {
-  .layout-container {
+
+  .layout-container,
+  .layout-container-full {
     max-width: 1000px;
   }
 }
+
 @media (min-width: 1280px) {
-  .layout-container {
+
+  .layout-container,
+  .layout-container-full {
     max-width: 1200px;
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  .layout-container-full {
+    max-width: 1890px;
+  }
+}
+
+@media screen and (min-width: 3840px) {
+  .layout-container-full {
+    max-width: 3810px;
   }
 }
 

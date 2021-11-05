@@ -72,7 +72,7 @@ const HomeLaunch: React.FC = () => {
         Built to support the growing Play-To-Earn experiences in the Solana Metaverse
       </p>
       <Button style="bg-3232DC mt-9 ml-auto mr-auto">Apply to launch</Button>
-      <ul className="mt-6 md:mb-64">
+      <ul className="mt-6 mb-20 md:mb-64">
         {games.map((game, ind) => (
           <li key={ind} className={`inline-block ${ind !== 0 ? 'ml-1.5' : ''}`}>
             <Image

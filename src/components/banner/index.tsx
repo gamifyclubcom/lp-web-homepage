@@ -9,14 +9,14 @@ const Banner: React.FC<Props> = () => {
   const router = useRouter();
 
   return (
-    <div className="h-100v md:h-80v">
-      <div className="bg-hero-pattern bg-100% bg-no-repeat bg-center-60%">
-        <div className="h-100v md:h-80v flex items-center justify-center layout-container">
+    <div className="h-100v md:h-60v">
+      <div className="bg-hero-pattern bg-100% bg-no-repeat bg-center-50%">
+        <div className="h-100v md:h-60v flex items-center justify-center layout-container-full">
           <div className="flex flex-col items-center justify-center text-center px-5">
-            <h1 className="text-white text-4xl lg:text-4.25xl pb-3 md:pb-5">
+            <h1 className="text-white text-4xl xl:text-5xl 2xl:text-4.25xl pb-3 md:pb-9">
               The All-In-One Hub for the Solana Metaverse
             </h1>
-            <span className="text-white md:text-1.5xl pb-3">
+            <span className="text-white lg:text-1.5xl pb-9">
               Metaverse Marketplace | Guild Integrator | Game Launchpad
             </span>
             <p className="text-white text-base md:w-2/3">

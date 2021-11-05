@@ -43,7 +43,7 @@ module.exports = {
         '100%': '100%'
       },
       backgroundPosition: {
-        'center-60%': 'center 60%'
+        'center-50%': 'center 50%'
       },
       backgroundColor: {
         'D01F36': '#D01F36',

@@ -9,17 +9,17 @@ const FeaturePool: React.FC = () => {
   const router = useRouter();
 
   return (
-    <div className="layout-container pt-32">
+    <div className="layout-container pt-16 md:pt-32">
       <h3 className="text-white text-center text-2xl uppercase mb-20">Feature Game Projects</h3>
-      <div className="flex">
+      <div className="md:flex">
         <CardText
           title={'Token Sale Launchpad'}
           description={
             'Gain early access to public and special token sales at a lower price before they hit the market'
           }
-          style="w-1/6 mr-6 mt-20"
+          style="text-center mr-6 mt-20 mb-12 md:w-52 md:text-left"
         >
-          <Button style="bg-3232DC mt-14" link="/kkkk">
+          <Button style="bg-3232DC mt-14 mx-auto md:mx-0" link="/">
             <span className="mr-2">Join now</span>
             <Image
               width={16}
@@ -31,7 +31,7 @@ const FeaturePool: React.FC = () => {
             />
           </Button>
         </CardText>
-        <div className="grid w-full grid-cols-1 gap-x-2 gap-y-5 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid w-full grid-cols-1 gap-x-2 gap-y-5 md:grid-cols-2 lg:grid-cols-4">
           <PoolItem></PoolItem>
           <PoolItem></PoolItem>
           <PoolItem></PoolItem>

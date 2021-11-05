@@ -7,7 +7,8 @@ import BN from 'bn.js';
 import Decimal from 'decimal.js';
 import moment from 'moment';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import PoolContext from '../contexts/pool';
 import fetchWrapper from '../sdk/fetch-wrapper';
 import { IPool, IPoolVoting } from '../sdk/pool/interface';
 import { isInFCFSForStakerRound } from '../utils/helper';
@@ -16,11 +17,46 @@ import { useGlobal } from './useGlobal';
 
 export function usePool() {
   const router = useRouter();
+
+  const [hasNext, setHasNext] = useState(false);
+  const [hasPrevious, setHasPrevious] = useState(false);
+  const [poolVotingHasNext, setPoolVotingHasNext] = useState(false);
+  const [poolVotingHasPrevious, setPoolVotingHasPrevious] = useState(false);
+  const {
+    paginatedPool,
+    paginatedPoolVoting,
+    loading,
+    setLoading,
+    dispatchPaginatedPool,
+    dispatchPaginatedPoolVoting,
+  } = useContext(PoolContext);
   const { connection } = useConnection();
   const { activePoolMenu, now } = useGlobal();
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(false);
   const CACHE_PRICE_DURATION = 10;
+
+  useEffect(() => {
+    if (paginatedPool) {
+      setHasNext(() => {
+        return paginatedPool.page < paginatedPool.totalPages - 1;
+      });
+      setHasPrevious(() => {
+        return paginatedPool.page >= 1;
+      });
+    }
+  }, [paginatedPool]);
+
+  useEffect(() => {
+    if (paginatedPoolVoting) {
+      setPoolVotingHasNext(() => {
+        return paginatedPoolVoting.page < paginatedPoolVoting.totalPages - 1;
+      });
+
+      setPoolVotingHasPrevious(() => {
+        return paginatedPoolVoting.page >= 1;
+      });
+    }
+  }, [paginatedPoolVoting]);
 
   const getTokenPrice = async (ratio: number): Promise<any> => {
     const priceCacheAt = localStorage.getItem('solana-price-at');
@@ -152,8 +188,15 @@ export function usePool() {
   };
 
   return {
+    paginatedPool,
+    paginatedPoolVoting,
+    hasNext,
+    hasPrevious,
+    poolVotingHasNext,
+    poolVotingHasPrevious,
     loading,
     refreshing,
+    dispatchPaginatedPool,
     handleGoToPoolDetails,
     handleGoToPoolVotingDetails,
     getTokenInfo,

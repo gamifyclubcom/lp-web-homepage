@@ -1,16 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 
 interface Props {}
 
 const PoolItem: React.FC<Props> = () => {
-  const router = useRouter();
-
   return (
-    <div className="pool-item bg-222228 rounded-3xl pt-8 px-5 pb-5 text-base text-white">
+    <div className="pool-item bg-222228 rounded-3xl pt-8 px-5 pb-5 text-base text-white text-center">
       <Image width={234} height={159} src="/images/234x159.png" alt="Pool item" />
-      <div className="text-1.5xl2 my-4">
+      <div className="text-1.5xl2 my-4 text-left">
         GamifyClub <span>(GMFC)</span>
       </div>
       <div className="flex justify-between">
