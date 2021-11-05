@@ -103,7 +103,7 @@ const PoolCountdown: React.FC<Props> = ({ round, poolActive, hasWhitelistRound }
     <div
       key={key}
       className={clsx('flex flex-col rounded-md border overflow-hidden', {
-        'border-primary-300': active && countdownActive,
+        'border-secondary-300': active && countdownActive,
         'border-gray-500': !active || !poolActive || !countdownActive,
       })}
     >

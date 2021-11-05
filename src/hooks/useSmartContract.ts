@@ -4,8 +4,9 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import Decimal from 'decimal.js';
 import moment from 'moment';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { envConfig } from '../configs';
+import GlobalContext from '../contexts/global';
 import { fakeWithClaimablePercentage, mappingPoolOnChainResponse } from '../sdk/pool';
 import { IPool } from '../sdk/pool/interface';
 import { transformLamportsToSOL, transformUnit } from '../utils/helper';
@@ -13,6 +14,7 @@ import { useGlobal } from './useGlobal';
 import { usePool } from './usePool';
 
 function useSmartContract() {
+  const { setAccountBalance } = useContext(GlobalContext);
   const [loading, setLoading] = useState(false);
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
@@ -598,6 +600,8 @@ function useSmartContract() {
       const accInfo = await connection.getAccountInfo(publicKey);
       if (accInfo && accInfo.lamports) {
         const balanceResult = transformLamportsToSOL(accInfo.lamports || 0);
+
+        setAccountBalance(accInfo.lamports);
 
         return balanceResult;
       } else {

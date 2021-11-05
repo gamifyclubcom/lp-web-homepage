@@ -306,6 +306,19 @@ export const roundNumberByDecimal = (
   ).dividedBy(Decimal.pow(10, decimal));
 };
 
+export const isInWhitelistRound = (pool: IPool, now: number): boolean => {
+  return (
+    Boolean(pool?.campaign?.early_join_phase?.is_active) &&
+    Boolean(
+      moment
+        .unix(now)
+        .isBetween(
+          pool.campaign?.early_join_phase?.start_at,
+          pool.campaign?.early_join_phase?.end_at,
+        ),
+    )
+  );
+};
 export const isInExclusiveRound = (pool: IPool, now: number): boolean => {
   return (
     Boolean(pool.campaign?.exclusive_phase?.is_active) &&

@@ -23,7 +23,7 @@ const PoolRounds: React.FC<Props> = ({ pool, whitelistStatus, disabled }) => {
     <div className="w-full">
       {/* <span className="text-white">Pool round</span> */}
       <div className="p-4 mb-2">
-        <span className="text-sm font-semibold text-white uppercase">Pool round timeline</span>
+        <span className="text-lg font-semibold text-white uppercase">Pool round timeline</span>
       </div>
 
       <div

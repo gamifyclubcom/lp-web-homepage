@@ -8,6 +8,7 @@ import moment from 'moment';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { clockSysvarAccount } from '@intersola/onchain-program-sdk';
 import { ClockLayout } from '../sdk/layout';
+import { formatNumber, transformLamportsToSOL } from '../utils/helper';
 
 export const poolMenus: INavbarPoolMenu[] = [
   { label: 'Pools', key: 'all-pools', needConnectWallet: false },
@@ -68,12 +69,22 @@ interface GlobalState {
   activePoolMenu: INavbarPoolMenu;
   now: number;
   setActivePoolMenu: (mn: INavbarPoolMenu) => void;
+  balance: {
+    value: number | null;
+    formatted: string | null;
+  };
+  setAccountBalance: (balance: number | null) => void;
 }
 
 const GlobalContext = createContext<GlobalState>({
   activePoolMenu: poolMenus[0],
   now: 0,
   setActivePoolMenu: () => {},
+  balance: {
+    value: null,
+    formatted: null,
+  },
+  setAccountBalance: () => {},
 });
 
 export const GlobalProvider: React.FC = ({ children }) => {
@@ -94,6 +105,13 @@ export const GlobalProvider: React.FC = ({ children }) => {
   const [now, setNow] = useState(() => {
     // return moment().unix();
     return new Decimal(moment().unix()).times(1000).toNumber();
+  });
+  const [balance, setBalance] = useState<{
+    value: number | null;
+    formatted: string | null;
+  }>({
+    value: null,
+    formatted: null,
   });
 
   useEffect(() => {
@@ -120,12 +138,23 @@ export const GlobalProvider: React.FC = ({ children }) => {
     };
   }, []);
 
+  const setAccountBalance = (accBalance: number | null) => {
+    const balanceResult = transformLamportsToSOL(accBalance || 0);
+
+    setBalance({
+      value: balanceResult,
+      formatted: formatNumber.format(balanceResult) as string,
+    });
+  };
+
   return (
     <GlobalContext.Provider
       value={{
         activePoolMenu,
         now,
         setActivePoolMenu,
+        balance,
+        setAccountBalance,
       }}
     >
       {children}

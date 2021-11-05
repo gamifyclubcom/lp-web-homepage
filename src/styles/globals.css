@@ -88,6 +88,11 @@ body {
   }
 }
 
+/* Custom react-confirm-alert */
+.react-confirm-alert-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
 a {
   color: inherit;
   text-decoration: none;

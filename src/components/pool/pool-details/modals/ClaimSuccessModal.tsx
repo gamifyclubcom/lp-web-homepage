@@ -1,4 +1,4 @@
-import { useConnection } from '@solana/wallet-adapter-react';
+import { Connection } from '@solana/web3.js';
 import Decimal from 'decimal.js';
 import { useEffect, useState } from 'react';
 import {
@@ -12,6 +12,7 @@ import BaseModal from './BaseModal';
 
 interface Props {
   onClose: () => void;
+  connection: Connection;
   amount: number;
   ratio: number;
   txId: string;
@@ -23,6 +24,7 @@ interface Props {
 
 const ClaimSuccessModal: React.FC<Props> = ({
   onClose,
+  connection,
   amount,
   ratio,
   txId,
@@ -35,7 +37,6 @@ const ClaimSuccessModal: React.FC<Props> = ({
     new Decimal(amount).times(claimable_percentage).dividedBy(100),
     tokenDecimals,
   );
-  const { connection } = useConnection();
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState<string>('');
   const transactionUrl = generateOnChainUrl('tx', txId);

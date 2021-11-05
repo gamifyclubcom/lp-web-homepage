@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer, Zoom } from 'react-toastify';
 import '../styles/globals.css';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
@@ -49,18 +50,18 @@ function MyApp({ Component, pageProps }: AppProps) {
         <WalletModalProvider logo="/icons/apple-touch-icon.png">
           <GlobalProvider>
             <Component {...pageProps} />
+            <ToastContainer
+              hideProgressBar
+              position="bottom-left"
+              limit={2}
+              newestOnTop
+              closeButton={false}
+              autoClose={2000}
+              transition={Zoom}
+            />
           </GlobalProvider>
         </WalletModalProvider>
       </WalletConnectionProvider>
-      <ToastContainer
-        hideProgressBar
-        position="bottom-left"
-        limit={2}
-        newestOnTop
-        closeButton={false}
-        autoClose={2000}
-        transition={Zoom}
-      />
     </>
   );
 }

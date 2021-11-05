@@ -115,7 +115,7 @@ export function usePool() {
   const getMaxIndividualAllocationFCFSForStaker = (
     pool: IPool,
     currentUserLevel: number,
-  ): number => {
+  ): { totalStaker: number; individualStaker: number } => {
     if (isInFCFSForStakerRound(pool, now)) {
       let maxIndividualAlloc: number = 0;
       let multiplicationRate: number = 1;
@@ -154,10 +154,18 @@ export function usePool() {
         multiplicationRate = pool.campaign.fcfs_stake_phase.multiplication_rate;
       }
 
-      return new Decimal(maxIndividualAlloc).times(multiplicationRate).toNumber();
+      return {
+        totalStaker: maxIndividualAlloc,
+        individualStaker: new Decimal(maxIndividualAlloc).times(multiplicationRate).toNumber(),
+      };
+
+      // return new Decimal(maxIndividualAlloc).times(multiplicationRate).toNumber();
     }
 
-    return 0;
+    return {
+      totalStaker: 0,
+      individualStaker: 0,
+    };
   };
 
   const getPoolRoundsInfo = (pool: IPool, whitelistStatus: string): IRound[] => {

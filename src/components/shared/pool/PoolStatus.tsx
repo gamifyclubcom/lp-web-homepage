@@ -50,7 +50,7 @@ const PoolStatus: React.FC<Props> = ({ status, loading }) => {
       })}
     >
       <div
-        style={{ marginBottom: 4 }}
+        style={{ marginBottom: 3 }}
         className={clsx('w-3 h-3 mr-2 rounded-full', {
           'bg-secondary-300': isOpen,
           'bg-red-500': isClosed,

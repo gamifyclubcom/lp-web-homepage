@@ -129,7 +129,7 @@ const BaseModal: React.FC<Props> = ({
                 {cancelText}
               </button>
               <button
-                className="w-32 h-12 px-4 py-2 text-white uppercase rounded-full bg-primary-500 hover:bg-opacity-60"
+                className="w-32 h-12 px-4 py-2 text-white uppercase rounded-full bg-secondary-500 hover:bg-opacity-60"
                 onClick={handleConfirm}
               >
                 {confirmText}
@@ -138,7 +138,7 @@ const BaseModal: React.FC<Props> = ({
           ) : (
             <div className="flex items-center justify-center w-full mb-4">
               <button
-                className="h-12 px-4 py-2 text-white uppercase rounded-full w-52 bg-primary-500 hover:bg-opacity-60"
+                className="h-12 px-4 py-2 text-white uppercase rounded-full w-52 bg-secondary-500 hover:bg-opacity-60"
                 onClick={onClose}
               >
                 {backText}

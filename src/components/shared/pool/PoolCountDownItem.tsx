@@ -26,7 +26,7 @@ const PoolCountDownItem: React.FC<Props> = ({ label, value, active, variant = 'd
         className={clsx(
           'w-full p-2 text-lg font-semibold text-center rounded-md relative overflow-hidden',
           {
-            'text-primary-300': active,
+            'text-secondary-300': active,
             'opacity-50': !active,
             'bg-gray-900': variant === 'dark',
             'bg-gray-700': variant === 'light',

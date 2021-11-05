@@ -1,4 +1,5 @@
 import { useConnection } from '@solana/wallet-adapter-react';
+import { Connection } from '@solana/web3.js';
 import Decimal from 'decimal.js';
 import { useEffect, useState } from 'react';
 import {
@@ -11,6 +12,7 @@ import BalanceBadge from '../../../shared/BalanceBadge';
 import BaseModal from './BaseModal';
 
 interface Props {
+  connection: Connection;
   onClose: () => void;
   amountSwap: number;
   ratio: number;
@@ -22,6 +24,7 @@ interface Props {
 }
 
 const JoinPoolSuccessModal: React.FC<Props> = ({
+  connection,
   onClose,
   amountSwap,
   ratio,
@@ -31,7 +34,6 @@ const JoinPoolSuccessModal: React.FC<Props> = ({
   tokenDecimals,
   claimable_percentage,
 }) => {
-  const { connection } = useConnection();
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState<string>('');
   const transactionUrl = generateOnChainUrl('tx', txId);
@@ -99,7 +101,7 @@ const JoinPoolSuccessModal: React.FC<Props> = ({
             <a
               href={transactionUrl}
               target="_blank"
-              className="underline text-primary-500"
+              className="underline text-secondary-400"
               rel="noreferrer"
             >
               Transaction details

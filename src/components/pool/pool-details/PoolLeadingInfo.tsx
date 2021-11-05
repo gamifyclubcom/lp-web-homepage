@@ -27,12 +27,12 @@ const PoolLeadingInfo: React.FC<Props> = ({
   return (
     <div className="flex flex-col items-start">
       <div className="flex items-center w-full">
-        <div className="flex items-center justify-center w-16 h-16 mb-4 overflow-hidden rounded-full">
+        <div className="flex items-center justify-center w-16 h-16 mr-2 overflow-hidden rounded-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={logo} className="w-full h-full rounded-full" alt="Pool logo" />
         </div>
         <h1
-          className="block mb-2 ml-2 overflow-hidden text-3xl font-semibold text-white whitespace-nowrap overflow-ellipsis"
+          className="block overflow-hidden text-3xl font-semibold text-white whitespace-nowrap overflow-ellipsis"
           style={{ width: '60%' }}
         >
           {name}
