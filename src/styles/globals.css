@@ -56,7 +56,7 @@ body {
 }
 
 .layout-container {
-  width: 100%;
+  /* width: 100%; */
   margin-left: auto;
   margin-right: auto;
 }
@@ -86,6 +86,11 @@ body {
   .layout-container {
     max-width: 1200px;
   }
+}
+
+/* Custom react-confirm-alert */
+.react-confirm-alert-overlay {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 a {
