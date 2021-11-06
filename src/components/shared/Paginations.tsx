@@ -67,7 +67,9 @@ const Paginations: React.FC<Props> = ({
   }
 
   if (loading) {
-    return <div className="w-64 h-6 bg-gray-400 rounded-full animate-pulse" />;
+    return (
+      <div className="flex items-center w-64 h-6 mx-auto mt-4 bg-gray-400 rounded-full animate-pulse" />
+    );
   }
 
   return (
