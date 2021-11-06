@@ -23,7 +23,7 @@ export const isEmpty = (str?: string | null): boolean => {
 };
 
 export const getPoolLogo = (pool: IPool): string => {
-  const logo = !isEmpty(pool.logo) ? pool.logo! : '/img/placeholder_circle.svg';
+  const logo = !isEmpty(pool.logo) ? pool.logo! : '/images/placeholder_circle.svg';
   return logo;
 };
 

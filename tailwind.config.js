@@ -13,6 +13,9 @@ module.exports = {
         '2xl': '1536px',
       },
       colors: {
+        interpurp: {
+          DEFAULT: '#BE0269',
+        },
         primary: {
           100: '#E0C4F5',
           200: '#BF8DEC',

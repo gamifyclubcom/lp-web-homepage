@@ -4,8 +4,13 @@ import { useRouter } from 'next/router';
 import CardText from '../card-text';
 import Button from '../button';
 import PoolItem from '../pool-item';
+import { IPool } from '../../sdk/pool/interface';
 
-const FeaturePool: React.FC = () => {
+interface Props {
+  pools: IPool[];
+}
+
+const FeaturePool: React.FC<Props> = ({ pools }) => {
   const router = useRouter();
 
   return (
@@ -31,16 +36,14 @@ const FeaturePool: React.FC = () => {
             />
           </Button>
         </CardText>
-        <div className="grid w-full grid-cols-1 gap-x-2 gap-y-5 md:grid-cols-2 lg:grid-cols-4">
-          <PoolItem></PoolItem>
-          <PoolItem></PoolItem>
-          <PoolItem></PoolItem>
-          <PoolItem></PoolItem>
-          <PoolItem></PoolItem>
-          <PoolItem></PoolItem>
-          <PoolItem></PoolItem>
-          <PoolItem></PoolItem>
-        </div>
+        {pools.length === 0 && <span className="font-medium text-white">No Pools Found</span>}
+        {pools && pools.length > 0 && (
+          <div className="grid w-full grid-cols-1 gap-x-2 gap-y-5 md:grid-cols-2 lg:grid-cols-4">
+            {pools.map((pool, idx) => (
+              <PoolItem key={idx} pool={pool} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

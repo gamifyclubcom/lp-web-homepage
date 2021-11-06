@@ -35,7 +35,6 @@ const Home: React.FC<Props> = ({ paginatedPools }) => {
         }),
       )
         .then((data) => {
-          console.log(data);
           dispatchPaginatedPool({
             ...paginatedPools,
             docs: data,
@@ -50,14 +49,13 @@ const Home: React.FC<Props> = ({ paginatedPools }) => {
   }, []);
 
   const pools = paginatedPool?.docs || [];
-  console.log(pools);
 
   return (
     <Layout title={PageTitle.HomePage}>
       <LoadingScreen loading={loading} />
       <div className="bg-1C0045">
         <Banner />
-        <FeaturePool />
+        <FeaturePool pools={pools} />
         <HomeStakePool />
         <div className="text-center pt-40">
           <Image

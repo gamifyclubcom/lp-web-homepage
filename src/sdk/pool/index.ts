@@ -703,7 +703,7 @@ export const getPools = async (
       baseBackendUrl
     );
   } else {
-    const query = `${queryString.stringify(filter)}`; console.log(query)
+    const query = `${queryString.stringify(filter)}`;
     paginated = await fetchWrapper.get<PaginateResponse<ServerResponsePool>>(
       `${baseBackendUrl}?${query}`
     );
