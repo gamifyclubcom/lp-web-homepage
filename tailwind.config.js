@@ -47,6 +47,7 @@ module.exports = {
       },
       backgroundImage: {
         'pools-voting-list': "url('/images/gamify_bg_orb.jpeg')",
+        'pools-dashboard': "url('/images/gamify_bg_orb.jpeg')",
       },
     },
     fontFamily: {

@@ -207,7 +207,7 @@ const SecuredAllocation: React.FC<Props> = ({
             {renderClaimAction()}
           </>
         ) : (
-          <p className="text-lg text-center opacity-60">
+          <p className="text-lg text-center text-white opacity-60">
             Your address did not participate in this pool.
           </p>
         )}

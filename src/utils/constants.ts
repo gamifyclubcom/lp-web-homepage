@@ -18,7 +18,7 @@ export const TOKEN_TO_DECIMALS = 9;
 export const SOL_DECIMALS = 9;
 
 export const poolMenus: INavbarPoolMenu[] = [
-  { label: 'Pools', key: 'all-pools', needConnectWallet: false },
+  { label: 'Pools', key: 'all-pools', section: PoolsSectionFilter.ALL, needConnectWallet: false },
   {
     label: 'Featured',
     key: 'featured-pools',

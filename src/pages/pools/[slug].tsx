@@ -164,6 +164,9 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
   const fetchPool = async () => {
     const data = await getPoolFullInfo(pool);
+
+    console.log({ pool: JSON.stringify(data) });
+
     setPool(data);
     setProgress((prev) => Decimal.max(data.progress, prev).toNumber());
     setTokenCurrentRaise(data.token_current_raise);

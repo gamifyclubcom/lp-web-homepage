@@ -1,14 +1,6 @@
-import {
-  IPoolFcfsStakerPhase,
-  IPoolWeight,
-  IVotingPhase,
-} from '@intersola/onchain-program-sdk';
+import { IPoolFcfsStakerPhase, IPoolWeight, IVotingPhase } from '@intersola/onchain-program-sdk';
 import { PublicKey } from '@solana/web3.js';
-import {
-  PoolsSectionFilter,
-  PoolStatusType,
-  PoolsVotingFilter,
-} from '../../shared/enum';
+import { PoolsSectionFilter, PoolStatusType, PoolsVotingFilter } from '../../shared/enum';
 
 export interface ServerResponseToken {
   token_address: string;
@@ -95,6 +87,7 @@ export interface IPool {
   name: string;
   slug: string;
   logo?: string;
+  thumbnail?: string;
   contract_address: string;
   start_date: string;
   join_pool_start: string;

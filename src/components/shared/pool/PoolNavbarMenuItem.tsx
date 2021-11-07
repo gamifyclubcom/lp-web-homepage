@@ -7,7 +7,7 @@ import { isEmpty } from '../../../utils/helper';
 
 interface Props {
   menu: INavbarPoolMenu;
-  variant: 'pools' | 'pools-voting';
+  variant: 'pools-dashboard' | 'pools-voting';
   active: boolean;
 }
 

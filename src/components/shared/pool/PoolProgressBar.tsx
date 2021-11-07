@@ -35,7 +35,8 @@ const PoolProgressBar: React.FC<Props> = ({ current, total, loading, variant }) 
         style={{ width: `${progress}%` }}
       >
         {variant === 'complex' && progress > 0 && (
-          <span className="mt-1 ml-auto text-2xl transform rotate-45 translate-x-1/2">🚀</span>
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src="/icons/icon_progress.svg" alt="Icon progress" className="w-6 h-6 ml-auto" />
         )}
       </div>
     </div>
