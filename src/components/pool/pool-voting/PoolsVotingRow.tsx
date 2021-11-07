@@ -131,7 +131,7 @@ const PoolsVotingRow: React.FC<Props> = ({
       <td className="hidden px-4 py-2 md:table-cell" onClick={() => handleUpVote(poolVoting)}>
         <div className="flex items-center w-full cursor-pointer">
           <FaThumbsUp
-            className={clsx('mr-2', {
+            className={clsx('mr-2 hidden lg:block', {
               'text-secondary-400': isVoteUp,
             })}
           />
@@ -141,7 +141,7 @@ const PoolsVotingRow: React.FC<Props> = ({
       <td className="hidden px-4 py-2 md:table-cell" onClick={() => handleDownVote(poolVoting)}>
         <div className="flex items-center w-full cursor-pointer">
           <FaThumbsDown
-            className={clsx('mr-2', {
+            className={clsx('mr-2 hidden lg:block', {
               'text-secondary-400': isVoteDown,
             })}
           />

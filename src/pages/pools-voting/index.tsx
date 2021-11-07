@@ -4,7 +4,7 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import PoolsVotingTable from '../../components/pool/pool-voting/PoolsVotingTable';
-import SearchPoolVoting from '../../components/pool/pool-voting/SearchPoolVoting';
+import SearchPoolVoting from '../../components/shared/pool/SearchPool';
 import Layout from '../../components/shared/Layout';
 import PoolNavbarMenus from '../../components/shared/pool/PoolNavbarMenus';
 import { useDebounce } from '../../hooks/useDebounce';

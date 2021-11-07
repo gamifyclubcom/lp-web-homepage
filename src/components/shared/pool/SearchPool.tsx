@@ -6,7 +6,7 @@ interface Props {
   setInputSearch: Dispatch<SetStateAction<string>>;
 }
 
-const SearchPoolVoting: React.FC<Props> = ({ inputSearch, setInputSearch }) => {
+const SearchPool: React.FC<Props> = ({ inputSearch, setInputSearch }) => {
   return (
     <div className="flex items-center w-full px-4 py-2 text-white border rounded-xl border-secondary-400">
       <VscSearch className="my-1 ml-1 mr-2 text-2xl" />
@@ -20,4 +20,4 @@ const SearchPoolVoting: React.FC<Props> = ({ inputSearch, setInputSearch }) => {
   );
 };
 
-export default SearchPoolVoting;
+export default SearchPool;

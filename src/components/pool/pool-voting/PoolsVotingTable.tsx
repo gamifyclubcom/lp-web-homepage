@@ -50,8 +50,8 @@ const PoolsVotingTable: React.FC<Props> = ({
           <thead className={`border-b border-fuchsia-500 text-fuchsia-400`}>
             <tr className="text-xl font-medium text-left">
               <th className="p-4">Project Name</th>
-              <th className="hidden p-4 w-44 md:table-cell">Vote For</th>
-              <th className="hidden p-4 w-44 md:table-cell ">Vote Against</th>
+              <th className="hidden w-32 p-4 lg:w-44 md:table-cell">Vote For</th>
+              <th className="hidden w-32 p-4 lg:w-44 md:table-cell ">Vote Against</th>
               <th className="w-56 p-4 lg:w-72">
                 <div className="flex flex-col items-center justify-center">
                   <span>Voting Ended In</span>
