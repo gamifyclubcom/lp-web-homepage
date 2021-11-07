@@ -26,7 +26,7 @@ import { useGlobal } from './useGlobal';
 export function usePool() {
   const router = useRouter();
   const { connection } = useConnection();
-  const { activePoolMenu, now } = useGlobal();
+  const { now } = useGlobal();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const CACHE_PRICE_DURATION = 10;

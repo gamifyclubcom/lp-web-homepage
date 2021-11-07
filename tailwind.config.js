@@ -45,6 +45,9 @@ module.exports = {
         modal_stake_maturity_time: '#3FA54A',
         modal_unstake_header: '#872020',
       },
+      backgroundImage: {
+        'pools-voting-list': "url('/images/gamify_bg_orb.jpeg')",
+      },
     },
     fontFamily: {
       sans: ['Gilroy', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
