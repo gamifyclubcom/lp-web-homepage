@@ -12,7 +12,7 @@ interface Props {
   image?: string;
 }
 
-const PoolLeadingInfo: React.FC<Props> = ({
+const DetailsLeadingInfo: React.FC<Props> = ({
   name,
   tokenAddress,
   tagLine,
@@ -76,4 +76,4 @@ const PoolLeadingInfo: React.FC<Props> = ({
   );
 };
 
-export default PoolLeadingInfo;
+export default DetailsLeadingInfo;
