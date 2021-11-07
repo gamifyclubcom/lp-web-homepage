@@ -33,6 +33,12 @@ export const getPoolLogo = (logo?: string): string => {
   return image;
 };
 
+export const getPoolThumbnail = (thumbnail?: string): string => {
+  const image = !isEmpty(thumbnail) ? thumbnail! : '/images/placeholder_thumbnail.png';
+
+  return image;
+};
+
 export const getPercent = (curr: number, total: number): number => {
   return parseFloat(((curr * 100) / total).toFixed(2));
 };
