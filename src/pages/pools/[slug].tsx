@@ -1,16 +1,17 @@
 import { useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
 import Decimal from 'decimal.js';
 import moment from 'moment';
 import { GetServerSideProps } from 'next';
 import { useEffect, useMemo, useState } from 'react';
-import PoolDetailsMainInfo from '../../components/pool/pool-details/PoolDetailsMainInfo';
-import PoolLeadingInfo from '../../components/pool/pool-details/PoolLeadingInfo';
+import DetailsMainInfo from '../../components/shared/pool/DetailsMainInfo';
 import PoolRounds from '../../components/pool/pool-details/PoolRounds';
 import PoolSwapAction from '../../components/pool/pool-details/PoolSwapAction';
 import PoolSwapInfo from '../../components/pool/pool-details/PoolSwapInfo';
 import SecuredAllocation from '../../components/pool/pool-details/SecuredAllocation';
 import Layout from '../../components/shared/Layout';
 import LoadingScreen from '../../components/shared/LoadingScreen';
+import DetailsLeadingInfo from '../../components/shared/pool/DetailsLeadingInfo';
 import { useGlobal } from '../../hooks/useGlobal';
 import { usePool } from '../../hooks/usePool';
 import useSmartContract from '../../hooks/useSmartContract';
@@ -32,7 +33,7 @@ interface Props {
 const PoolDetails: React.FC<Props> = ({ poolServer }) => {
   const { connected } = useWallet();
   const { now } = useGlobal();
-  const { refreshAllocation, getUserAllocationLevel } = useSmartContract();
+  const { refreshAllocation, getUserAllocationLevel, getParticipantAddress } = useSmartContract();
   const { getPoolFullInfo, getMaxIndividualAllocationFCFSForStaker } = usePool();
   const [fetching, setFetching] = useState(true);
   const [spinning, setSpinning] = useState(false);
@@ -123,6 +124,22 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
   }, []);
 
   useEffect(() => {
+    const initParticipantAddress = async () => {
+      if (!participantAddress && connected) {
+        const { exists, accountDataWithSeed } = await getParticipantAddress(
+          new PublicKey(pool.contract_address),
+        );
+        if (exists) {
+          setParticipantAddress(accountDataWithSeed.toString());
+        }
+      }
+    };
+
+    initParticipantAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [participantAddress, connected]);
+
+  useEffect(() => {
     const fetchBaseInfo = async () => {
       if (!connected) {
         setAllocation(null);
@@ -162,7 +179,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
       <div className="mx-auto layout-container">
         <div className="pt-24">
           <div className="mb-8">
-            <PoolLeadingInfo
+            <DetailsLeadingInfo
               name={pool.name}
               tokenAddress={pool.token_address}
               tagLine={pool.tag_line}
@@ -178,9 +195,9 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
               <div className="w-full mb-4 overflow-hidden bg-gray-800 rounded-lg">
                 <PoolSwapInfo
                   totalRaise={pool.token_total_raise}
-                  participants={pool.participants}
+                  participants={participants}
                   swapProgress={progress}
-                  currentSwap={pool.token_current_raise}
+                  currentSwap={tokenCurrentRaise}
                   mintTokenFrom={pool.token_to}
                   mintTokenTo={pool.token_symbol}
                   tokenRatio={pool.token_ratio}
@@ -243,7 +260,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
         <div className="pb-8 mt-4">
           <div className="w-full h-full overflow-hidden bg-gray-800 rounded-lg">
-            <PoolDetailsMainInfo pool={pool} />
+            <DetailsMainInfo pool={pool} />
           </div>
         </div>
       </div>

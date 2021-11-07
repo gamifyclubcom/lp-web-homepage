@@ -115,9 +115,11 @@ const PoolsVotingRow: React.FC<Props> = ({
     } catch (err) {}
   };
 
+  const goToVotingDetails = () => handleGoToPoolVotingDetails(poolVoting);
+
   return (
     <tr className="text-xl font-medium text-left text-white border-b opacity-75 cursor-pointer border-fuchsia-500 hover:bg-gray-900">
-      <td className="px-4 py-2 truncate" onClick={() => handleGoToPoolVotingDetails(poolVoting)}>
+      <td className="px-4 py-2 truncate" onClick={goToVotingDetails}>
         <div className="flex items-center w-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -148,7 +150,7 @@ const PoolsVotingRow: React.FC<Props> = ({
           <span className="truncate">{poolVoting.voting_total_down}</span>
         </div>
       </td>
-      <td className="px-4 py-2">
+      <td className="px-4 py-2" onClick={goToVotingDetails}>
         <div className="flex items-center justify-center w-full text-white">
           <TableVotingCountdown
             date={poolVoting.voting_end}
@@ -157,7 +159,7 @@ const PoolsVotingRow: React.FC<Props> = ({
           />
         </div>
       </td>
-      <td className="p-2">
+      <td className="p-2" onClick={goToVotingDetails}>
         <PoolVotingStatus status={poolVotingStatus} loading={loading} />
       </td>
     </tr>

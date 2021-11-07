@@ -10,14 +10,14 @@ import {
   renderTokenBalance,
   tokenToSOL,
 } from '../../../utils/helper';
-import Accordion from '../../shared/Accordion';
-import BalanceBadge from '../../shared/BalanceBadge';
+import Accordion from '../Accordion';
+import BalanceBadge from '../BalanceBadge';
 
 interface Props {
   pool: IPool;
 }
 
-const PoolDetailsMainInfo: React.FC<Props> = ({ pool }) => {
+const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
   const { getTokenInfo } = usePool();
   const poolAccess = getPoolAccess(pool);
   const totalRaise = useMemo(() => {
@@ -184,4 +184,4 @@ const PoolDetailsMainInfo: React.FC<Props> = ({ pool }) => {
   );
 };
 
-export default PoolDetailsMainInfo;
+export default DetailsMainInfo;
