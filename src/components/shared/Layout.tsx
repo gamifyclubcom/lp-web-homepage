@@ -22,6 +22,9 @@ const Layout: React.FC<Props> = ({ title = PageTitle.HomePage, children }) => {
   const isInPoolVotingPage = useMemo(() => {
     return router.pathname === '/pools-voting';
   }, [router.pathname]);
+  const isInPoolsDashboardPage = useMemo(() => {
+    return router.pathname === '/pools-dashboard';
+  }, [router.pathname]);
 
   useEffect(() => {
     const init = async () => {
@@ -58,6 +61,7 @@ const Layout: React.FC<Props> = ({ title = PageTitle.HomePage, children }) => {
       <main
         className={clsx('bg-primary-500', {
           'bg-pools-voting-list bg-center bg-cover': isInPoolVotingPage,
+          'bg-pools-dashboard bg-center bg-cover': isInPoolsDashboardPage,
         })}
       >
         {children}

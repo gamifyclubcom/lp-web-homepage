@@ -14,6 +14,7 @@ export enum PoolVotingStatusType {
 }
 
 export enum PoolsSectionFilter {
+  ALL = 'all',
   UPCOMING = 'upcoming',
   FEATURED = 'featured',
   JOINED = 'joined',

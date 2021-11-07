@@ -34,7 +34,7 @@ const PoolStatus: React.FC<Props> = ({ status, loading }) => {
         <div
           style={{ marginBottom: 4 }}
           className="w-2 h-2 mr-2 bg-gray-300 rounded-full animate-ping"
-        ></div>
+        />
         <span className="text-sm font-medium text-white">Loading</span>
       </div>
     );
@@ -49,15 +49,16 @@ const PoolStatus: React.FC<Props> = ({ status, loading }) => {
         'bg-gray-500': isUpcoming,
       })}
     >
-      <div
-        style={{ marginBottom: 3 }}
-        className={clsx('w-3 h-3 mr-2 rounded-full', {
-          'bg-secondary-300': isOpen,
-          'bg-red-500': isClosed,
-          'bg-green-500': filled,
-          'bg-gray-300': isUpcoming,
-        })}
-      ></div>
+      {!isUpcoming && (
+        <div
+          style={{ marginBottom: 3 }}
+          className={clsx('w-3 h-3 mr-2 rounded-full', {
+            'bg-secondary-300': isOpen,
+            'bg-red-500': isClosed,
+            'bg-green-500': filled,
+          })}
+        />
+      )}
       <span className="text-sm font-medium text-white">{content}</span>
     </div>
   );

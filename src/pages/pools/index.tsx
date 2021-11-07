@@ -1,6 +1,8 @@
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import PoolCard from '../../components/pool/pool-list/PoolCard';
+import PoolCardLoading from '../../components/pool/pool-list/PoolCardLoading';
 import Layout from '../../components/shared/Layout';
 import LoadingScreen from '../../components/shared/LoadingScreen';
 import { useGlobal } from '../../hooks/useGlobal';
@@ -12,6 +14,7 @@ import { PageTitle, PoolsSectionFilter } from '../../shared/enum';
 interface Props {}
 
 const Pools: React.FC<Props> = () => {
+  const router = useRouter();
   const { now } = useGlobal();
   const { getPoolFullInfo } = usePool();
   const [featureLoading, setFeatureLoading] = useState(false);
@@ -88,13 +91,7 @@ const Pools: React.FC<Props> = () => {
           </h3>
 
           <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
-            {upcomingLoading &&
-              [1, 2, 3].map((item) => (
-                <div
-                  key={`upcoming__${item}`}
-                  className="w-full overflow-hidden bg-gray-800 rounded-lg h-96 animate-pulse"
-                />
-              ))}
+            {upcomingLoading && <PoolCardLoading variant="upcoming-pool" />}
             {upcomingPools.length <= 0 && (
               <span className="text-sm text-white">No Pools Founds</span>
             )}
@@ -112,18 +109,11 @@ const Pools: React.FC<Props> = () => {
           </h3>
 
           <div className="grid w-full grid-cols-1 gap-4">
-            {featureLoading &&
-              [1, 2].map((item) => (
-                <div
-                  key={`feature__${item}`}
-                  className="w-full h-64 mx-auto overflow-hidden bg-gray-800 rounded-lg animate-pulse"
-                  style={{ maxWidth: 800 }}
-                />
-              ))}
+            {featureLoading && <PoolCardLoading variant="feature-pool" />}
             {featurePools.length <= 0 && (
               <span className="text-sm text-white">No Pools Founds</span>
             )}
-            {featurePools.slice(0, 3).map((pool) => (
+            {featurePools.slice(0, 5).map((pool) => (
               <div className="w-full mx-auto" style={{ maxWidth: 800 }} key={pool.id}>
                 <PoolCard variant="feature-pool" pool={pool} loading={featureLoading} />
               </div>
@@ -137,24 +127,21 @@ const Pools: React.FC<Props> = () => {
           </h3>
 
           <div className="grid w-full grid-cols-1 gap-4">
-            {completedLoading &&
-              [1, 2].map((item) => (
-                <div
-                  key={`completed__${item}`}
-                  className="w-full h-32 overflow-hidden bg-gray-800 rounded-lg animate-pulse"
-                />
-              ))}
+            {completedLoading && <PoolCardLoading variant="completed-pool" />}
             {completedPools.length <= 0 && (
               <span className="text-sm text-white">No Pools Founds</span>
             )}
-            {completedPools.slice(0, 3).map((pool) => (
+            {completedPools.slice(0, 5).map((pool) => (
               <div className="w-full" key={pool.id}>
                 <PoolCard variant="feature-pool" pool={pool} loading={completedLoading} />
               </div>
             ))}
           </div>
 
-          <button className="flex items-center justify-center w-64 h-12 px-8 py-2 mt-4 text-sm text-center text-white transition-all duration-200 bg-red-700 rounded-full hover:bg-red-900">
+          <button
+            onClick={() => router.push('/pools-dashboard')}
+            className="flex items-center justify-center w-64 h-12 px-8 py-2 mt-4 text-sm text-center text-white transition-all duration-200 bg-red-700 rounded-full hover:bg-red-900"
+          >
             <span className="mr-4 text-sm">View all pool</span>
             <AiOutlineArrowRight />
           </button>
