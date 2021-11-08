@@ -47,6 +47,7 @@ module.exports = {
         modal_header_color2: '#7E0F1A',
         modal_stake_maturity_time: '#3FA54A',
         modal_unstake_header: '#872020',
+        pool_title: '#733434'
       },
       backgroundImage: {
         'pools-voting-list': "url('/images/gamify_bg_orb.jpeg')",
@@ -66,7 +67,7 @@ module.exports = {
         '1C0045': '#1C0045',
         '3232DC': '#3232DC',
         '38383D': '#38383D',
-        '222228': '#222228',
+        '222228': '#222228'
       },
       padding: {
         '325': '325px'
