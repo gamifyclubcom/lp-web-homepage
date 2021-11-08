@@ -1,7 +1,7 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  purge: ['./src/pages/**/*.{js,ts,jsx,tsx}', './src/components/**/*.{js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
@@ -47,50 +47,50 @@ module.exports = {
         modal_header_color2: '#7E0F1A',
         modal_stake_maturity_time: '#3FA54A',
         modal_unstake_header: '#872020',
-        pool_title: '#733434'
+        pool_title: '#733434',
       },
       backgroundImage: {
         'pools-voting-list': "url('/images/gamify_bg_orb.jpeg')",
         'pools-dashboard': "url('/images/gamify_bg_orb.jpeg')",
       },
       backgroundImage: {
-        'hero-pattern': "url('/images/gamify_bg_orb.jpeg')"
+        'hero-pattern': "url('/images/gamify_bg_orb.jpeg')",
       },
       backgroundSize: {
-        '100%': '100%'
+        '100%': '100%',
       },
       backgroundPosition: {
-        'center-50%': 'center 50%'
+        'center-50%': 'center 50%',
       },
       backgroundColor: {
-        'D01F36': '#D01F36',
+        D01F36: '#D01F36',
         '1C0045': '#1C0045',
         '3232DC': '#3232DC',
         '38383D': '#38383D',
-        '222228': '#222228'
+        222228: '#222228',
       },
       padding: {
-        '325': '325px'
+        325: '325px',
       },
       height: {
-        "10v": "10vh",
-        "20v": "20vh",
-        "30v": "30vh",
-        "40v": "40vh",
-        "50v": "50vh",
-        "60v": "60vh",
-        "70v": "70vh",
-        "80v": "80vh",
-        "90v": "90vh",
-        "100v": "100vh",
+        '10v': '10vh',
+        '20v': '20vh',
+        '30v': '30vh',
+        '40v': '40vh',
+        '50v': '50vh',
+        '60v': '60vh',
+        '70v': '70vh',
+        '80v': '80vh',
+        '90v': '90vh',
+        '100v': '100vh',
       },
       fontSize: {
         '4.25xl': ['4.25rem', '5rem'],
         '1.5xl': ['1.5rem', '1.5rem'],
         '1.5xl2': ['1.25rem', '1.5rem'],
         '1.125lg': ['1.125rem', '1.625rem'],
-        '15px': '15px'
-      }
+        '15px': '15px',
+      },
     },
     fontFamily: {
       sans: ['Gilroy', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
