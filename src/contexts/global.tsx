@@ -1,4 +1,4 @@
-import { clockSysvarAccount } from '@intersola/onchain-program-sdk';
+import { clockSysvarAccount } from '@gamify/onchain-program-sdk';
 import { u64 } from '@solana/spl-token';
 import { useConnection } from '@solana/wallet-adapter-react';
 import Decimal from 'decimal.js';

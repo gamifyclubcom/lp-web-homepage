@@ -1,4 +1,4 @@
-import { Actions, ITierData, IVoteSetting } from '@intersola/onchain-program-sdk';
+import { Actions, ITierData, IVoteSetting } from '@gamify/onchain-program-sdk';
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, Transaction } from '@solana/web3.js';
