@@ -6,16 +6,13 @@ import {
   IPoolV3ContractData,
   IPoolV4ContractData,
   IVotingPhase,
-} from '@intersola/onchain-program-sdk';
-import { PublicKey } from '@solana/web3.js';
+} from '@gamify/onchain-program-sdk';
+import { Connection, PublicKey } from '@solana/web3.js';
+import Decimal from 'decimal.js';
 import moment from 'moment';
 import queryString from 'query-string';
-import {
-  getPercent,
-  isPoolV2Version,
-  isPoolV3Version,
-  isPoolV4Version,
-} from '../../utils/helper';
+import { envConfig } from '../../configs';
+import { getPercent, isPoolV2Version, isPoolV3Version, isPoolV4Version } from '../../utils/helper';
 import fetchWrapper from '../fetch-wrapper';
 import {
   IPool,
@@ -24,26 +21,17 @@ import {
   ServerResponsePool,
   ServerResponsePoolVoting,
 } from './interface';
-import { Connection } from '@solana/web3.js';
-import Decimal from 'decimal.js';
-import { envConfig } from '../../configs';
 
 const baseBackendUrl = `${envConfig.API_URL_BACKEND}/api/pools`;
 
 export const fakeWithClaimablePercentage = (
   amount: number,
-  claimable_percentage: number
+  claimable_percentage: number,
 ): number => {
-  return new Decimal(amount)
-    .times(100)
-    .dividedBy(claimable_percentage)
-    .toNumber();
+  return new Decimal(amount).times(100).dividedBy(claimable_percentage).toNumber();
 };
 
-export const mappingPoolServerResponse = (
-  poolServer: ServerResponsePool,
-  now: number
-): IPool => {
+export const mappingPoolServerResponse = (poolServer: ServerResponsePool, now: number): IPool => {
   let participants =
     poolServer.data.campaign.early_join_phase.number_joined_user +
     poolServer.data.campaign.public_phase.number_joined_user;
@@ -52,8 +40,7 @@ export const mappingPoolServerResponse = (
     poolServer.data.campaign.public_phase.sold_allocation;
   const token_total_raise = poolServer.data.campaign.max_allocation_all_phases;
 
-  const private_join_enabled =
-    poolServer.data.campaign.early_join_phase.is_active;
+  const private_join_enabled = poolServer.data.campaign.early_join_phase.is_active;
   const public_join_enabled = poolServer.data.campaign.public_phase.is_active;
   const private_join_start = poolServer.data.campaign.early_join_phase.start_at
     ? new Date(poolServer.data.campaign.early_join_phase.start_at)
@@ -61,14 +48,9 @@ export const mappingPoolServerResponse = (
   const private_join_end = poolServer.data.campaign.early_join_phase.end_at
     ? new Date(poolServer.data.campaign.early_join_phase.end_at)
     : undefined;
-  const public_join_start = new Date(
-    poolServer.data.campaign.public_phase.start_at
-  );
-  const public_join_end = new Date(
-    poolServer.data.campaign.public_phase.end_at
-  );
-  const exclusive_join_enable =
-    poolServer.data.campaign?.exclusive_phase?.is_active || false;
+  const public_join_start = new Date(poolServer.data.campaign.public_phase.start_at);
+  const public_join_end = new Date(poolServer.data.campaign.public_phase.end_at);
+  const exclusive_join_enable = poolServer.data.campaign?.exclusive_phase?.is_active || false;
   const exclusive_join_start = poolServer.data.campaign.exclusive_phase
     ? new Date(poolServer.data.campaign?.exclusive_phase?.start_at)
     : new Date();
@@ -77,36 +59,30 @@ export const mappingPoolServerResponse = (
     : new Date();
   const fcfs_join_for_staker_enabled =
     poolServer.data.campaign?.fcfs_stake_phase?.is_active || false;
-  const fcfs_join_for_staker_start = poolServer.data.campaign?.fcfs_stake_phase
-    ?.start_at
+  const fcfs_join_for_staker_start = poolServer.data.campaign?.fcfs_stake_phase?.start_at
     ? new Date(poolServer.data.campaign?.fcfs_stake_phase?.start_at)
     : new Date();
-  const fcfs_join_for_staker_end = poolServer.data.campaign?.fcfs_stake_phase
-    ?.end_at
+  const fcfs_join_for_staker_end = poolServer.data.campaign?.fcfs_stake_phase?.end_at
     ? new Date(poolServer.data.campaign?.fcfs_stake_phase?.end_at)
     : new Date();
   if (exclusive_join_enable) {
-    participants +=
-      poolServer.data.campaign.exclusive_phase!.number_joined_user || 0;
-    token_current_raise +=
-      poolServer.data.campaign.exclusive_phase!.sold_allocation || 0;
+    participants += poolServer.data.campaign.exclusive_phase!.number_joined_user || 0;
+    token_current_raise += poolServer.data.campaign.exclusive_phase!.sold_allocation || 0;
   }
 
   const join_pool_start = private_join_enabled
     ? private_join_start?.toISOString()
     : exclusive_join_enable
-      ? exclusive_join_start.toISOString()
-      : public_join_start.toISOString();
+    ? exclusive_join_start.toISOString()
+    : public_join_start.toISOString();
   const join_pool_end = public_join_end.toISOString();
 
   const is_public =
-    private_join_enabled &&
-      moment.unix(now).isBetween(private_join_start, private_join_end)
+    private_join_enabled && moment.unix(now).isBetween(private_join_start, private_join_end)
       ? false
       : true;
   const token_max_contribution_size =
-    private_join_enabled &&
-      moment.unix(now).isBetween(private_join_start, private_join_end)
+    private_join_enabled && moment.unix(now).isBetween(private_join_start, private_join_end)
       ? poolServer.data.campaign.early_join_phase.max_individual_alloc
       : poolServer.data.campaign.public_phase.max_individual_alloc;
   const progress = getPercent(token_current_raise, token_total_raise);
@@ -138,28 +114,17 @@ export const mappingPoolServerResponse = (
     token_decimals: poolServer.token.token_decimals,
     token_max_allocation: fakeWithClaimablePercentage(
       poolServer.data.campaign.max_allocation_all_phases,
-      claimable_percentage
+      claimable_percentage,
     ),
     token_economic: poolServer.token_economic,
-    token_total_supply: new Decimal(
-      poolServer.token.token_total_supply
-    ).toNumber(),
-    token_total_raise: fakeWithClaimablePercentage(
-      token_total_raise,
-      claimable_percentage
-    ),
-    token_current_raise: fakeWithClaimablePercentage(
-      token_current_raise,
-      claimable_percentage
-    ),
-    token_ratio: fakeWithClaimablePercentage(
-      poolServer.data.rate,
-      claimable_percentage
-    ),
+    token_total_supply: new Decimal(poolServer.token.token_total_supply).toNumber(),
+    token_total_raise: fakeWithClaimablePercentage(token_total_raise, claimable_percentage),
+    token_current_raise: fakeWithClaimablePercentage(token_current_raise, claimable_percentage),
+    token_ratio: fakeWithClaimablePercentage(poolServer.data.rate, claimable_percentage),
     progress,
     token_max_contribution_size: fakeWithClaimablePercentage(
       token_max_contribution_size,
-      claimable_percentage
+      claimable_percentage,
     ),
     number_whitelisted_user: poolServer.data.campaign.number_whitelisted_user,
     campaign: {
@@ -168,30 +133,30 @@ export const mappingPoolServerResponse = (
         ...poolServer.data.campaign.early_join_phase,
         max_total_alloc: fakeWithClaimablePercentage(
           poolServer.data.campaign.early_join_phase.max_total_alloc,
-          claimable_percentage
+          claimable_percentage,
         ),
         max_individual_alloc: fakeWithClaimablePercentage(
           poolServer.data.campaign.early_join_phase.max_individual_alloc,
-          claimable_percentage
+          claimable_percentage,
         ),
         sold_allocation: fakeWithClaimablePercentage(
           poolServer.data.campaign.early_join_phase.sold_allocation,
-          claimable_percentage
+          claimable_percentage,
         ),
       },
       public_phase: {
         ...poolServer.data.campaign.public_phase,
         max_total_alloc: fakeWithClaimablePercentage(
           poolServer.data.campaign.public_phase.max_total_alloc,
-          claimable_percentage
+          claimable_percentage,
         ),
         max_individual_alloc: fakeWithClaimablePercentage(
           poolServer.data.campaign.public_phase.max_individual_alloc,
-          claimable_percentage
+          claimable_percentage,
         ),
         sold_allocation: fakeWithClaimablePercentage(
           poolServer.data.campaign.public_phase.sold_allocation,
-          claimable_percentage
+          claimable_percentage,
         ),
       },
     },
@@ -219,12 +184,8 @@ export const mappingPoolServerResponse = (
 
 export const mappingPoolOnChainResponse = (
   poolBase: IPool,
-  poolOnChain:
-    | IExtractPoolData
-    | IExtractPoolV2Data
-    | IPoolV3ContractData
-    | IPoolV4ContractData,
-  now: number
+  poolOnChain: IExtractPoolData | IExtractPoolV2Data | IPoolV3ContractData | IPoolV4ContractData,
+  now: number,
 ): IPool => {
   let participants =
     poolOnChain.campaign.early_join_phase.number_joined_user +
@@ -242,27 +203,19 @@ export const mappingPoolOnChainResponse = (
   const private_join_end = poolOnChain.campaign.early_join_phase.end_at
     ? new Date(poolOnChain.campaign.early_join_phase.end_at)
     : undefined;
-  const public_join_start = new Date(
-    poolOnChain.campaign.public_phase.start_at
-  );
+  const public_join_start = new Date(poolOnChain.campaign.public_phase.start_at);
   const public_join_end = new Date(poolOnChain.campaign.public_phase.end_at);
 
   const exclusive_join_enable =
-    isPoolV2Version(poolOnChain) ||
-      isPoolV3Version(poolOnChain) ||
-      isPoolV4Version(poolOnChain)
+    isPoolV2Version(poolOnChain) || isPoolV3Version(poolOnChain) || isPoolV4Version(poolOnChain)
       ? poolOnChain.campaign?.exclusive_phase?.is_active || false
       : false;
   const exclusive_join_start =
-    isPoolV2Version(poolOnChain) ||
-      isPoolV3Version(poolOnChain) ||
-      isPoolV4Version(poolOnChain)
+    isPoolV2Version(poolOnChain) || isPoolV3Version(poolOnChain) || isPoolV4Version(poolOnChain)
       ? new Date(poolOnChain.campaign?.exclusive_phase?.start_at)
       : new Date();
   const exclusive_join_end =
-    isPoolV2Version(poolOnChain) ||
-      isPoolV3Version(poolOnChain) ||
-      isPoolV4Version(poolOnChain)
+    isPoolV2Version(poolOnChain) || isPoolV3Version(poolOnChain) || isPoolV4Version(poolOnChain)
       ? new Date(poolOnChain.campaign?.exclusive_phase?.end_at)
       : new Date();
 
@@ -289,23 +242,21 @@ export const mappingPoolOnChainResponse = (
   }
   if (isPoolV3Version(poolOnChain) || isPoolV4Version(poolOnChain)) {
     participants += poolOnChain.campaign.fcfs_stake_phase.number_joined_user;
-    token_current_raise +=
-      poolOnChain.campaign.fcfs_stake_phase.sold_allocation;
+    token_current_raise += poolOnChain.campaign.fcfs_stake_phase.sold_allocation;
   }
 
   const is_public =
-    private_join_enabled &&
-      moment.unix(now).isBetween(private_join_end, private_join_end)
+    private_join_enabled && moment.unix(now).isBetween(private_join_end, private_join_end)
       ? false
       : true;
 
   const join_pool_start = private_join_enabled
     ? private_join_start?.toISOString()
     : exclusive_join_enable
-      ? exclusive_join_start.toISOString()
-      : fcfs_join_for_staker_enabled
-        ? fcfs_join_for_staker_start.toISOString()
-        : public_join_start.toISOString();
+    ? exclusive_join_start.toISOString()
+    : fcfs_join_for_staker_enabled
+    ? fcfs_join_for_staker_start.toISOString()
+    : public_join_start.toISOString();
   const join_pool_end = public_join_end.toISOString();
 
   const token_max_contribution_size = is_public
@@ -341,26 +292,17 @@ export const mappingPoolOnChainResponse = (
     token_decimals: poolBase.token_decimals,
     token_max_allocation: fakeWithClaimablePercentage(
       poolOnChain.campaign.max_allocation_all_phases,
-      claimable_percentage
+      claimable_percentage,
     ),
     token_economic: poolBase.token_economic,
     token_total_supply: poolBase.token_total_supply,
-    token_total_raise: fakeWithClaimablePercentage(
-      token_total_raise,
-      claimable_percentage
-    ),
-    token_current_raise: fakeWithClaimablePercentage(
-      token_current_raise,
-      claimable_percentage
-    ),
-    token_ratio: fakeWithClaimablePercentage(
-      poolOnChain.rate,
-      claimable_percentage
-    ),
+    token_total_raise: fakeWithClaimablePercentage(token_total_raise, claimable_percentage),
+    token_current_raise: fakeWithClaimablePercentage(token_current_raise, claimable_percentage),
+    token_ratio: fakeWithClaimablePercentage(poolOnChain.rate, claimable_percentage),
     progress,
     token_max_contribution_size: fakeWithClaimablePercentage(
       token_max_contribution_size,
-      claimable_percentage
+      claimable_percentage,
     ),
     number_whitelisted_user: poolOnChain.campaign.number_whitelisted_user,
     campaign: {
@@ -370,15 +312,15 @@ export const mappingPoolOnChainResponse = (
         ...poolOnChain.campaign.early_join_phase,
         max_total_alloc: fakeWithClaimablePercentage(
           poolOnChain.campaign.early_join_phase.max_total_alloc,
-          claimable_percentage
+          claimable_percentage,
         ),
         max_individual_alloc: fakeWithClaimablePercentage(
           poolOnChain.campaign.early_join_phase.max_individual_alloc,
-          claimable_percentage
+          claimable_percentage,
         ),
         sold_allocation: fakeWithClaimablePercentage(
           poolOnChain.campaign.early_join_phase.sold_allocation,
-          claimable_percentage
+          claimable_percentage,
         ),
         start_at: poolOnChain.campaign.early_join_phase.start_at.toISOString(),
         end_at: poolOnChain.campaign.early_join_phase.end_at.toISOString(),
@@ -388,45 +330,45 @@ export const mappingPoolOnChainResponse = (
           ...poolOnChain.campaign.exclusive_phase,
           sold_allocation: fakeWithClaimablePercentage(
             poolOnChain.campaign.exclusive_phase.sold_allocation,
-            claimable_percentage
+            claimable_percentage,
           ),
           max_total_alloc: fakeWithClaimablePercentage(
             poolOnChain.campaign.exclusive_phase.max_total_alloc,
-            claimable_percentage
+            claimable_percentage,
           ),
           level1: {
             ...poolOnChain.campaign.exclusive_phase.level1,
             max_individual_amount: fakeWithClaimablePercentage(
               poolOnChain.campaign.exclusive_phase.level1.max_individual_amount,
-              claimable_percentage
+              claimable_percentage,
             ),
           },
           level2: {
             ...poolOnChain.campaign.exclusive_phase.level2,
             max_individual_amount: fakeWithClaimablePercentage(
               poolOnChain.campaign.exclusive_phase.level2.max_individual_amount,
-              claimable_percentage
+              claimable_percentage,
             ),
           },
           level3: {
             ...poolOnChain.campaign.exclusive_phase.level3,
             max_individual_amount: fakeWithClaimablePercentage(
               poolOnChain.campaign.exclusive_phase.level3.max_individual_amount,
-              claimable_percentage
+              claimable_percentage,
             ),
           },
           level4: {
             ...poolOnChain.campaign.exclusive_phase.level4,
             max_individual_amount: fakeWithClaimablePercentage(
               poolOnChain.campaign.exclusive_phase.level4.max_individual_amount,
-              claimable_percentage
+              claimable_percentage,
             ),
           },
           level5: {
             ...poolOnChain.campaign.exclusive_phase.level5,
             max_individual_amount: fakeWithClaimablePercentage(
               poolOnChain.campaign.exclusive_phase.level5.max_individual_amount,
-              claimable_percentage
+              claimable_percentage,
             ),
           },
         },
@@ -436,45 +378,45 @@ export const mappingPoolOnChainResponse = (
           ...poolOnChain.campaign.exclusive_phase,
           sold_allocation: fakeWithClaimablePercentage(
             poolOnChain.campaign.exclusive_phase.sold_allocation,
-            claimable_percentage
+            claimable_percentage,
           ),
           max_total_alloc: fakeWithClaimablePercentage(
             poolOnChain.campaign.exclusive_phase.max_total_alloc,
-            claimable_percentage
+            claimable_percentage,
           ),
           level1: {
             ...poolOnChain.campaign.exclusive_phase.level1,
             max_individual_amount: fakeWithClaimablePercentage(
               poolOnChain.campaign.exclusive_phase.level1.max_individual_amount,
-              claimable_percentage
+              claimable_percentage,
             ),
           },
           level2: {
             ...poolOnChain.campaign.exclusive_phase.level2,
             max_individual_amount: fakeWithClaimablePercentage(
               poolOnChain.campaign.exclusive_phase.level2.max_individual_amount,
-              claimable_percentage
+              claimable_percentage,
             ),
           },
           level3: {
             ...poolOnChain.campaign.exclusive_phase.level3,
             max_individual_amount: fakeWithClaimablePercentage(
               poolOnChain.campaign.exclusive_phase.level3.max_individual_amount,
-              claimable_percentage
+              claimable_percentage,
             ),
           },
           level4: {
             ...poolOnChain.campaign.exclusive_phase.level4,
             max_individual_amount: fakeWithClaimablePercentage(
               poolOnChain.campaign.exclusive_phase.level4.max_individual_amount,
-              claimable_percentage
+              claimable_percentage,
             ),
           },
           level5: {
             ...poolOnChain.campaign.exclusive_phase.level5,
             max_individual_amount: fakeWithClaimablePercentage(
               poolOnChain.campaign.exclusive_phase.level5.max_individual_amount,
-              claimable_percentage
+              claimable_percentage,
             ),
           },
         },
@@ -482,11 +424,11 @@ export const mappingPoolOnChainResponse = (
           ...poolOnChain.campaign.fcfs_stake_phase,
           max_total_alloc: fakeWithClaimablePercentage(
             poolOnChain.campaign.fcfs_stake_phase.max_total_alloc,
-            claimable_percentage
+            claimable_percentage,
           ),
           sold_allocation: fakeWithClaimablePercentage(
             poolOnChain.campaign.fcfs_stake_phase.sold_allocation,
-            claimable_percentage
+            claimable_percentage,
           ),
           start_at: poolOnChain.campaign.fcfs_stake_phase.start_at,
           end_at: poolOnChain.campaign.fcfs_stake_phase.end_at,
@@ -496,15 +438,15 @@ export const mappingPoolOnChainResponse = (
         ...poolOnChain.campaign.public_phase,
         max_total_alloc: fakeWithClaimablePercentage(
           poolOnChain.campaign.public_phase.max_total_alloc,
-          claimable_percentage
+          claimable_percentage,
         ),
         max_individual_alloc: fakeWithClaimablePercentage(
           poolOnChain.campaign.public_phase.max_individual_alloc,
-          claimable_percentage
+          claimable_percentage,
         ),
         sold_allocation: fakeWithClaimablePercentage(
           poolOnChain.campaign.public_phase.sold_allocation,
-          claimable_percentage
+          claimable_percentage,
         ),
         start_at: poolOnChain.campaign.public_phase.start_at.toISOString(),
         end_at: poolOnChain.campaign.public_phase.end_at.toISOString(),
@@ -534,29 +476,23 @@ export const mappingPoolOnChainResponse = (
 
 export const mappingPoolVotingServerResponse = (
   poolVotingServer: ServerResponsePoolVoting,
-  now: number
+  now: number,
 ): IPoolVoting => {
   const poolVoting = mappingPoolServerResponse(poolVotingServer, now);
 
   let voting_progress: number = 0;
   const voting_total_up: number = poolVotingServer?.voting?.total_vote_up || 0;
-  const voting_total_down: number =
-    poolVotingServer?.voting?.total_vote_down || 0;
-  const voting_min_can_active: number =
-    poolVotingServer?.voting?.required_absolute_vote || 0;
+  const voting_total_down: number = poolVotingServer?.voting?.total_vote_down || 0;
+  const voting_min_can_active: number = poolVotingServer?.voting?.required_absolute_vote || 0;
   const voting_start: Date = poolVotingServer?.voting?.start_at
     ? new Date(poolVotingServer?.voting?.start_at)
     : new Date();
   const voting_end: Date = poolVotingServer?.voting?.end_at
     ? new Date(poolVotingServer?.voting?.end_at)
     : new Date();
-  const voting_total_users_up =
-    poolVotingServer?.voting?.total_users_vote_up || 0;
-  const voting_total_users_down =
-    poolVotingServer?.voting?.total_users_vote_down || 0;
-  let absolute_vote = new Decimal(voting_total_up)
-    .minus(voting_total_down)
-    .toNumber();
+  const voting_total_users_up = poolVotingServer?.voting?.total_users_vote_up || 0;
+  const voting_total_users_down = poolVotingServer?.voting?.total_users_vote_down || 0;
+  let absolute_vote = new Decimal(voting_total_up).minus(voting_total_down).toNumber();
   if (voting_min_can_active <= 0) {
     voting_progress = 0;
   } else {
@@ -571,8 +507,7 @@ export const mappingPoolVotingServerResponse = (
     }
   }
   voting_progress = parseFloat(voting_progress.toFixed(2));
-  const voting_power_rate =
-    poolVotingServer?.voting?.token_voting_power_rate || 0;
+  const voting_power_rate = poolVotingServer?.voting?.token_voting_power_rate || 0;
 
   return {
     ...poolVoting,
@@ -597,13 +532,9 @@ export const mappingPoolVotingOnChainResponse = (
     | IExtractPoolV2Data
     | IPoolV3ContractData
     | IPoolV4ContractData,
-  now: number
+  now: number,
 ): IPoolVoting => {
-  const poolVoting = mappingPoolOnChainResponse(
-    poolVotingBase,
-    poolVotingOnChain,
-    now
-  );
+  const poolVoting = mappingPoolOnChainResponse(poolVotingBase, poolVotingOnChain, now);
   let voting_progress: number = 0;
   let voting_total_up: number = 0;
   let voting_total_down: number = 0;
@@ -623,9 +554,7 @@ export const mappingPoolVotingOnChainResponse = (
     voting_min_can_active = poolVotingOnChain.voting.required_absolute_vote;
     voting_start = new Date(poolVotingOnChain.voting.start_at);
     voting_end = new Date(poolVotingOnChain.voting.end_at);
-    absolute_vote = new Decimal(voting_total_up)
-      .minus(voting_total_down)
-      .toNumber();
+    absolute_vote = new Decimal(voting_total_up).minus(voting_total_down).toNumber();
     if (voting_min_can_active <= 0) {
       voting_progress = 0;
     } else {
@@ -679,13 +608,9 @@ export const getPoolFullInfo = async (data: IPool, connection: Connection) => {
   };
 };
 
-const getPoolBySlug = async (
-  slug: string
-): Promise<ServerResponsePool | null> => {
+const getPoolBySlug = async (slug: string): Promise<ServerResponsePool | null> => {
   try {
-    const response = await fetchWrapper.get<ServerResponsePool>(
-      `${baseBackendUrl}/${slug}`
-    );
+    const response = await fetchWrapper.get<ServerResponsePool>(`${baseBackendUrl}/${slug}`);
 
     return response;
   } catch (err) {
@@ -694,30 +619,26 @@ const getPoolBySlug = async (
 };
 
 export const getPools = async (
-  filter?: IPoolsFilter
+  filter?: IPoolsFilter,
 ): Promise<PaginateResponse<ServerResponsePool>> => {
   let paginated: PaginateResponse<ServerResponsePool>;
 
   if (!filter) {
-    paginated = await fetchWrapper.get<PaginateResponse<ServerResponsePool>>(
-      baseBackendUrl
-    );
+    paginated = await fetchWrapper.get<PaginateResponse<ServerResponsePool>>(baseBackendUrl);
   } else {
     const query = `${queryString.stringify(filter)}`;
     paginated = await fetchWrapper.get<PaginateResponse<ServerResponsePool>>(
-      `${baseBackendUrl}?${query}`
+      `${baseBackendUrl}?${query}`,
     );
   }
 
   return paginated;
 };
 
-const getPoolVotingBySlug = async (
-  slug: string
-): Promise<ServerResponsePoolVoting | null> => {
+const getPoolVotingBySlug = async (slug: string): Promise<ServerResponsePoolVoting | null> => {
   try {
     const response = await fetchWrapper.get<ServerResponsePoolVoting>(
-      `${baseBackendUrl}/voting/${slug}`
+      `${baseBackendUrl}/voting/${slug}`,
     );
 
     return response;
@@ -727,7 +648,7 @@ const getPoolVotingBySlug = async (
 };
 
 const getPoolsVoting = async (
-  filter?: IPoolsFilter
+  filter?: IPoolsFilter,
 ): Promise<PaginateResponse<ServerResponsePoolVoting>> => {
   /**
    * TODO: Should uncomment and use this, for now, use fake data
@@ -735,14 +656,14 @@ const getPoolsVoting = async (
   let paginated: PaginateResponse<ServerResponsePoolVoting>;
 
   if (!filter) {
-    paginated = await fetchWrapper.get<
-      PaginateResponse<ServerResponsePoolVoting>
-    >(`${baseBackendUrl}/voting`);
+    paginated = await fetchWrapper.get<PaginateResponse<ServerResponsePoolVoting>>(
+      `${baseBackendUrl}/voting`,
+    );
   } else {
     const query = `${queryString.stringify(filter)}`;
-    paginated = await fetchWrapper.get<
-      PaginateResponse<ServerResponsePoolVoting>
-    >(`${baseBackendUrl}/voting?${query}`);
+    paginated = await fetchWrapper.get<PaginateResponse<ServerResponsePoolVoting>>(
+      `${baseBackendUrl}/voting?${query}`,
+    );
   }
 
   return paginated;
@@ -753,7 +674,7 @@ const userVote = async (
   params: {
     total_vote_up: number;
     total_vote_down: number;
-  }
+  },
 ): Promise<boolean> => {
   const result = await fetchWrapper.put<
     { total_vote_up: number; total_vote_down: number },
@@ -772,7 +693,7 @@ export const userJoinPool = async (
   userAddress: string,
   poolAddress: string,
   amount: number,
-  participantAddress?: string
+  participantAddress?: string,
 ): Promise<boolean> => {
   const result = await fetchWrapper.post<
     {
@@ -795,7 +716,7 @@ export const userJoinPool = async (
 const userClaimToken = async (
   userAddress: string,
   poolAddress: string,
-  tokenAddress: string
+  tokenAddress: string,
 ): Promise<{ claimed: boolean; claimed_at: string } | null> => {
   try {
     const result = await fetchWrapper.post<
@@ -831,7 +752,7 @@ const userClaimToken = async (
 const userGetClaimedTokenTime = async (
   userAddress: string,
   poolAddress: string,
-  tokenAddress: string
+  tokenAddress: string,
 ): Promise<string | null> => {
   try {
     const query = `${queryString.stringify({
@@ -839,9 +760,7 @@ const userGetClaimedTokenTime = async (
       pool_address: poolAddress,
       token_address: tokenAddress,
     })}`;
-    const result = await fetchWrapper.get<any>(
-      `${baseBackendUrl}/claim-token/history?${query}`
-    );
+    const result = await fetchWrapper.get<any>(`${baseBackendUrl}/claim-token/history?${query}`);
     if (result) {
       return result.claimed_at;
     }
@@ -855,7 +774,7 @@ const userGetClaimedTokenTime = async (
 const createUserStakeHistory = async (
   userAddress: string,
   amount: number,
-  actionType: 'stake' | 'unstake'
+  actionType: 'stake' | 'unstake',
 ): Promise<boolean> => {
   const url = `${envConfig.API_URL_BACKEND}/api/user/stake/history`;
   try {

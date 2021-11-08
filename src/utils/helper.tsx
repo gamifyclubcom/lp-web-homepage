@@ -1,6 +1,12 @@
+import {
+  IExtractPoolData,
+  IExtractPoolV2Data,
+  IPoolV3ContractData,
+  IPoolV4ContractData,
+} from '@gamify/onchain-program-sdk';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-import moment from 'moment';
 import Decimal from 'decimal.js';
+import moment from 'moment';
 import { envConfig } from '../configs';
 import { IPool, IPoolStatus, IPoolVoting } from '../sdk/pool/interface';
 import {
@@ -9,14 +15,8 @@ import {
   PoolStatusType,
   PoolVotingStatusType,
 } from '../shared/enum';
-import { MIN_PROGRESS_PASS_FULL, SOL_DECIMALS } from './constants';
-import {
-  IExtractPoolData,
-  IExtractPoolV2Data,
-  IPoolV3ContractData,
-  IPoolV4ContractData,
-} from '@intersola/onchain-program-sdk';
 import { IAllocationLevel } from '../shared/interface';
+import { MIN_PROGRESS_PASS_FULL, SOL_DECIMALS } from './constants';
 
 const { SOLLET_ENV, SOLANA_EXPLORER_URL } = envConfig;
 
