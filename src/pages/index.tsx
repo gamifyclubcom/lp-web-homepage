@@ -53,7 +53,7 @@ const Home: React.FC<Props> = ({ paginatedPools }) => {
       <LoadingScreen loading={loading} />
       <div className="bg-1C0045">
         <Banner />
-        <FeaturePool pools={pools} />
+        <FeaturePool pools={pools} loading={loading} />
         <HomeStakePool />
         <div className="pt-40 text-center">
           <Image

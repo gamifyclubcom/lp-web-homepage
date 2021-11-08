@@ -3,14 +3,15 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import CardText from '../card-text';
 import Button from '../button';
-import PoolItem from '../pool-item';
 import { IPool } from '../../../sdk/pool/interface';
+import PoolCard from '../../pool/pool-list/PoolCard';
 
 interface Props {
   pools: IPool[];
+  loading: boolean;
 }
 
-const FeaturePool: React.FC<Props> = ({ pools }) => {
+const FeaturePool: React.FC<Props> = ({ pools, loading }) => {
   const router = useRouter();
 
   return (
@@ -38,9 +39,15 @@ const FeaturePool: React.FC<Props> = ({ pools }) => {
         </CardText>
         {pools.length === 0 && <span className="font-medium text-white">No Pools Found</span>}
         {pools && pools.length > 0 && (
-          <div className="grid w-full grid-cols-1 gap-x-2 gap-y-5 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid w-full grid-cols-1 gap-x-2 gap-y-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {pools.map((pool, idx) => (
-              <PoolItem key={idx} pool={pool} />
+              <PoolCard
+                key={idx}
+                variant="upcoming-pool"
+                pool={pool}
+                loading={loading}
+                is_home={true}
+              />
             ))}
           </div>
         )}
