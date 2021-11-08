@@ -13,9 +13,10 @@ interface Props {
   variant: 'upcoming-pool' | 'feature-pool' | 'completed-pool';
   pool: IPool;
   loading: boolean;
+  is_home?: boolean;
 }
 
-const PoolCard: React.FC<Props> = ({ pool, variant, loading }) => {
+const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
   const { now } = useGlobal();
   const { handleGoToPoolDetails } = usePool();
   const thumbnail = useMemo(() => getPoolThumbnail(pool.thumbnail), [pool.thumbnail]);
@@ -81,9 +82,13 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading }) => {
             </div>
 
             <div className="w-full mt-6">
-              <button className="flex items-center justify-center w-full h-12 text-sm text-center text-white transition-all duration-200 bg-gray-500 rounded-full hover:bg-gray-600">
-                Whitelist end in TBA hours
-              </button>
+              {is_home ? (
+                <PoolStatus loading={loading} status={status} hide_shape={true} />
+              ) : (
+                <button className="flex items-center justify-center w-full h-12 text-sm text-center text-white transition-all duration-200 bg-gray-500 rounded-full hover:bg-gray-600">
+                  Whitelist end in TBA hours
+                </button>
+              )}
             </div>
           </div>
         );

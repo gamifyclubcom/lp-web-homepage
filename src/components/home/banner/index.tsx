@@ -1,7 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
-import Button from '../button';
 import ViewAllPoolBtn from '../../shared/ViewAllPoolBtn';
 
 interface Props {}

@@ -6,9 +6,10 @@ import { PoolStatusType } from '../../../shared/enum';
 interface Props {
   status: IPoolStatus;
   loading: boolean;
+  hide_shape?: boolean;
 }
 
-const PoolStatus: React.FC<Props> = ({ status, loading }) => {
+const PoolStatus: React.FC<Props> = ({ status, loading, hide_shape }) => {
   const isOpen = useMemo(() => status.type === PoolStatusType.OPEN, [status]);
   const isClosed = useMemo(() => status.type === PoolStatusType.CLOSED, [status]);
   const filled = useMemo(() => status.type === PoolStatusType.FILLED, [status]);
@@ -30,11 +31,13 @@ const PoolStatus: React.FC<Props> = ({ status, loading }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center px-3 py-1 bg-gray-500 rounded-full">
-        <div
-          style={{ marginBottom: 4 }}
-          className="w-2 h-2 mr-2 bg-gray-300 rounded-full animate-ping"
-        />
+      <div className={`flex items-center justify-center px-3 py-1 bg-gray-500 rounded-full`}>
+        {!hide_shape && (
+          <div
+            style={{ marginBottom: 4 }}
+            className="w-2 h-2 mr-2 bg-gray-300 rounded-full animate-ping"
+          />
+        )}
         <span className="text-sm font-medium text-white">Loading</span>
       </div>
     );
@@ -47,9 +50,11 @@ const PoolStatus: React.FC<Props> = ({ status, loading }) => {
         'bg-gray-700': isClosed,
         'bg-green-700': filled,
         'bg-gray-500': isUpcoming,
+        'py-1': !hide_shape,
+        'py-2.5': hide_shape,
       })}
     >
-      {!isUpcoming && (
+      {!isUpcoming && !hide_shape ? (
         <div
           style={{ marginBottom: 3 }}
           className={clsx('w-3 h-3 mr-2 rounded-full', {
@@ -58,7 +63,7 @@ const PoolStatus: React.FC<Props> = ({ status, loading }) => {
             'bg-green-500': filled,
           })}
         />
-      )}
+      ) : null}
       <span className="text-sm font-medium text-white">{content}</span>
     </div>
   );
