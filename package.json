@@ -2,9 +2,10 @@
   "name": "gamify-launchpad",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npx next dev -p 3005",
     "build": "next build",
-    "start": "next start",
+    "start": "npx next start -p 3004",
+    "start-3006": "npx next start -p 3006",
     "lint": "next lint"
   },
   "dependencies": {
