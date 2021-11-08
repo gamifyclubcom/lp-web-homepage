@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import CardText from '../card-text';
 import Button from '../button';
 import PoolItem from '../pool-item';
-import { IPool } from '../../sdk/pool/interface';
+import { IPool } from '../../../sdk/pool/interface';
 
 interface Props {
   pools: IPool[];
@@ -14,8 +14,8 @@ const FeaturePool: React.FC<Props> = ({ pools }) => {
   const router = useRouter();
 
   return (
-    <div className="layout-container pt-16 md:pt-32">
-      <h3 className="text-white text-center text-2xl uppercase mb-20">Feature Game Projects</h3>
+    <div className="pt-16 layout-container md:pt-32">
+      <h3 className="mb-20 text-2xl text-center text-white uppercase">Feature Game Projects</h3>
       <div className="md:flex">
         <CardText
           title={'Token Sale Launchpad'}

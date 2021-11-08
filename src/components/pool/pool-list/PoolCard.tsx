@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import Image from 'next/image';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import { useGlobal } from '../../../hooks/useGlobal';
 import { usePool } from '../../../hooks/usePool';
@@ -134,7 +135,13 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading }) => {
                 className="flex items-center justify-center h-10 px-8 py-2 mt-2 ml-auto transition-all duration-200 bg-transparent border rounded-full border-secondary-400 hover:bg-secondary-400 text-secondary-400 hover:text-white"
               >
                 <span className="mr-4">View Pool</span>
-                <AiOutlineArrowRight />
+                <Image
+                  width={16}
+                  height={8}
+                  src="/images/arrow.svg"
+                  alt="arrow"
+                  className="cursor-pointer"
+                />
               </button>
             </div>
           </div>

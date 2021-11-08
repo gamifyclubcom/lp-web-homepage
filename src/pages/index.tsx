@@ -1,26 +1,23 @@
-import { useWalletModal } from '@solana/wallet-adapter-react-ui';
-import type { NextPage, GetServerSideProps } from 'next';
-import { useEffect, useState } from 'react';
+import type { GetServerSideProps } from 'next';
 import Image from 'next/image';
-import Banner from '../components/banner';
-import FeaturePool from '../components/feature-pool';
-import HomeLaunch from '../components/home-launch';
-import HomeStakePool from '../components/home-stake-pool';
+import { useEffect, useState } from 'react';
+import Banner from '../components/home/banner';
+import FeaturePool from '../components/home/feature-pool';
+import HomeLaunch from '../components/home/home-launch';
+import HomeStakePool from '../components/home/home-stake-pool';
 import Layout from '../components/shared/Layout';
-import { PageTitle } from '../shared/enum';
-import { mappingPoolServerResponse, poolAPI } from '../sdk/pool';
-import { usePool } from '../hooks/usePool';
-import { useGlobal } from '../hooks/useGlobal';
-import { ServerResponsePool } from '../sdk/pool/interface';
 import LoadingScreen from '../components/shared/LoadingScreen';
+import { useGlobal } from '../hooks/useGlobal';
+import { usePool } from '../hooks/usePool';
+import { mappingPoolServerResponse, poolAPI } from '../sdk/pool';
+import { ServerResponsePool } from '../sdk/pool/interface';
+import { PageTitle } from '../shared/enum';
 
 interface Props {
   paginatedPools: PaginateResponse<ServerResponsePool>;
 }
 
 const Home: React.FC<Props> = ({ paginatedPools }) => {
-  const { visible, setVisible } = useWalletModal();
-
   const { now } = useGlobal();
   const [loading, setLoading] = useState(false);
   const { dispatchPaginatedPool, paginatedPool, getPoolFullInfo } = usePool();
@@ -46,6 +43,7 @@ const Home: React.FC<Props> = ({ paginatedPools }) => {
     };
 
     init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const pools = paginatedPool?.docs || [];
@@ -57,7 +55,7 @@ const Home: React.FC<Props> = ({ paginatedPools }) => {
         <Banner />
         <FeaturePool pools={pools} />
         <HomeStakePool />
-        <div className="text-center pt-40">
+        <div className="pt-40 text-center">
           <Image
             width={548}
             height={380}

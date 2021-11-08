@@ -1,10 +1,9 @@
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { AiOutlineArrowRight } from 'react-icons/ai';
 import PoolCard from '../../components/pool/pool-list/PoolCard';
 import PoolCardLoading from '../../components/pool/pool-list/PoolCardLoading';
 import Layout from '../../components/shared/Layout';
 import LoadingScreen from '../../components/shared/LoadingScreen';
+import ViewAllPoolBtn from '../../components/shared/ViewAllPoolBtn';
 import { useGlobal } from '../../hooks/useGlobal';
 import { usePool } from '../../hooks/usePool';
 import { mappingPoolServerResponse, poolAPI } from '../../sdk/pool';
@@ -14,7 +13,6 @@ import { PageTitle, PoolsSectionFilter } from '../../shared/enum';
 interface Props {}
 
 const Pools: React.FC<Props> = () => {
-  const router = useRouter();
   const { now } = useGlobal();
   const { getPoolFullInfo } = usePool();
   const [featureLoading, setFeatureLoading] = useState(false);
@@ -138,13 +136,9 @@ const Pools: React.FC<Props> = () => {
             ))}
           </div>
 
-          <button
-            onClick={() => router.push('/pools-dashboard')}
-            className="flex items-center justify-center w-64 h-12 px-8 py-2 mt-4 text-sm text-center text-white transition-all duration-200 bg-red-700 rounded-full hover:bg-red-900"
-          >
-            <span className="mr-4 text-sm">View all pool</span>
-            <AiOutlineArrowRight />
-          </button>
+          <div className="mt-8">
+            <ViewAllPoolBtn />
+          </div>
         </div>
       </div>
     </Layout>

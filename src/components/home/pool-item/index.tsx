@@ -1,9 +1,9 @@
 import React from 'react';
-import { IPool } from '../../sdk/pool/interface';
-import { getPoolLogo, getPoolStatus, tokenToSOL } from '../../utils/helper';
-import { useGlobal } from '../../hooks/useGlobal';
-import PoolStatus from '../shared/PoolStatus';
-import { usePool } from '../../hooks/usePool';
+import { IPool } from '../../../sdk/pool/interface';
+import { getPoolLogo, getPoolStatus, tokenToSOL } from '../../../utils/helper';
+import { useGlobal } from '../../../hooks/useGlobal';
+import PoolStatus from '../../shared/pool/PoolStatus';
+import { usePool } from '../../../hooks/usePool';
 
 interface Props {
   pool: IPool;
@@ -21,11 +21,12 @@ const PoolItem: React.FC<Props> = ({ pool }) => {
 
   return (
     <div
-      className="flex flex-col bg-222228 rounded-3xl pt-8 px-5 pb-5 text-base text-white text-center hover:bg-interpurp hover:bg-opacity-20 cursor-pointer"
+      className="flex flex-col px-5 pt-8 pb-5 text-base text-center text-white rounded-lg cursor-pointer bg-222228"
       onClick={() => handleGoToPoolDetails(pool)}
     >
       <div className="h-40 overflow-hidden">
-        <img src={logo} alt={pool.name} className="w-full object-contain max-h-full" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={logo} alt={pool.name} className="object-contain w-full max-h-full" />
       </div>
       <div className="text-1.5xl2 my-4 text-left">
         {pool.name} <span>({pool.token_name})</span>
@@ -46,7 +47,7 @@ const PoolItem: React.FC<Props> = ({ pool }) => {
         <span className="text-gray-500">Supported</span>
         <span className="text-1.125lg">{pool.token_to}</span>
       </div>
-      <PoolStatus status={status} />
+      <PoolStatus loading={false} status={status} />
     </div>
   );
 };
