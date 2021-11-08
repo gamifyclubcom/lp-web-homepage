@@ -1,53 +1,83 @@
-import type { NextPage } from 'next';
-import { useEffect, useMemo, useState } from 'react';
+import type { GetServerSideProps } from 'next';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import Banner from '../components/home/banner';
+import FeaturePool from '../components/home/feature-pool';
+import HomeLaunch from '../components/home/home-launch';
+import HomeStakePool from '../components/home/home-stake-pool';
 import Layout from '../components/shared/Layout';
-import Paginations from '../components/shared/Paginations';
+import LoadingScreen from '../components/shared/LoadingScreen';
+import { useGlobal } from '../hooks/useGlobal';
+import { usePool } from '../hooks/usePool';
+import { mappingPoolServerResponse, poolAPI } from '../sdk/pool';
+import { ServerResponsePool } from '../sdk/pool/interface';
 import { PageTitle } from '../shared/enum';
 
-const Home: NextPage = () => {
-  const totalPages = useMemo(() => 9, []);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [hasNext, setHasNext] = useState(true);
-  const [hasPrevious, setHasPrevious] = useState(false);
+interface Props {
+  paginatedPools: PaginateResponse<ServerResponsePool>;
+}
+
+const Home: React.FC<Props> = ({ paginatedPools }) => {
+  const { now } = useGlobal();
+  const [loading, setLoading] = useState(false);
+  const { dispatchPaginatedPool, paginatedPool, getPoolFullInfo } = usePool();
 
   useEffect(() => {
-    setHasPrevious(() => {
-      return currentPage >= 1;
-    });
-    setHasNext(() => {
-      return currentPage < totalPages - 1;
-    });
-  }, [currentPage, totalPages]);
+    const init = () => {
+      setLoading(true);
+      Promise.all(
+        paginatedPools.docs.map(async (pool) => {
+          const onChainPool = await getPoolFullInfo(mappingPoolServerResponse(pool, now));
+          return onChainPool;
+        }),
+      )
+        .then((data) => {
+          dispatchPaginatedPool({
+            ...paginatedPools,
+            docs: data,
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
 
-  const handleGoNext = () => {
-    setCurrentPage((prev) => prev + 1);
-  };
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handleGoPrevious = () => {
-    setCurrentPage((prev) => prev - 1);
-  };
-
-  const handleGoPage = (page: number) => {
-    setCurrentPage(page);
-  };
+  const pools = paginatedPool?.docs || [];
 
   return (
     <Layout title={PageTitle.HomePage}>
-      home page
-      <div className="flex items-center justify-center w-full h-32 bg-gray-800">
-        <Paginations
-          loading={false}
-          totalPages={totalPages}
-          currentPage={currentPage}
-          hasNext={hasNext}
-          hasPrevious={hasPrevious}
-          handleGoNext={handleGoNext}
-          handleGoPrevious={handleGoPrevious}
-          handleGoToPage={handleGoPage}
-        />
+      <LoadingScreen loading={loading} />
+      <div className="bg-1C0045">
+        <Banner />
+        <FeaturePool pools={pools} />
+        <HomeStakePool />
+        <div className="pt-40 text-center">
+          <Image
+            width={548}
+            height={380}
+            src="/images/solana_phone.png"
+            alt="gamify phone"
+            className="text-center"
+          />
+        </div>
+        <HomeLaunch />
       </div>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const paginatedPools = await poolAPI.getPools(query);
+
+  return {
+    props: {
+      paginatedPools,
+    },
+  };
 };
 
 export default Home;

@@ -95,18 +95,18 @@ export const mappingPoolServerResponse = (
   const join_pool_start = private_join_enabled
     ? private_join_start?.toISOString()
     : exclusive_join_enable
-    ? exclusive_join_start.toISOString()
-    : public_join_start.toISOString();
+      ? exclusive_join_start.toISOString()
+      : public_join_start.toISOString();
   const join_pool_end = public_join_end.toISOString();
 
   const is_public =
     private_join_enabled &&
-    moment.unix(now).isBetween(private_join_start, private_join_end)
+      moment.unix(now).isBetween(private_join_start, private_join_end)
       ? false
       : true;
   const token_max_contribution_size =
     private_join_enabled &&
-    moment.unix(now).isBetween(private_join_start, private_join_end)
+      moment.unix(now).isBetween(private_join_start, private_join_end)
       ? poolServer.data.campaign.early_join_phase.max_individual_alloc
       : poolServer.data.campaign.public_phase.max_individual_alloc;
   const progress = getPercent(token_current_raise, token_total_raise);
@@ -249,20 +249,20 @@ export const mappingPoolOnChainResponse = (
 
   const exclusive_join_enable =
     isPoolV2Version(poolOnChain) ||
-    isPoolV3Version(poolOnChain) ||
-    isPoolV4Version(poolOnChain)
+      isPoolV3Version(poolOnChain) ||
+      isPoolV4Version(poolOnChain)
       ? poolOnChain.campaign?.exclusive_phase?.is_active || false
       : false;
   const exclusive_join_start =
     isPoolV2Version(poolOnChain) ||
-    isPoolV3Version(poolOnChain) ||
-    isPoolV4Version(poolOnChain)
+      isPoolV3Version(poolOnChain) ||
+      isPoolV4Version(poolOnChain)
       ? new Date(poolOnChain.campaign?.exclusive_phase?.start_at)
       : new Date();
   const exclusive_join_end =
     isPoolV2Version(poolOnChain) ||
-    isPoolV3Version(poolOnChain) ||
-    isPoolV4Version(poolOnChain)
+      isPoolV3Version(poolOnChain) ||
+      isPoolV4Version(poolOnChain)
       ? new Date(poolOnChain.campaign?.exclusive_phase?.end_at)
       : new Date();
 
@@ -295,17 +295,17 @@ export const mappingPoolOnChainResponse = (
 
   const is_public =
     private_join_enabled &&
-    moment.unix(now).isBetween(private_join_end, private_join_end)
+      moment.unix(now).isBetween(private_join_end, private_join_end)
       ? false
       : true;
 
   const join_pool_start = private_join_enabled
     ? private_join_start?.toISOString()
     : exclusive_join_enable
-    ? exclusive_join_start.toISOString()
-    : fcfs_join_for_staker_enabled
-    ? fcfs_join_for_staker_start.toISOString()
-    : public_join_start.toISOString();
+      ? exclusive_join_start.toISOString()
+      : fcfs_join_for_staker_enabled
+        ? fcfs_join_for_staker_start.toISOString()
+        : public_join_start.toISOString();
   const join_pool_end = public_join_end.toISOString();
 
   const token_max_contribution_size = is_public
