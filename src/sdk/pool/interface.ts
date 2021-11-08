@@ -1,4 +1,4 @@
-import { IPoolFcfsStakerPhase, IPoolWeight, IVotingPhase } from '@intersola/onchain-program-sdk';
+import { IPoolFcfsStakerPhase, IPoolWeight, IVotingPhase } from '@gamify/onchain-program-sdk';
 import { PublicKey } from '@solana/web3.js';
 import { PoolsSectionFilter, PoolStatusType, PoolsVotingFilter } from '../../shared/enum';
 

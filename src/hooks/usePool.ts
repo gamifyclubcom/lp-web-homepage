@@ -1,4 +1,4 @@
-import { Actions } from '@intersola/onchain-program-sdk';
+import { Actions } from '@gamify/onchain-program-sdk';
 import { MintLayout, u64 } from '@solana/spl-token';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
@@ -8,8 +8,8 @@ import Decimal from 'decimal.js';
 import moment from 'moment';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
-import PoolContext from '../contexts/pool';
 import { IRound } from '../components/pool/pool-details/PoolCountdown';
+import PoolContext from '../contexts/pool';
 import fetchWrapper from '../sdk/fetch-wrapper';
 import { IPool, IPoolVoting } from '../sdk/pool/interface';
 import { PoolRoundType } from '../shared/enum';
