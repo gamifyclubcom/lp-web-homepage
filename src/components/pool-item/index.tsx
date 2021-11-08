@@ -11,7 +11,7 @@ interface Props {
 
 const PoolItem: React.FC<Props> = ({ pool }) => {
   const { handleGoToPoolDetails } = usePool();
-  const logo = getPoolLogo(pool);
+  const logo = getPoolLogo(pool.logo);
   const { now } = useGlobal();
 
   const status = getPoolStatus({

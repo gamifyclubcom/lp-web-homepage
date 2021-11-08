@@ -5,10 +5,12 @@ import dynamic from 'next/dynamic';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer, Zoom } from 'react-toastify';
 import '../styles/globals.css';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { PoolProvider } from '../contexts/pool';
+import { GlobalProvider } from '../contexts/global';
 
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -45,22 +47,24 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <PoolProvider>
-        <WalletConnectionProvider>
-          <WalletModalProvider logo="/icons/apple-touch-icon.png">
-            <Component {...pageProps} />
-          </WalletModalProvider>
-        </WalletConnectionProvider>
-        <ToastContainer
-          hideProgressBar
-          position="bottom-left"
-          limit={2}
-          newestOnTop
-          closeButton={false}
-          autoClose={2000}
-          transition={Zoom}
-        />
-      </PoolProvider>
+      <WalletConnectionProvider>
+        <WalletModalProvider logo="/icons/apple-touch-icon.png">
+          <GlobalProvider>
+            <PoolProvider>
+              <Component {...pageProps} />
+              <ToastContainer
+                hideProgressBar
+                position="bottom-left"
+                limit={2}
+                newestOnTop
+                closeButton={false}
+                autoClose={2000}
+                transition={Zoom}
+              />
+            </PoolProvider>
+          </GlobalProvider>
+        </WalletModalProvider>
+      </WalletConnectionProvider>
     </>
   );
 }

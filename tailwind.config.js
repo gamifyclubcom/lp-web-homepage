@@ -38,6 +38,19 @@ module.exports = {
           800: '#0F0F7F',
           900: '#090969',
         },
+        stake_level_1: '#BE0369',
+        stake_level_2: '#7B11A4',
+        stake_level_3: '#421BD6',
+        stake_level_4: '#266CDD',
+        stake_level_5: '#01D8E4',
+        modal_header_color1: '#FF97CF',
+        modal_header_color2: '#7E0F1A',
+        modal_stake_maturity_time: '#3FA54A',
+        modal_unstake_header: '#872020',
+      },
+      backgroundImage: {
+        'pools-voting-list': "url('/images/gamify_bg_orb.jpeg')",
+        'pools-dashboard': "url('/images/gamify_bg_orb.jpeg')",
       },
       backgroundImage: {
         'hero-pattern': "url('/images/gamify_bg_orb.jpeg')"

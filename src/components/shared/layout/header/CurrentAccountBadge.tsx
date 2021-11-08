@@ -3,21 +3,16 @@ import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { useAlert } from '../../../../hooks/useAlert';
+import { useGlobal } from '../../../../hooks/useGlobal';
 import useSmartContract from '../../../../hooks/useSmartContract';
-import { formatNumber } from '../../../../utils/helper';
 
 const CurrentAccountBadge: React.FC = ({ children }) => {
   const { publicKey, wallet, connected, disconnect } = useWallet();
   const { setVisible } = useWalletModal();
+  const { setAccountBalance, balance } = useGlobal();
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [balance, setBalance] = useState<{
-    value: number | null;
-    formatted: string | null;
-  }>({
-    value: null,
-    formatted: null,
-  });
+
   const { alertInfo } = useAlert();
   const { refreshWalletBalance } = useSmartContract();
 
@@ -44,29 +39,18 @@ const CurrentAccountBadge: React.FC = ({ children }) => {
     const initBalance = async () => {
       try {
         setLoading(true);
-        const walletBalance = await refreshWalletBalance();
+        await refreshWalletBalance();
         setLoading(false);
-
-        setBalance({
-          value: walletBalance,
-          formatted: formatNumber.format(walletBalance || 0) as string,
-        });
       } catch (err) {
         setLoading(false);
-        setBalance({
-          value: null,
-          formatted: null,
-        });
+        setAccountBalance(null);
       }
     };
 
     if (connected) {
       initBalance();
     } else {
-      setBalance({
-        value: null,
-        formatted: null,
-      });
+      setAccountBalance(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connected]);
