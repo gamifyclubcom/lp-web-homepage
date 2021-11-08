@@ -14,6 +14,7 @@ export enum PoolVotingStatusType {
 }
 
 export enum PoolsSectionFilter {
+  ALL = 'all',
   UPCOMING = 'upcoming',
   FEATURED = 'featured',
   JOINED = 'joined',
@@ -33,4 +34,16 @@ export enum PageTitle {
   PoolsPage = 'Gamify Club | Pools Dashboard',
   PoolsVotingPage = 'Gamify Club | Pools Voting',
   StakingPage = 'Gamify Club | Staking',
+}
+
+export enum PoolRoundType {
+  Whitelist = 'whitelist',
+  Fcfs = 'fcfs',
+  Exclusive = 'exclusive',
+  FcfsStaker = 'fcfs-staker',
+}
+
+export enum PoolCountdownType {
+  ToOpen = 'countdown-to-open',
+  ToClose = 'countdown-to-close',
 }

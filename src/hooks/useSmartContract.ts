@@ -1,23 +1,25 @@
-import { Actions, ITierData } from '@intersola/onchain-program-sdk';
+import { Actions, ITierData, IVoteSetting } from '@intersola/onchain-program-sdk';
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import Decimal from 'decimal.js';
 import moment from 'moment';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { envConfig } from '../configs';
-import { fakeWithClaimablePercentage, mappingPoolOnChainResponse } from '../sdk/pool';
-import { IPool } from '../sdk/pool/interface';
+import GlobalContext from '../contexts/global';
+import { fakeWithClaimablePercentage, mappingPoolOnChainResponse, poolAPI } from '../sdk/pool';
+import { IPool, IPoolVoting } from '../sdk/pool/interface';
 import { transformLamportsToSOL, transformUnit } from '../utils/helper';
 import { useGlobal } from './useGlobal';
 import { usePool } from './usePool';
 
 function useSmartContract() {
+  const { setAccountBalance } = useContext(GlobalContext);
   const [loading, setLoading] = useState(false);
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
   const { now } = useGlobal();
-  const { getTokenInfo } = usePool();
+  const { getTokenInfo, getPoolVotingFullInfo } = usePool();
 
   const handleUserJoinPool = (pool: IPool, amount: number): Promise<string> => {
     return new Promise(async (resolve, reject) => {
@@ -94,8 +96,8 @@ function useSmartContract() {
 
     const res = await actions.closeAssociatedTokenAccount(publicKey, publicKey);
     if (res.needClose) {
-      // await smActions.sendAndConfirmTransaction(res.transaction!);
       // TODO: should update send and confirm transaction
+      await parseAndSendTransaction(res.transaction!);
     }
   };
 
@@ -599,6 +601,8 @@ function useSmartContract() {
       if (accInfo && accInfo.lamports) {
         const balanceResult = transformLamportsToSOL(accInfo.lamports || 0);
 
+        setAccountBalance(accInfo.lamports);
+
         return balanceResult;
       } else {
         return Promise.reject({ message: 'Account not found' });
@@ -656,6 +660,148 @@ function useSmartContract() {
     }
   };
 
+  const getUserVoteData = async (
+    poolVoting: IPoolVoting,
+  ): Promise<{
+    isVoteUp: boolean;
+    isVoteDown: boolean;
+  }> => {
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
+
+    const actions = new Actions(connection);
+    setLoading(true);
+
+    try {
+      const userVoteData = await actions.getUserVoteData(
+        publicKey,
+        new PublicKey(poolVoting.contract_address),
+      );
+      setLoading(false);
+      if (!userVoteData) {
+        return {
+          isVoteDown: false,
+          isVoteUp: false,
+        };
+      }
+
+      return {
+        isVoteUp: userVoteData.is_vote_up,
+        isVoteDown: userVoteData.is_vote_down,
+      };
+    } catch (err) {
+      setLoading(false);
+      return {
+        isVoteDown: false,
+        isVoteUp: false,
+      };
+    }
+  };
+
+  const userUpVote = async (poolVoting: IPoolVoting): Promise<string> => {
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
+
+    let txId: string;
+    const actions = new Actions(connection);
+    setLoading(true);
+
+    try {
+      const userStakeData = await getUserStakeData();
+      if (userStakeData.total_staked < poolVoting.voting_power_rate) {
+        setLoading(false);
+        return Promise.reject({
+          message: `Please stake at least ${poolVoting.voting_power_rate} ISOLA to vote`,
+        });
+      }
+      const userVoteData = await getUserVoteData(poolVoting);
+      const { rawTx } = await actions.voteUp(
+        publicKey,
+        publicKey,
+        new PublicKey(poolVoting.contract_address),
+        !Boolean(userVoteData.isVoteUp),
+      );
+      txId = await parseAndSendTransaction(rawTx);
+
+      const poolVotingFullInfo = await getPoolVotingFullInfo(poolVoting);
+      await poolAPI.userVote(poolVoting.id, {
+        total_vote_up: poolVotingFullInfo.voting_total_up,
+        total_vote_down: poolVotingFullInfo.voting_total_down,
+      });
+
+      setLoading(false);
+
+      return txId;
+    } catch (err) {
+      setLoading(false);
+      return Promise.reject({ err });
+    }
+  };
+
+  const userDownVote = async (poolVoting: IPoolVoting): Promise<string> => {
+    if (!publicKey) {
+      throw new WalletNotConnectedError();
+    }
+
+    let txId: string;
+    const actions = new Actions(connection);
+    setLoading(true);
+
+    try {
+      const userStakeData = await getUserStakeData();
+      if (userStakeData.total_staked < poolVoting.voting_power_rate) {
+        setLoading(false);
+        return Promise.reject({
+          message: `Please stake at least ${poolVoting.voting_power_rate} ISOLA to vote`,
+        });
+      }
+      const userVoteData = await getUserVoteData(poolVoting);
+      const { rawTx } = await actions.voteDown(
+        publicKey,
+        publicKey,
+        new PublicKey(poolVoting.contract_address),
+        !Boolean(userVoteData.isVoteUp),
+      );
+      txId = await parseAndSendTransaction(rawTx);
+
+      const poolVotingFullInfo = await getPoolVotingFullInfo(poolVoting);
+      await poolAPI.userVote(poolVoting.id, {
+        total_vote_up: poolVotingFullInfo.voting_total_up,
+        total_vote_down: poolVotingFullInfo.voting_total_down,
+      });
+
+      setLoading(false);
+
+      return txId;
+    } catch (err) {
+      setLoading(false);
+      return Promise.reject({ err });
+    }
+  };
+
+  const getCommonSettings = async (
+    version: number,
+  ): Promise<{
+    version: number;
+    fees: number;
+    admin: string;
+    vote_setting: IVoteSetting;
+  }> => {
+    const actions = new Actions(connection);
+
+    setLoading(true);
+    try {
+      const commonSettings = await actions.readCommonSettingByVersion(version);
+      setLoading(false);
+      return commonSettings;
+    } catch (err) {
+      setLoading(false);
+      return Promise.reject({ err });
+    }
+  };
+
   const parseAndSendTransaction = async (rawTransaction: any): Promise<string> => {
     if (!publicKey || !signTransaction) {
       throw new WalletNotConnectedError();
@@ -695,6 +841,10 @@ function useSmartContract() {
     getUserMaxContributeSize,
     getUserAllocationLevel,
     refreshAllocation,
+    getUserVoteData,
+    userUpVote,
+    userDownVote,
+    getCommonSettings,
   };
 }
 
