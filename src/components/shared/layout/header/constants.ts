@@ -17,6 +17,6 @@ export const navbarMenu = [
   {
     name: 'Buy GMFC',
     key: 'buy-gmfc',
-    externalLink: 'https://...',
+    externalLink: 'https://raydium.io/swap/?ammId=69Mo81rUPDgru4UbigPQovx7cYBxpEm44qQok8wcut4M',
   },
 ];

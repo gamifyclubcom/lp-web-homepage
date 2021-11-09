@@ -8,6 +8,7 @@ import useSmartContract from '../../hooks/useSmartContract';
 import { PageTitle } from '../../shared/enum';
 import Footer from './layout/footer';
 import Header from './layout/header';
+import ScrollTop from './ScrollTop';
 
 interface Props {
   title?: string;
@@ -66,7 +67,7 @@ const Layout: React.FC<Props> = ({ title = PageTitle.HomePage, children }) => {
       >
         {children}
       </main>
-
+      <ScrollTop />
       <Footer />
     </>
   );

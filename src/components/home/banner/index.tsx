@@ -18,7 +18,7 @@ const Banner: React.FC<Props> = () => {
             <span className="text-white lg:text-1.5xl pb-9">
               Metaverse Marketplace | Guild Integrator | Game Launchpad
             </span>
-            <p className="text-base text-white md:w-2/3">
+            <p className="text-base text-white md:max-w-658px">
               Welcome to Gamify Club, a single platform to enhance your play-to-earn gaming
               experience: For players, guilds, investors & project owners. Your club for game
               finance.

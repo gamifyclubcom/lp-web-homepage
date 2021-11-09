@@ -96,6 +96,12 @@ module.exports = {
         '1.125lg': ['1.125rem', '1.625rem'],
         '15px': '15px',
       },
+      maxWidth: {
+        '658px': '41.125rem'
+      },
+      inset: {
+        'standard': '0 51px 51px 0'
+      }
     },
     fontFamily: {
       sans: ['Gilroy', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],

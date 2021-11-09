@@ -139,7 +139,10 @@ const Pools: React.FC<Props> = () => {
           <h3 className="mb-8 text-4xl font-light text-center text-pool_title">
             Want to launch your game on Gamify?
           </h3>
-          <Button style="bg-3232DC mb-14 mx-auto md:mx-0" link="/">
+          <Button
+            style="bg-3232DC mb-14 mx-auto md:mx-0"
+            link="https://98a54lmwmqy.typeform.com/to/lypkBwld?typeform-source=intersola-dev-web.sotatek.works"
+          >
             <span className="mr-2">Apply to Launch</span>
           </Button>
         </div>
