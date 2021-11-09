@@ -25,7 +25,7 @@ const FeaturePool: React.FC<Props> = ({ pools, loading }) => {
           }
           style="text-center mr-6 mt-20 mb-12 md:w-52 md:text-left"
         >
-          <Button style="bg-3232DC mt-14 mx-auto md:mx-0" link="/">
+          <Button style="bg-3232DC mt-14 mx-auto md:mx-0" link="/pools">
             <span className="mr-2">Join now</span>
             <Image
               width={16}

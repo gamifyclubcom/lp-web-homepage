@@ -67,11 +67,16 @@ const HomeLaunch: React.FC = () => {
 
   return (
     <div className="mt-12 text-center layout-container">
-      <h3 className="text-white text-2xl mb-3.5">Ready to launch your project on Gamify?</h3>
+      <h3 className="text-white text-4xl mb-3.5">Ready to launch your project on Gamify?</h3>
       <p className="text-white text-15px">
         Built to support the growing Play-To-Earn experiences in the Solana Metaverse
       </p>
-      <Button style="bg-3232DC mt-9 ml-auto mr-auto">Apply to launch</Button>
+      <Button
+        style="bg-3232DC mt-9 ml-auto mr-auto"
+        link="https://98a54lmwmqy.typeform.com/to/lypkBwld?typeform-source=intersola-dev-web.sotatek.works"
+      >
+        Apply to launch
+      </Button>
       <ul className="mt-6 mb-20 md:mb-64">
         {games.map((game, ind) => (
           <li key={ind} className={`inline-block ${ind !== 0 ? 'ml-1.5' : ''}`}>
@@ -116,6 +121,28 @@ const HomeLaunch: React.FC = () => {
               height={14}
               src={'/images/socials/medium.svg'}
               alt={'medium'}
+              className="cursor-pointer"
+            />
+          </Link>
+        </li>
+        <li className="inline-block ml-7">
+          <Link href="/" passHref={true}>
+            <Image
+              width={20}
+              height={21}
+              src={'/images/socials/about.svg'}
+              alt={'about'}
+              className="cursor-pointer"
+            />
+          </Link>
+        </li>
+        <li className="inline-block ml-7">
+          <Link href="http://docs.gamify.io/" passHref={true}>
+            <Image
+              width={23}
+              height={23}
+              src={'/images/socials/document.svg'}
+              alt={'document'}
               className="cursor-pointer"
             />
           </Link>
