@@ -19,4 +19,9 @@ export const navbarMenu = [
     key: 'buy-gmfc',
     externalLink: 'https://...',
   },
+  {
+    name: 'About',
+    key: 'about',
+    // link: '/about',
+  },
 ];
