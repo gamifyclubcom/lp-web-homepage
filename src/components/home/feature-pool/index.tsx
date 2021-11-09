@@ -37,20 +37,17 @@ const FeaturePool: React.FC<Props> = ({ pools, loading }) => {
             />
           </Button>
         </CardText>
-        {pools.length === 0 && <span className="font-medium text-white">No Pools Found</span>}
-        {pools && pools.length > 0 && (
-          <div className="grid w-full grid-cols-1 gap-x-2 gap-y-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {pools.map((pool, idx) => (
-              <PoolCard
-                key={idx}
-                variant="upcoming-pool"
-                pool={pool}
-                loading={loading}
-                is_home={true}
-              />
-            ))}
-          </div>
-        )}
+        <div className="grid w-full grid-cols-1 gap-x-2 gap-y-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {pools.map((pool, idx) => (
+            <PoolCard
+              key={idx}
+              variant="upcoming-pool"
+              pool={pool}
+              loading={loading}
+              is_home={true}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
