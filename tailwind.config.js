@@ -38,6 +38,9 @@ module.exports = {
           800: '#0F0F7F',
           900: '#090969',
         },
+        fuchsia: {
+          800: '#35184D',
+        },
         stake_level_1: '#BE0369',
         stake_level_2: '#7B11A4',
         stake_level_3: '#421BD6',
@@ -48,6 +51,7 @@ module.exports = {
         modal_stake_maturity_time: '#3FA54A',
         modal_unstake_header: '#872020',
         pool_title: '#733434',
+        staking: '#022BBE',
       },
       backgroundImage: {
         'pools-voting-list': "url('/images/gamify_bg_orb.jpeg')",
@@ -68,6 +72,7 @@ module.exports = {
         '3232DC': '#3232DC',
         '38383D': '#38383D',
         222228: '#222228',
+        '1e1945': '#1e1945'
       },
       padding: {
         325: '325px',
