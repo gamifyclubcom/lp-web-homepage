@@ -98,7 +98,7 @@ const ConfirmUnStakeModal: React.FC<Props> = ({
       modalName={
         moment.unix(now).isBefore(moment.unix(maturityTime))
           ? 'Penalty Notice'
-          : 'Unstake Intersola'
+          : 'Unstake Gamify'
       }
       modalIcon={
         moment.unix(now).isBefore(moment.unix(maturityTime)) ? <AiOutlineWarning /> : undefined
@@ -112,7 +112,7 @@ const ConfirmUnStakeModal: React.FC<Props> = ({
         moment.unix(now).isBefore(moment.unix(maturityTime)) ? (
           <div className="flex items-center justify-center px-8 py-3 mt-2 mb-4 rounded-md bg-modal_header_color1">
             <span className="max-w-md text-xl text-center text-modal_header_color2">
-              {`Are you sure you want to prematurely Unstake your ISOLA? There will be a ${penaltyPercent}% penalty fee on the amount you Unstake.`}
+              {`Are you sure you want to prematurely Unstake your ${mintTo}? There will be a ${penaltyPercent}% penalty fee on the amount you Unstake.`}
             </span>
           </div>
         ) : undefined
