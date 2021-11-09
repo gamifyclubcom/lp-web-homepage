@@ -800,6 +800,17 @@ const createUserStakeHistory = async (
   }
 };
 
+const getUserJoinPoolHistory = (
+  userAddress: string,
+  poolContractAddress: string,
+): Promise<string[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([new Date().toISOString(), new Date().toISOString(), new Date().toISOString()]);
+    }, 300);
+  });
+};
+
 export const poolAPI = {
   userJoinPool,
   getPools,
@@ -810,4 +821,5 @@ export const poolAPI = {
   userGetClaimedTokenTime,
   createUserStakeHistory,
   userVote,
+  getUserJoinPoolHistory,
 };

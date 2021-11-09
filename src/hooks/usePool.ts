@@ -13,6 +13,7 @@ import PoolContext from '../contexts/pool';
 import fetchWrapper from '../sdk/fetch-wrapper';
 import { IPool, IPoolVoting } from '../sdk/pool/interface';
 import { PoolRoundType } from '../shared/enum';
+import { ITimeline } from '../shared/interface';
 import {
   getCurrCountDown,
   getPoolRoundCountdownDate,
@@ -302,6 +303,76 @@ export function usePool() {
     return result;
   };
 
+  const getPoolTimelines = (pool: IPool): ITimeline[] => {
+    let index = 2;
+    let result: ITimeline[] = [
+      {
+        key: 'upcoming',
+        index: 1,
+        name: 'Upcoming',
+        startAt: new Date(),
+        endAt: new Date(),
+      },
+    ];
+    if (Boolean(pool?.campaign?.early_join_phase?.is_active)) {
+      result.push({
+        key: 'whitelist',
+        index,
+        name: 'Whitelist',
+        startAt: new Date(),
+        endAt: new Date(),
+      });
+      index += 1;
+    }
+    if (Boolean(pool?.campaign?.exclusive_phase?.is_active)) {
+      result.push({
+        key: 'exclusive',
+        index,
+        name: 'Exclusive',
+        startAt: new Date(),
+        endAt: new Date(),
+      });
+      index += 1;
+    }
+    if (Boolean(pool?.campaign?.fcfs_stake_phase?.is_active)) {
+      result.push({
+        key: 'fcfs-staker',
+        index,
+        name: 'FCFS Staker',
+        startAt: new Date(),
+        endAt: new Date(),
+      });
+      index += 1;
+    }
+    if (Boolean(pool?.campaign?.public_phase?.is_active)) {
+      result.push({
+        key: 'fcfs',
+        index,
+        name: 'FCFS',
+        startAt: new Date(),
+        endAt: new Date(),
+      });
+      index += 1;
+    }
+    result.push({
+      key: 'claimable',
+      index,
+      name: 'Claimable',
+      startAt: new Date(),
+      endAt: new Date(),
+    });
+    index += 1;
+    result.push({
+      key: 'end',
+      index,
+      name: 'End',
+      startAt: new Date(),
+      endAt: new Date(),
+    });
+
+    return result;
+  };
+
   return {
     paginatedPool,
     paginatedPoolVoting,
@@ -320,5 +391,6 @@ export function usePool() {
     getPoolVotingFullInfo,
     getMaxIndividualAllocationFCFSForStaker,
     getPoolRoundsInfo,
+    getPoolTimelines,
   };
 }

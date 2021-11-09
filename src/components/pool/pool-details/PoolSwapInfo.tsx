@@ -5,6 +5,7 @@ import { transformLamportsToSOL } from '../../../utils/helper';
 import BalanceBadge from '../../shared/BalanceBadge';
 import PoolProgressBar from '../../shared/pool/PoolProgressBar';
 import PoolStatus from '../../shared/pool/PoolStatus';
+import PoolCardTitle from '../../shared/pool/PoolCardTitle';
 
 interface Props {
   totalRaise: number;
@@ -37,7 +38,7 @@ const PoolSwapInfo: React.FC<Props> = ({
   return (
     <div className="flex flex-col p-4">
       <div className="flex items-start justify-between mb-8">
-        <h1 className="text-lg font-semibold text-white uppercase">Swap Info</h1>
+        <PoolCardTitle title="Swap Info" />
         <PoolStatus status={status} loading={loading} />
       </div>
 

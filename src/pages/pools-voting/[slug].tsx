@@ -91,6 +91,7 @@ const PoolsVotingDetails: React.FC<Props> = ({ poolVotingServer }) => {
               telegram={poolVoting.telegram}
               twitter={poolVoting.twitter}
               image={poolVoting.logo}
+              description={poolVoting.description}
             />
           </div>
         </div>

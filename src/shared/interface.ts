@@ -35,3 +35,11 @@ export interface INavbarPoolMenu {
   section?: PoolsSectionFilter | PoolsVotingFilter;
   needConnectWallet: boolean;
 }
+
+export interface ITimeline {
+  key: string;
+  index: number;
+  name: string;
+  startAt: Date;
+  endAt: Date;
+}
