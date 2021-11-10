@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import CardText from '../card-text';
@@ -23,9 +24,9 @@ const FeaturePool: React.FC<Props> = ({ pools, loading }) => {
           description={
             'Gain early access to public and special token sales at a lower price before they hit the market'
           }
-          style="text-center mr-6 mt-20 mb-12 md:w-52 md:text-left"
+          style="text-center mr-6 mt-20 mb-12 md:mb-0 md:w-72 md:text-left md:self-end"
         >
-          <Button style="bg-3232DC mt-14 mx-auto md:mx-0" link="/pools">
+          <Button style="bg-3232DC mt-24 mx-auto md:mx-0 text-sm" link="/pools">
             <span className="mr-2">Join now</span>
             <Image
               width={16}
@@ -37,16 +38,22 @@ const FeaturePool: React.FC<Props> = ({ pools, loading }) => {
             />
           </Button>
         </CardText>
-        <div className="grid w-full grid-cols-1 gap-x-2 gap-y-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {pools.map((pool, idx) => (
-            <PoolCard
-              key={idx}
-              variant="upcoming-pool"
-              pool={pool}
-              loading={loading}
-              is_home={true}
-            />
-          ))}
+        <div className="hidden-overlay-2side relative overflow-hidden w-full flex-1">
+          <div
+            className={clsx('flex items-center w-full gap-x-2 gap-y-5', {
+              'animate-hk_wiggle': pools.length > 3,
+            })}
+          >
+            {pools.map((pool, idx) => (
+              <PoolCard
+                key={idx}
+                variant="upcoming-pool"
+                pool={pool}
+                loading={loading}
+                is_home={true}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

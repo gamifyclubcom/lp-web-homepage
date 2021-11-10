@@ -84,6 +84,9 @@ module.exports = {
         '90v': '90vh',
         '100v': '100vh',
       },
+      width: {
+        '300p': '300px'
+      },
       fontSize: {
         '4.25xl': ['4.25rem', '5rem'],
         '1.5xl': ['1.5rem', '1.5rem'],
@@ -91,12 +94,21 @@ module.exports = {
         '1.125lg': ['1.125rem', '1.625rem'],
         '15px': '15px',
       },
+      minWidth: {
+        '300px': '300px'
+      },
       maxWidth: {
         '658px': '41.125rem'
       },
-      inset: {
-        'standard': '0 51px 51px 0'
-      }
+      animation: {
+        'hk_wiggle': 'hk_wiggle 10s linear infinite',
+      },
+      keyframes: {
+        hk_wiggle: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-924px)' },
+        }
+      },
     },
     fontFamily: {
       sans: ['Gilroy', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],

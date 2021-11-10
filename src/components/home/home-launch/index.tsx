@@ -72,7 +72,7 @@ const HomeLaunch: React.FC = () => {
         Built to support the growing Play-To-Earn experiences in the Solana Metaverse
       </p>
       <Button
-        style="bg-3232DC mt-9 ml-auto mr-auto"
+        style="bg-3232DC mt-9 ml-auto mr-auto text-sm"
         link="https://98a54lmwmqy.typeform.com/to/lypkBwld?typeform-source=intersola-dev-web.sotatek.works"
       >
         Apply to launch
