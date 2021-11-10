@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import Decimal from 'decimal.js';
 import Image from 'next/image';
 import { useMemo } from 'react';
@@ -259,7 +260,9 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
   return (
     <div
       onClick={goToPool}
-      className="w-full p-4 overflow-hidden bg-gray-800 rounded-lg cursor-pointer"
+      className={clsx('w-full p-4 overflow-hidden bg-gray-800 rounded-lg cursor-pointer', {
+        'w-300p min-w-300px': is_home,
+      })}
     >
       {poolCardMarkup}
     </div>

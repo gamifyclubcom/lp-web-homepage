@@ -8,9 +8,9 @@ const Banner: React.FC<Props> = () => {
   const router = useRouter();
 
   return (
-    <div className="h-100v md:h-60v">
+    <div className="h-100v md:h-60v lg:h-80v">
       <div className="bg-hero-pattern bg-100% bg-no-repeat bg-center-50%">
-        <div className="flex items-center justify-center h-100v md:h-60v layout-container-full">
+        <div className="flex items-center justify-center h-100v md:h-60v lg:h-80v layout-container-full">
           <div className="flex flex-col items-center justify-center px-5 text-center">
             <h1 className="text-white text-4xl xl:text-5xl 2xl:text-4.25xl pb-3 md:pb-9">
               The All-In-One Hub for the Solana Metaverse
@@ -23,7 +23,7 @@ const Banner: React.FC<Props> = () => {
               experience: For players, guilds, investors & project owners. Your club for game
               finance.
             </p>
-            <div className="mt-4">
+            <div className="mt-4 md:mt-14">
               <ViewAllPoolBtn />
             </div>
           </div>
