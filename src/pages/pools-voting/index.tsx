@@ -180,7 +180,11 @@ const PoolsVoting: React.FC<Props> = ({ paginated }) => {
 
               <div className="col-span-3 md:col-span-2">
                 <div className="w-full" style={{ maxWidth: 800 }}>
-                  <SearchPoolVoting inputSearch={inputSearch} setInputSearch={setInputSearch} />
+                  <SearchPoolVoting
+                    variant="pool-voting"
+                    inputSearch={inputSearch}
+                    setInputSearch={setInputSearch}
+                  />
                 </div>
               </div>
             </div>

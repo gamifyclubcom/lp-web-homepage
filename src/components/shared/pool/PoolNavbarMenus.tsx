@@ -1,4 +1,5 @@
 import { useWallet } from '@solana/wallet-adapter-react';
+import clsx from 'clsx';
 import { useMemo } from 'react';
 import { poolMenus, poolsVotingMenus } from '../../../utils/constants';
 import PoolNavbarMenuItem from './PoolNavbarMenuItem';
@@ -19,7 +20,11 @@ const PoolNavbarMenus: React.FC<Props> = ({ variant, activeSection }) => {
   }, [variant]);
 
   return (
-    <ul className="flex flex-wrap w-full max-w-screen-xl mx-auto mb-4">
+    <ul
+      className={clsx('flex flex-wrap w-full max-w-screen-xl mx-auto mb-4', {
+        'border-b border-gray-500': variant === 'pools-dashboard',
+      })}
+    >
       {menus.map((menu) => {
         if (menu.needConnectWallet) {
           return (

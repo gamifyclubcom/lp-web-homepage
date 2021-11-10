@@ -26,9 +26,11 @@ const PoolNavbarMenuItem: React.FC<Props> = ({ menu, variant, active }) => {
 
   return (
     <li
-      className={clsx('mx-2 py-1 text-lg font-medium', {
+      className={clsx('py-1 text-lg font-medium', {
         'border-b-4 text-secondary-400 font-semibold border-secondary-400': active,
         'text-white': !active,
+        'border-none mx-0': variant === 'pools-dashboard',
+        'mx-2': variant !== 'pools-dashboard',
       })}
     >
       <a onClick={handleMenuChange} className="inline-block cursor-pointer">

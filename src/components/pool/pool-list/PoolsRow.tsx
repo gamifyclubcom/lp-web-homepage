@@ -45,7 +45,7 @@ const PoolsRow: React.FC<Props> = ({ pool, loading }) => {
   return (
     <tr
       onClick={goToPoolDetails}
-      className="text-xl font-medium text-left text-white border-b opacity-75 cursor-pointer border-fuchsia-500 hover:bg-gray-900"
+      className="text-xl font-medium text-left text-white border-b border-gray-500 opacity-75 cursor-pointer hover:bg-gray-900"
     >
       <td className="px-4 py-2">
         <div className="flex items-center w-full">
@@ -78,7 +78,7 @@ const PoolsRow: React.FC<Props> = ({ pool, loading }) => {
           </span>
           <div className="block w-full sm:hidden lg:block">
             <PoolProgressBar
-              variant="complex"
+              variant="simple"
               total={pool.token_total_raise}
               current={pool.token_current_raise}
               loading={loading}

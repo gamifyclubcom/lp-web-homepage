@@ -18,31 +18,36 @@ export const TOKEN_TO_DECIMALS = 9;
 export const SOL_DECIMALS = 9;
 
 export const poolMenus: INavbarPoolMenu[] = [
-  { label: 'Pools', key: 'all-pools', section: PoolsSectionFilter.ALL, needConnectWallet: false },
   {
-    label: 'Featured',
-    key: 'featured-pools',
-    section: PoolsSectionFilter.FEATURED,
+    label: 'All Pools',
+    key: 'all-pools',
+    section: PoolsSectionFilter.ALL,
     needConnectWallet: false,
   },
-  {
-    label: 'Joined',
-    key: 'pools-joined',
-    section: PoolsSectionFilter.JOINED,
-    needConnectWallet: true,
-  },
-  {
-    label: 'Upcoming',
-    key: 'pools-created',
-    section: PoolsSectionFilter.UPCOMING,
-    needConnectWallet: false,
-  },
-  {
-    label: 'Past',
-    key: 'past-pools',
-    section: PoolsSectionFilter.PAST,
-    needConnectWallet: false,
-  },
+  // {
+  //   label: 'Featured',
+  //   key: 'featured-pools',
+  //   section: PoolsSectionFilter.FEATURED,
+  //   needConnectWallet: false,
+  // },
+  // {
+  //   label: 'Joined',
+  //   key: 'pools-joined',
+  //   section: PoolsSectionFilter.JOINED,
+  //   needConnectWallet: true,
+  // },
+  // {
+  //   label: 'Upcoming',
+  //   key: 'pools-created',
+  //   section: PoolsSectionFilter.UPCOMING,
+  //   needConnectWallet: false,
+  // },
+  // {
+  //   label: 'Past',
+  //   key: 'past-pools',
+  //   section: PoolsSectionFilter.PAST,
+  //   needConnectWallet: false,
+  // },
 ];
 
 export const poolsVotingMenus: INavbarPoolMenu[] = [

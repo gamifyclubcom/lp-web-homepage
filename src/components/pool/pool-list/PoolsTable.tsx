@@ -36,7 +36,7 @@ const PoolsTable: React.FC<Props> = ({
 
   return (
     <div>
-      <div className="relative w-full mt-8 overflow-hidden border rounded-xl border-fuchsia-500">
+      <div className="relative w-full mt-8 overflow-hidden border border-gray-500 rounded-lg">
         {loading && (
           <div className="absolute inset-0 z-40 flex items-center justify-center bg-black bg-opacity-30">
             <Spinner variant="alt" size="medium" />
@@ -44,7 +44,7 @@ const PoolsTable: React.FC<Props> = ({
         )}
 
         <table className="w-full text-white table-fixed">
-          <thead className={`border-b border-fuchsia-500 text-fuchsia-400`}>
+          <thead className={`border-b border-gray-500 text-gray-400 bg-gray-900`}>
             <tr className="text-xl font-medium text-left">
               <th className="w-32 p-4 md:w-64">Pool name</th>
               <th className="hidden w-64 p-4 md:table-cell">Ratio</th>
