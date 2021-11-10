@@ -1,10 +1,18 @@
-import { useMemo } from 'react';
+import clsx from 'clsx';
+import Decimal from 'decimal.js';
 import Image from 'next/image';
-import { AiOutlineArrowRight } from 'react-icons/ai';
+import { useMemo } from 'react';
+import NumberFormat from 'react-number-format';
 import { useGlobal } from '../../../hooks/useGlobal';
 import { usePool } from '../../../hooks/usePool';
 import { IPool } from '../../../sdk/pool/interface';
-import { getPoolLogo, getPoolStatus, getPoolThumbnail } from '../../../utils/helper';
+import { TOKEN_TO_DECIMALS } from '../../../utils/constants';
+import {
+  getPoolLogo,
+  getPoolStatus,
+  getPoolThumbnail,
+  renderTokenBalance,
+} from '../../../utils/helper';
 import BalanceBadge from '../../shared/BalanceBadge';
 import PoolProgressBar from '../../shared/pool/PoolProgressBar';
 import PoolStatus from '../../shared/pool/PoolStatus';
@@ -33,10 +41,12 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
       }),
     [now, pool.is_active, pool.join_pool_end, pool.join_pool_start, pool.progress, pool.start_date],
   );
-
-  const progressExtraContent = useMemo(() => {
-    return `${pool.token_current_raise} / ${pool.token_total_raise} (${pool.token_symbol})`;
-  }, [pool.token_current_raise, pool.token_symbol, pool.token_total_raise]);
+  const totalRaise = useMemo(() => {
+    return renderTokenBalance(
+      new Decimal(pool.token_total_raise).dividedBy(pool.token_ratio),
+      TOKEN_TO_DECIMALS,
+    );
+  }, [pool.token_ratio, pool.token_total_raise]);
 
   const goToPool = () => handleGoToPoolDetails(pool);
 
@@ -54,14 +64,14 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
 
             <div className="w-full">
               <h6 className="mb-4 text-lg font-semibold text-white truncate">
-                {pool.token_name} ({pool.token_symbol})
+                {pool.name} ({pool.token_symbol})
               </h6>
               <div className="flex items-center justify-between my-2">
                 <span className="text-sm text-white opacity-30">Total Raise</span>
                 <BalanceBadge
                   variant="basic"
                   mint={pool.token_to}
-                  price={pool.token_total_raise}
+                  price={totalRaise}
                   className="text-sm text-white"
                 />
               </div>
@@ -71,13 +81,13 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
                   variant="with-ratio"
                   price={pool.token_ratio}
                   className="text-sm text-white"
-                  mintFrom={pool.token_symbol}
-                  mintTo={pool.token_to}
+                  mintFrom={pool.token_to}
+                  mintTo={pool.token_symbol}
                 />
               </div>
               <div className="flex items-center justify-between my-2">
                 <span className="text-sm text-white opacity-30">Supported</span>
-                <span className="text-sm text-white uppercase">{pool.token_symbol}</span>
+                <span className="text-sm text-white">{pool.token_to}</span>
               </div>
             </div>
 
@@ -112,7 +122,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
                 <BalanceBadge
                   variant="basic"
                   mint={pool.token_to}
-                  price={pool.token_total_raise}
+                  price={totalRaise}
                   className="text-sm text-secondary-400"
                 />
               </div>
@@ -122,9 +132,23 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
               </div>
               <div className="flex items-center justify-between w-full my-1">
                 <span className="text-sm text-white">Progress</span>
-                <span className="text-sm text-white">
-                  {pool.progress}%<span className="ml-2 opacity-30">{progressExtraContent}</span>
-                </span>
+                <div className="flex items-center text-xs text-white">
+                  <span className="mr-2 text-sm">{pool.progress}%</span>
+                  <NumberFormat
+                    thousandSeparator
+                    displayType="text"
+                    className="opacity-30"
+                    value={pool.token_current_raise}
+                  />
+                  <span className="opacity-30">/</span>
+                  <NumberFormat
+                    thousandSeparator
+                    displayType="text"
+                    className="opacity-30"
+                    value={pool.token_total_raise}
+                  />
+                  <span className="opacity-30">({pool.token_symbol})</span>
+                </div>
               </div>
 
               <div className="w-full my-2">
@@ -174,7 +198,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
                 <BalanceBadge
                   variant="basic"
                   mint={pool.token_to}
-                  price={pool.token_total_raise}
+                  price={totalRaise}
                   className="text-sm text-white uppercase"
                 />
               </div>
@@ -195,7 +219,20 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
                 />
                 <div className="flex items-center justify-between mt-2">
                   <span className="text-xs text-white">({pool.progress}%)</span>
-                  <span className="text-xs text-white opacity-30">{progressExtraContent}</span>
+                  <div className="text-xs text-white">
+                    <NumberFormat
+                      thousandSeparator
+                      displayType="text"
+                      value={pool.token_current_raise}
+                    />
+                    <span>/</span>
+                    <NumberFormat
+                      thousandSeparator
+                      displayType="text"
+                      value={pool.token_total_raise}
+                    />
+                    <span>({pool.token_symbol})</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -215,7 +252,6 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
     pool.participants,
     pool.progress,
     pool.token_current_raise,
-    progressExtraContent,
     loading,
     logo,
     status,
@@ -224,7 +260,9 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
   return (
     <div
       onClick={goToPool}
-      className="w-full p-4 overflow-hidden bg-gray-800 rounded-lg cursor-pointer"
+      className={clsx('w-full p-4 overflow-hidden bg-gray-800 rounded-lg cursor-pointer', {
+        'w-300p min-w-300px': is_home,
+      })}
     >
       {poolCardMarkup}
     </div>
