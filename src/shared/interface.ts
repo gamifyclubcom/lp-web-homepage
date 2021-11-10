@@ -40,6 +40,6 @@ export interface ITimeline {
   key: string;
   index: number;
   name: string;
-  startAt: Date;
-  endAt: Date;
+  startAt?: Date;
+  endAt?: Date;
 }

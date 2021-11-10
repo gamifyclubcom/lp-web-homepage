@@ -215,7 +215,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
             </div>
             <div className="col-span-2 lg:col-span-1">
               <div className="w-full h-full overflow-hidden bg-gray-800 rounded-lg">
-                <PoolRounds pool={pool} whitelistStatus="" disabled={false} />
+                <PoolRounds pool={pool} whitelistStatus="" disabled={false} loading={fetching} />
               </div>
             </div>
             <div className="col-span-2">

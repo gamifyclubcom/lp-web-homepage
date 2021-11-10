@@ -277,13 +277,13 @@ const PoolSwapAction: React.FC<Props> = ({
   return (
     <div className="w-full">
       <div className="grid grid-cols-2 gap-4">
-        <div className="w-full col-span-2 p-4 md:col-span-1">
+        <div className="w-full col-span-2 p-4 pr-0 md:col-span-1">
           <div className="w-full">
             <div className="mb-4">
               <PoolCardTitle title="swap tokens" />
             </div>
             <div className="flex items-center my-2">
-              <span className="w-1/3 text-sm font-semibold text-white opacity-30">
+              <span className="w-40 text-sm font-semibold text-white opacity-30">
                 Max Allocation
               </span>
               <BalanceBadge
@@ -294,7 +294,7 @@ const PoolSwapAction: React.FC<Props> = ({
               />
             </div>
             <div className="flex items-center my-2">
-              <span className="w-1/3 text-sm font-semibold text-white opacity-30">Have Bought</span>
+              <span className="w-40 text-sm font-semibold text-white opacity-30">Have Bought</span>
               <BalanceBadge
                 variant="basic"
                 price={currentContribution}
@@ -303,7 +303,7 @@ const PoolSwapAction: React.FC<Props> = ({
               />
             </div>
             <div className="flex items-center my-2">
-              <span className="w-1/3 text-sm font-semibold text-white opacity-30">Remaining</span>
+              <span className="w-40 text-sm font-semibold text-white opacity-30">Remaining</span>
               <BalanceBadge
                 variant="basic"
                 price={tokenLeft}
@@ -312,7 +312,7 @@ const PoolSwapAction: React.FC<Props> = ({
               />
             </div>
             <div className="flex items-start my-2">
-              <span className="w-1/3 text-sm font-semibold text-white opacity-30">Buy times</span>
+              <span className="w-40 text-sm font-semibold text-white opacity-30">Buy times</span>
               <ul className="flex flex-col">
                 {joinPoolDates.map((item, index) => (
                   <li key={`${item}__${index}`}>
@@ -379,7 +379,7 @@ const PoolSwapAction: React.FC<Props> = ({
             <button
               onClick={handleContribute}
               className={clsx(
-                'hidden w-64 h-12 text-lg font-semibold text-center text-white rounded-full bg-secondary-500 lg:block',
+                'hidden w-64 h-12 text-sm font-semibold text-center text-white rounded-full bg-secondary-500 lg:block',
                 {
                   'bg-secondary-600': !canSwap,
                 },

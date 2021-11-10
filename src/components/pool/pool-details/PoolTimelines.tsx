@@ -4,7 +4,7 @@ import PoolTimelineItem from './PoolTimelineItem';
 
 interface Props {
   timelines: ITimeline[];
-  activeKey: string;
+  activeKey: string | null;
 }
 
 const PoolTimelines: React.FC<Props> = ({ timelines, activeKey }) => {
