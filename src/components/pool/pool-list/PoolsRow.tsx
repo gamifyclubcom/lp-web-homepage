@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { useMemo } from 'react';
 import { useGlobal } from '../../../hooks/useGlobal';
 import { usePool } from '../../../hooks/usePool';
@@ -10,9 +11,10 @@ import PoolStatus from '../../shared/pool/PoolStatus';
 interface Props {
   pool: IPool;
   loading: boolean;
+  isLastItem: boolean;
 }
 
-const PoolsRow: React.FC<Props> = ({ pool, loading }) => {
+const PoolsRow: React.FC<Props> = ({ pool, loading, isLastItem }) => {
   const { handleGoToPoolDetails } = usePool();
   const { now } = useGlobal();
   const goToPoolDetails = () => handleGoToPoolDetails(pool);
@@ -45,7 +47,12 @@ const PoolsRow: React.FC<Props> = ({ pool, loading }) => {
   return (
     <tr
       onClick={goToPoolDetails}
-      className="text-xl font-medium text-left text-white border-b border-gray-500 opacity-75 cursor-pointer hover:bg-gray-900"
+      className={clsx(
+        'text-xl font-medium text-left text-white opacity-75 cursor-pointer hover:bg-gray-900',
+        {
+          'border-b border-gray-500': !isLastItem,
+        },
+      )}
     >
       <td className="px-4 py-2">
         <div className="flex items-center w-full">

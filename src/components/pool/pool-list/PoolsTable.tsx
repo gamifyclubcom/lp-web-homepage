@@ -36,7 +36,7 @@ const PoolsTable: React.FC<Props> = ({
 
   return (
     <div>
-      <div className="relative w-full mt-8 overflow-hidden border border-gray-500 rounded-lg">
+      <div className="relative w-full overflow-hidden border border-gray-500 rounded-lg">
         {loading && (
           <div className="absolute inset-0 z-40 flex items-center justify-center bg-black bg-opacity-30">
             <Spinner variant="alt" size="medium" />
@@ -57,9 +57,16 @@ const PoolsTable: React.FC<Props> = ({
               pools.map((p, index) => {
                 const key = `${index}`;
 
-                return <PoolsRow key={key} pool={p} loading={loading} />;
+                return (
+                  <PoolsRow
+                    key={key}
+                    pool={p}
+                    loading={loading}
+                    isLastItem={index === pools.length - 1}
+                  />
+                );
               })}
-            <tr className="h-16"></tr>
+            {pools.length <= 0 && <tr className="h-16"></tr>}
           </tbody>
         </table>
       </div>
