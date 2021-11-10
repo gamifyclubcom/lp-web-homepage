@@ -1,6 +1,8 @@
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
+import clsx from 'clsx';
 import Decimal from 'decimal.js';
+import moment from 'moment';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import NumberFormat from 'react-number-format';
@@ -13,7 +15,9 @@ import { IPool, IPoolStatus } from '../../../sdk/pool/interface';
 import { PoolStatusType } from '../../../shared/enum';
 import { TOKEN_TO_DECIMALS } from '../../../utils/constants';
 import { isEmpty, isInWhitelistRound, roundNumberByDecimal } from '../../../utils/helper';
+import BalanceBadge from '../../shared/BalanceBadge';
 import MaxButton from '../../shared/MaxButton';
+import PoolCardTitle from '../../shared/pool/PoolCardTitle';
 import AllocationLevel from './AllocationLevel';
 import ConfirmJoinModal from './modals/ConfirmJoinModal';
 import JoinPoolSuccessModal from './modals/JoinPoolSuccessModal';
@@ -30,6 +34,8 @@ interface Props {
   participantAddress: string | null;
   allocationLevel: number;
   maxContributeSize: number;
+  currentSwap: number;
+  joinPoolDates: string[];
   setSpinning: Dispatch<SetStateAction<boolean>>;
   setIsClaimed: Dispatch<SetStateAction<boolean>>;
   setAllocation: Dispatch<SetStateAction<number | null>>;
@@ -51,6 +57,8 @@ const PoolSwapAction: React.FC<Props> = ({
   participantAddress,
   allocationLevel,
   maxContributeSize,
+  currentSwap,
+  joinPoolDates,
   setSpinning,
   setIsClaimed,
   setAllocation,
@@ -86,6 +94,9 @@ const PoolSwapAction: React.FC<Props> = ({
       return 'Contribute';
     }
   }, [connected]);
+  const tokenLeft = useMemo(() => {
+    return new Decimal(pool.token_total_raise).minus(currentSwap).toNumber();
+  }, [currentSwap, pool.token_total_raise]);
 
   useEffect(() => {
     const initBalance = async () => {
@@ -264,62 +275,179 @@ const PoolSwapAction: React.FC<Props> = ({
   };
 
   return (
-    <div className="p-4">
-      <div className="flex flex-col mb-4">
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-white">Contribution Level</span>
-          <AllocationLevel currLevel={contributionLevel} />
+    <div className="w-full">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="w-full col-span-2 p-4 pr-0 md:col-span-1">
+          <div className="w-full">
+            <div className="mb-4">
+              <PoolCardTitle title="swap tokens" />
+            </div>
+            <div className="flex items-center my-2">
+              <span className="w-40 text-sm font-semibold text-white opacity-30">
+                Max Allocation
+              </span>
+              <BalanceBadge
+                variant="basic"
+                price={maxAllocation}
+                mint={pool.token_symbol}
+                className="text-sm font-light text-white"
+              />
+            </div>
+            <div className="flex items-center my-2">
+              <span className="w-40 text-sm font-semibold text-white opacity-30">Have Bought</span>
+              <BalanceBadge
+                variant="basic"
+                price={currentContribution}
+                mint={pool.token_symbol}
+                className="text-sm font-light text-white"
+              />
+            </div>
+            <div className="flex items-center my-2">
+              <span className="w-40 text-sm font-semibold text-white opacity-30">Remaining</span>
+              <BalanceBadge
+                variant="basic"
+                price={tokenLeft}
+                mint={pool.token_symbol}
+                className="text-sm font-light text-white"
+              />
+            </div>
+            <div className="flex items-start my-2">
+              <span className="w-40 text-sm font-semibold text-white opacity-30">Buy times</span>
+              <ul className="flex flex-col">
+                {joinPoolDates.map((item, index) => (
+                  <li key={`${item}__${index}`}>
+                    <span className="text-sm font-light text-white">
+                      {moment(item).format('ddd MMM DD, YYYY LT')} (UTC)
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
-        <span className="text-xs text-white">Swap Amount: {allocation}</span>
-        <span className="text-xs text-white">
-          Your guaranteed allocation for exclusive round: {guaranteedAllocationExclusiveRound}
-        </span>
-        <span className="text-xs text-white">
-          Your current contribution: {currentContribution}/{maxAllocation}
-        </span>
-      </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold text-white">Balance</span>
-          <span className="text-sm font-light text-white uppercase">{balance.formatted} SOL</span>
+        <div className="w-full col-span-2 p-4 md:col-span-1">
+          <div className="flex items-center justify-between w-full mb-4">
+            <span className="text-sm font-semibold text-white">Your Wallet Balance</span>
+            <BalanceBadge
+              variant="basic"
+              mint={pool.token_to}
+              price={balance.value || 0}
+              className="text-sm font-semibold uppercase text-secondary-400"
+            />
+          </div>
+
+          <div className="relative w-full mb-8">
+            <MaxButton isDisabled={!canSwap} onClick={handleGetMaxValueCanSwap} />
+            <span className="absolute flex items-center justify-center h-full font-semibold text-white uppercase right-14">
+              {pool.token_to}
+            </span>
+            <NumberFormat
+              thousandSeparator={true}
+              value={amountSwap.value.toNumber()}
+              onValueChange={(values) => {
+                const { formattedValue, value } = values;
+                if (!isEmpty(value)) {
+                  setAmountSwap({
+                    value: new Decimal(value),
+                    formatted: formattedValue,
+                  });
+                } else {
+                  setAmountSwap({
+                    value: new Decimal(0),
+                    formatted: '0',
+                  });
+                }
+              }}
+              onFocus={(e) => e.target.select()}
+              className="flex-1 w-full px-2 py-1 pl-2 pr-32 text-3xl font-medium bg-transparent border border-gray-500 rounded-md text-secondary-400 focus:outline-none"
+              disabled={!canSwap}
+            />
+          </div>
+
+          <div>
+            <h6 className="mb-2 text-sm font-semibold text-white">You will get approximately</h6>
+            <BalanceBadge
+              variant="basic"
+              mint={pool.token_to}
+              price={amountSwap.value.toNumber()}
+              className="text-lg font-semibold uppercase text-secondary-400"
+            />
+          </div>
+
+          <div className="flex items-center justify-center w-full mt-8">
+            <button
+              onClick={handleContribute}
+              className={clsx(
+                'hidden w-64 h-12 text-sm font-semibold text-center text-white rounded-full bg-secondary-500 lg:block',
+                {
+                  'bg-secondary-600': !canSwap,
+                },
+              )}
+              disabled={!canSwap}
+            >
+              {contributeButtonContent}
+            </button>
+          </div>
         </div>
-
-        <div className="relative">
-          <MaxButton isDisabled={!canSwap} onClick={handleGetMaxValueCanSwap} />
-          <NumberFormat
-            thousandSeparator={true}
-            value={amountSwap.value.toNumber()}
-            onValueChange={(values) => {
-              const { formattedValue, value } = values;
-              if (!isEmpty(value)) {
-                setAmountSwap({
-                  value: new Decimal(value),
-                  formatted: formattedValue,
-                });
-              } else {
-                setAmountSwap({
-                  value: new Decimal(0),
-                  formatted: '0',
-                });
-              }
-            }}
-            onFocus={(e) => e.target.select()}
-            className="flex-1 w-56 px-2 py-1 pl-16 pr-2 text-3xl font-medium text-right bg-transparent border border-gray-500 rounded-md text-secondary-400 focus:outline-none"
-            disabled={!canSwap}
-          />
-        </div>
-      </div>
-
-      <div className="mt-4">
-        <button
-          onClick={handleContribute}
-          className="hidden w-full h-12 text-lg font-semibold text-center text-white rounded-full bg-primary-400 lg:block"
-        >
-          {contributeButtonContent}
-        </button>
       </div>
     </div>
+    // <div className="p-4">
+    //   <div className="flex flex-col mb-4">
+    //     <div className="flex items-center justify-between">
+    //       <span className="text-xs text-white">Contribution Level</span>
+    //       <AllocationLevel currLevel={contributionLevel} />
+    //     </div>
+    //     <span className="text-xs text-white">Swap Amount: {allocation}</span>
+    //     <span className="text-xs text-white">
+    //       Your guaranteed allocation for exclusive round: {guaranteedAllocationExclusiveRound}
+    //     </span>
+    //     <span className="text-xs text-white">
+    //       Your current contribution: {currentContribution}/{maxAllocation}
+    //     </span>
+    //   </div>
+
+    //   <div className="flex items-center justify-between">
+    //     <div className="flex flex-col">
+    //       <span className="text-sm font-semibold text-white">Balance</span>
+    //       <span className="text-sm font-light text-white uppercase">{balance.formatted} SOL</span>
+    //     </div>
+
+    //     <div className="relative">
+    //       <MaxButton isDisabled={!canSwap} onClick={handleGetMaxValueCanSwap} />
+    //       <NumberFormat
+    //         thousandSeparator={true}
+    //         value={amountSwap.value.toNumber()}
+    //         onValueChange={(values) => {
+    //           const { formattedValue, value } = values;
+    //           if (!isEmpty(value)) {
+    //             setAmountSwap({
+    //               value: new Decimal(value),
+    //               formatted: formattedValue,
+    //             });
+    //           } else {
+    //             setAmountSwap({
+    //               value: new Decimal(0),
+    //               formatted: '0',
+    //             });
+    //           }
+    //         }}
+    //         onFocus={(e) => e.target.select()}
+    //         className="flex-1 w-56 px-2 py-1 pl-16 pr-2 text-3xl font-medium text-right bg-transparent border border-gray-500 rounded-md text-secondary-400 focus:outline-none"
+    //         disabled={!canSwap}
+    //       />
+    //     </div>
+    //   </div>
+
+    //   <div className="mt-4">
+    //     <button
+    //       onClick={handleContribute}
+    //       className="hidden w-full h-12 text-lg font-semibold text-center text-white rounded-full bg-primary-400 lg:block"
+    //     >
+    //       {contributeButtonContent}
+    //     </button>
+    //   </div>
+    // </div>
   );
 };
 

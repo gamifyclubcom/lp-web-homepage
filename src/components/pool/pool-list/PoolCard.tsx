@@ -230,8 +230,9 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
                       thousandSeparator
                       displayType="text"
                       value={pool.token_total_raise}
+                      className="mr-1"
                     />
-                    <span>({pool.token_symbol})</span>
+                    <span>{pool.token_symbol}</span>
                   </div>
                 </div>
               </div>
