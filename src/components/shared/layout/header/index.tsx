@@ -14,8 +14,8 @@ const Logo = () => {
 
   return (
     <Image
-      width={150}
-      height={50}
+      width={112}
+      height={35}
       src="/images/gamify_logo.svg"
       alt="gamify club logo"
       className="cursor-pointer"

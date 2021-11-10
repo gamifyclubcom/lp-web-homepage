@@ -14,7 +14,7 @@ const HomeStakePool: React.FC = () => {
         }
         style="md:max-w-sm md:ml-16 mt-10 md:mt-0"
       >
-        <Button style="bg-3232DC mt-14 mx-auto md:mx-0" link="/staking">
+        <Button style="bg-3232DC mt-1 mx-auto md:mx-0 text-sm" link="/staking">
           Stake now
         </Button>
       </CardText>
