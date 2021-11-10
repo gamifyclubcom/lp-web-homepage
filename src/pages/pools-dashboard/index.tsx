@@ -33,16 +33,16 @@ const PoolsDashboard: React.FC<Props> = ({ paginated }) => {
   const activeSection = useMemo(() => {
     const section = router.query.section;
     switch (section) {
-      case PoolsSectionFilter.CREATED:
-        return PoolsSectionFilter.CREATED;
-      case PoolsSectionFilter.FEATURED:
-        return PoolsSectionFilter.FEATURED;
-      case PoolsSectionFilter.JOINED:
-        return PoolsSectionFilter.JOINED;
-      case PoolsSectionFilter.PAST:
-        return PoolsSectionFilter.PAST;
-      case PoolsSectionFilter.UPCOMING:
-        return PoolsSectionFilter.UPCOMING;
+      // case PoolsSectionFilter.CREATED:
+      //   return PoolsSectionFilter.CREATED;
+      // case PoolsSectionFilter.FEATURED:
+      //   return PoolsSectionFilter.FEATURED;
+      // case PoolsSectionFilter.JOINED:
+      //   return PoolsSectionFilter.JOINED;
+      // case PoolsSectionFilter.PAST:
+      //   return PoolsSectionFilter.PAST;
+      // case PoolsSectionFilter.UPCOMING:
+      //   return PoolsSectionFilter.UPCOMING;
       default:
         return PoolsSectionFilter.ALL;
     }
@@ -118,13 +118,18 @@ const PoolsDashboard: React.FC<Props> = ({ paginated }) => {
               </span>
             </div>
 
-            <div className="z-20 w-full mb-4">
+            <div className="z-20 w-full">
               <PoolNavbarMenus variant="pools-dashboard" activeSection={activeSection} />
+              <h1 className="text-3xl font-light text-white">List Pools</h1>
             </div>
 
-            <div className="z-20 flex">
-              <div className="w-full ml-auto" style={{ maxWidth: 600 }}>
-                <SearchPool inputSearch={inputSearch} setInputSearch={setInputSearch} />
+            <div className="z-20 flex my-6">
+              <div className="w-full mr-auto" style={{ maxWidth: 600 }}>
+                <SearchPool
+                  variant="pool-dashboard"
+                  inputSearch={inputSearch}
+                  setInputSearch={setInputSearch}
+                />
               </div>
             </div>
 
