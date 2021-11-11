@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import Decimal from 'decimal.js';
 import { useMemo } from 'react';
 import { useGlobal } from '../../../hooks/useGlobal';
 import { usePool } from '../../../hooks/usePool';
@@ -39,10 +40,17 @@ const PoolsRow: React.FC<Props> = ({ pool, loading, isLastItem }) => {
     pool.start_date,
   ]);
 
-  const renderProgress = useMemo(() => {
-    return pool.progress ? `${pool.progress}%` : pool.progress === 0 ? '0%' : 'Loading';
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const progressMarkup = useMemo(() => {
+    if (pool.token_total_raise === 0) {
+      return '0%';
+    }
+
+    return `${new Decimal(pool.token_current_raise)
+      .times(100)
+      .dividedBy(pool.token_total_raise)
+      .toNumber()
+      .toFixed(2)}%`;
+  }, [pool.token_current_raise, pool.token_total_raise]);
 
   return (
     <tr
@@ -93,7 +101,7 @@ const PoolsRow: React.FC<Props> = ({ pool, loading, isLastItem }) => {
       <td className="px-4 py-2">
         <div className="flex items-center w-full">
           <span className="mr-2 text-sm" style={{ minWidth: 36 }}>
-            {renderProgress}
+            {progressMarkup}
           </span>
           <div className="block w-full sm:hidden lg:block">
             <PoolProgressBar

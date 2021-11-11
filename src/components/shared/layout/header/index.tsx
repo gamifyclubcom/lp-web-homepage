@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
+import { useGlobal } from '../../../../hooks/useGlobal';
 import BuyGMFCTokenButton from '../../BuyGMFCTokenButton';
 import { navbarMenu } from './constants';
 import CurrentAccountBadge from './CurrentAccountBadge';
@@ -26,6 +27,21 @@ const Logo = () => {
 
 const Header: React.FC<Props> = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const { isEnabledVotingFeature } = useGlobal();
+
+  const menus = useMemo(() => {
+    return navbarMenu.filter((mn) => {
+      if (mn.key === 'pools-voting') {
+        if (isEnabledVotingFeature) {
+          return true;
+        }
+
+        return false;
+      }
+
+      return true;
+    });
+  }, [isEnabledVotingFeature]);
 
   const handleOpenSidebar = () => {
     setSidebarVisible(true);
@@ -41,7 +57,7 @@ const Header: React.FC<Props> = () => {
         <div className="flex items-center">
           <Logo />
           <ul className="hidden md:flex">
-            {navbarMenu.map((menu, index) => (
+            {menus.map((menu, index) => (
               <NavBarMenuItem
                 key={menu.key}
                 name={menu.name}
@@ -64,7 +80,7 @@ const Header: React.FC<Props> = () => {
             </button>
 
             {sidebarVisible && (
-              <div className="fixed inset-0 z-20 flex flex-col px-4 bg-primary-500">
+              <div className="fixed inset-0 z-50 flex flex-col px-4 bg-primary-500">
                 <div className="flex items-center justify-between py-4">
                   <div>
                     <Logo />
@@ -79,7 +95,7 @@ const Header: React.FC<Props> = () => {
 
                 <div className="mt-6">
                   <ul className="flex flex-col">
-                    {navbarMenu
+                    {menus
                       .filter((menu) => menu.key !== 'buy-gmfc')
                       .map((menu, index) => (
                         <NavBarMenuItem

@@ -31,6 +31,7 @@ export interface ServerResponsePool {
   join_pool_end: string;
   pool_start: string;
   logo?: string;
+  thumbnail?: string;
   tag_line?: string;
   name: string;
   website: string;
