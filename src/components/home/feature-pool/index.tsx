@@ -40,8 +40,9 @@ const FeaturePool: React.FC<Props> = ({ pools, loading }) => {
         </CardText>
         <div className="hidden-overlay-2side relative overflow-hidden w-full flex-1">
           <div
-            className={clsx('flex items-center w-full gap-x-2 gap-y-5', {
-              'animate-hk_wiggle': pools.length > 3,
+            className={clsx('items-center w-full gap-x-2 gap-y-5', {
+              'flex animate-hk_wiggle': pools.length > 3,
+              'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3': pools.length < 4,
             })}
           >
             {pools.map((pool, idx) => (
@@ -51,8 +52,21 @@ const FeaturePool: React.FC<Props> = ({ pools, loading }) => {
                 pool={pool}
                 loading={loading}
                 is_home={true}
+                auto_scroll={pools.length > 3}
               />
             ))}
+            {pools.length > 3 && pools.length < 6
+              ? pools.map((pool, idx) => (
+                  <PoolCard
+                    key={idx}
+                    variant="upcoming-pool"
+                    pool={pool}
+                    loading={loading}
+                    is_home={true}
+                    auto_scroll={pools.length > 3}
+                  />
+                ))
+              : null}
           </div>
         </div>
       </div>
