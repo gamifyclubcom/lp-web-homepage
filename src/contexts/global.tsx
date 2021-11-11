@@ -16,10 +16,12 @@ interface GlobalState {
   totalStaked: number;
   allocationLevel: number;
   loading: boolean;
+  isEnabledVotingFeature: boolean;
   setTotalStaked: Dispatch<SetStateAction<number>>;
   setAllocationLevel: Dispatch<SetStateAction<number>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
   setAccountBalance: (balance: number | null) => void;
+  setIsEnabledVotingFeature: Dispatch<SetStateAction<boolean>>;
 }
 
 const GlobalContext = createContext<GlobalState>({
@@ -31,10 +33,12 @@ const GlobalContext = createContext<GlobalState>({
   totalStaked: 0,
   allocationLevel: 0,
   loading: false,
+  isEnabledVotingFeature: false,
   setTotalStaked: () => {},
   setAllocationLevel: () => {},
   setLoading: () => {},
   setAccountBalance: () => {},
+  setIsEnabledVotingFeature: () => {},
 });
 
 export const GlobalProvider: React.FC = ({ children }) => {
@@ -52,6 +56,7 @@ export const GlobalProvider: React.FC = ({ children }) => {
   });
   const [totalStaked, setTotalStaked] = useState(0);
   const [allocationLevel, setAllocationLevel] = useState(0);
+  const [isEnabledVotingFeature, setIsEnabledVotingFeature] = useState(false);
 
   useEffect(() => {
     const fetchNow = () => {
@@ -94,10 +99,12 @@ export const GlobalProvider: React.FC = ({ children }) => {
         totalStaked,
         allocationLevel,
         loading,
+        isEnabledVotingFeature,
         setTotalStaked,
         setAllocationLevel,
         setLoading,
         setAccountBalance,
+        setIsEnabledVotingFeature,
       }}
     >
       {children}

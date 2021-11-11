@@ -104,7 +104,7 @@ const Pools: React.FC<Props> = () => {
 
             <div className="grid w-full grid-cols-1 gap-4">
               {featureLoading && <PoolCardLoading variant="feature-pool" />}
-              {featurePools.slice(0, 5).map((pool) => (
+              {featurePools.slice(0, 3).map((pool) => (
                 <div className="w-full mx-auto" style={{ maxWidth: 800 }} key={pool.id}>
                   <PoolCard variant="feature-pool" pool={pool} loading={featureLoading} />
                 </div>

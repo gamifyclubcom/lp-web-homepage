@@ -11,6 +11,8 @@ import '../styles/globals.css';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { PoolProvider } from '../contexts/pool';
 import { GlobalProvider } from '../contexts/global';
+import useSmartContract from '../hooks/useSmartContract';
+import { useGlobal } from '../hooks/useGlobal';
 
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -27,6 +29,22 @@ const WalletConnectionProvider = dynamic<{ children: React.ReactNode }>(
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const { getCommonSettings } = useSmartContract();
+  const { setIsEnabledVotingFeature, isEnabledVotingFeature } = useGlobal();
+
+  useEffect(() => {
+    const initCheckVotingFeatureEnabled = async () => {
+      const { vote_setting } = await getCommonSettings(4);
+      if (vote_setting.is_enabled) {
+        setIsEnabledVotingFeature(true);
+      } else {
+        setIsEnabledVotingFeature(false);
+      }
+    };
+
+    initCheckVotingFeatureEnabled();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     let routeChangeStart = () => NProgress.start();

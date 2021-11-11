@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import Decimal from 'decimal.js';
+import moment from 'moment';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import NumberFormat from 'react-number-format';
@@ -8,12 +9,14 @@ import { usePool } from '../../../hooks/usePool';
 import { IPool } from '../../../sdk/pool/interface';
 import { TOKEN_TO_DECIMALS } from '../../../utils/constants';
 import {
+  getDiffWithCurrent,
   getPoolLogo,
   getPoolStatus,
   getPoolThumbnail,
   renderTokenBalance,
 } from '../../../utils/helper';
 import BalanceBadge from '../../shared/BalanceBadge';
+import CompletedPoolBadge from '../../shared/pool/CompletedPoolBadge';
 import PoolProgressBar from '../../shared/pool/PoolProgressBar';
 import PoolStatus from '../../shared/pool/PoolStatus';
 
@@ -49,6 +52,27 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
   }, [pool.token_ratio, pool.token_total_raise]);
 
   const goToPool = () => handleGoToPoolDetails(pool);
+
+  const upcomingPoolBadge = useMemo(() => {
+    if (moment.unix(now).isAfter(pool.join_pool_start)) {
+      return <span className="text-lg font-semibold text-white uppercase">TBA</span>;
+    }
+
+    return (
+      <div className="flex items-center">
+        <span className="text-sm font-light text-white">Pool Open In</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img alt="button image" className="mx-2" src="/icons/icon_btn_pool.svg" />
+
+        <span className="text-sm font-semibold text-white uppercase">
+          {getDiffWithCurrent(
+            new Date(pool.join_pool_start),
+            new Date(moment.unix(now).toISOString()),
+          )}
+        </span>
+      </div>
+    );
+  }, [now, pool.join_pool_start]);
 
   const poolCardMarkup = useMemo(() => {
     switch (variant) {
@@ -96,7 +120,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
                 <PoolStatus loading={loading} status={status} hide_shape={true} />
               ) : (
                 <button className="flex items-center justify-center w-full h-12 text-sm text-center text-white transition-all duration-200 bg-gray-500 rounded-full hover:bg-gray-600">
-                  Whitelist end in TBA hours
+                  {upcomingPoolBadge}
                 </button>
               )}
             </div>
@@ -176,6 +200,8 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
           </div>
         );
       case 'completed-pool':
+        const isClaimable = moment.unix(now).isAfter(pool.claim_at);
+
         return (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="flex items-start">
@@ -185,8 +211,11 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
               </div>
 
               <div className="relative flex flex-col items-start w-36">
-                <div className="absolute top-0 left-0 mb-4">
-                  <PoolStatus loading={loading} status={status} />
+                <div className="absolute top-0 left-0 flex items-start mb-4">
+                  <div className="mr-2">
+                    <PoolStatus loading={loading} status={status} />
+                  </div>
+                  <CompletedPoolBadge variant={isClaimable ? 'claimable' : 'ended'} />
                 </div>
                 <span className="mt-8 text-sm font-light text-white truncate">{pool.name}</span>
               </div>
