@@ -12,6 +12,7 @@ export interface TokenAccount {
 
 export interface IAllocationLevel {
   level: TAllocationLevel;
+  rank: string;
   color: string;
   textColor: string;
   title: string;

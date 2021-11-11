@@ -13,6 +13,7 @@ import ConfirmStakeModal from '../components/pool/pool-details/modals/ConfirmSta
 import ConfirmUnStakeModal from '../components/pool/pool-details/modals/ConfirmUnStakeModal';
 import StakeSuccessModal from '../components/pool/pool-details/modals/StakeSuccessModal';
 import UnStakeSuccessModal from '../components/pool/pool-details/modals/UnStakeSuccessModal';
+import Guarantees from '../components/pool/pool-list/Guarantees';
 import LoadingScreen from '../components/shared/LoadingScreen';
 import InputRange from '../components/shared/Slider/InputRange';
 import { allocationLevels, envConfig } from '../configs';
@@ -417,17 +418,24 @@ const Staking: React.FC = () => {
             The amount of tokens you hold will dictate how much allocation you will get.
             </div>
 
-            <div className='mt-4 text-white'>
-              <Link href='/about'>
-                <a className='underline'>
-                To view the staking levels of allocation, click here.
-                </a>
-              </Link>
+            <div className='flex flex-col items-center w-full pt-6 mx-auto my-6'>
+              <div className='w-full mb-4 text-xl font-bold tracking-wider text-center text-white'>
+                Levels of guaranteed allocation:
+              </div>
+              <Guarantees levels={allocationLevels} />
+            </div>
+
+            <div className='flex flex-col items-center pt-20 mx-auto my-10'>
+              <div className='text-xs font-semibold text-white'>
+              * W = Pool Weight
+              </div>
             </div>
           </div>
 
+          <div className='py-10'>
+          <div className='grid w-full max-w-screen-lg gap-5 has-1-col bg-hero-pattern bg-hero-pattern bg-100% bg-no-repeat bg-center-50%'>
           {currentLevel > 0 && (
-            <div className='flex justify-center w-full max-w-screen-lg pt-32 pb-10 ralative '>
+            <div className='flex justify-center w-full max-w-screen-lg pt-25 pb-10 ralative '>
               <div className='relative staked-bars'>
                 <div className={`lv${currentLevel}-onbar lvl-bar`}>
                   <div className='lvl-dot'>
@@ -440,8 +448,7 @@ const Staking: React.FC = () => {
               </div>
             </div>
           )}
-          <div className='py-10'>
-          <div className='grid w-full max-w-screen-lg gap-5 has-1-col bg-hero-pattern bg-hero-pattern bg-100% bg-no-repeat bg-center-50%'>
+          
             {(!totalStaked || totalStaked <= 0) && (
               <div className='p-6 text-center border border-white rounded-xl'>
                 You have <b>NOT</b> staked any GMFC yet
