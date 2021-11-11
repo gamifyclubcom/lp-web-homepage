@@ -70,7 +70,7 @@ const CurrentAccountBadge: React.FC = ({ children }) => {
     return (
       <button
         onClick={openModal}
-        className="w-64 h-9 overflow-hidden text-sm font-semibold text-white rounded-full shadow-md bg-secondary-500"
+        className="w-64 h-12 overflow-hidden text-sm font-semibold text-white rounded-full shadow-md bg-secondary-500"
       >
         Connect Wallet
       </button>
@@ -78,14 +78,14 @@ const CurrentAccountBadge: React.FC = ({ children }) => {
   }
   if (!base58) {
     return (
-      <button className="w-64 h-9 overflow-hidden text-sm font-semibold text-white rounded-full shadow-md bg-secondary-500">
+      <button className="w-64 h-12 overflow-hidden text-sm font-semibold text-white rounded-full shadow-md bg-secondary-500">
         Connecting...
       </button>
     );
   }
 
   return (
-    <div className="flex items-center justify-between w-64 h-9 overflow-hidden text-sm rounded-full shadow-md bg-secondary-500">
+    <div className="flex items-center justify-between w-64 h-12 overflow-hidden text-sm rounded-full shadow-md bg-secondary-500">
       <button
         onClick={disconnect}
         className="flex items-center justify-center p-2 mx-2 bg-black rounded-full bg-opacity-30"

@@ -67,12 +67,24 @@ const PoolsRow: React.FC<Props> = ({ pool, loading, isLastItem }) => {
       </td>
       <td className="hidden w-1/4 px-4 py-2 md:table-cell">
         <div className="flex items-center w-full">
-          <span className="uppercase">
+          <span>
             <BalanceBadge
               variant="with-ratio"
               mintFrom={pool.token_to}
               mintTo={pool.token_symbol}
               price={pool.token_ratio}
+              className="text-sm"
+            />
+          </span>
+        </div>
+      </td>
+      <td className="hidden w-1/4 px-4 py-2 md:table-cell">
+        <div className="flex items-center w-full">
+          <span>
+            <BalanceBadge
+              variant="basic"
+              mint={pool.token_to}
+              price={pool.token_total_raise}
               className="text-sm"
             />
           </span>
