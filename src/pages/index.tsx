@@ -11,7 +11,7 @@ import { useGlobal } from '../hooks/useGlobal';
 import { usePool } from '../hooks/usePool';
 import { mappingPoolServerResponse, poolAPI } from '../sdk/pool';
 import { ServerResponsePool } from '../sdk/pool/interface';
-import { PageTitle } from '../shared/enum';
+import { PageTitle, PoolsSectionFilter } from '../shared/enum';
 
 interface Props {
   paginatedPools: PaginateResponse<ServerResponsePool>;
@@ -71,7 +71,7 @@ const Home: React.FC<Props> = ({ paginatedPools }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const paginatedPools = await poolAPI.getPools(query);
+  const paginatedPools = await poolAPI.getPools({ section: PoolsSectionFilter.FEATURED });
 
   return {
     props: {

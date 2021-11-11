@@ -148,21 +148,20 @@ a {
   content: '';
   z-index: 2;
   position: absolute;
-  background: linear-gradient(270deg, #1c0045 0%, rgba(2, 6, 24, 0) 100%);
+  background: linear-gradient(270deg, #1C0045 0%, rgba(2, 6, 24, 0) 100%);
 }
+
 .staked-bars {
   width: 90%;
   display: flex;
   height: 13px;
   border-radius: 10px;
-  background: linear-gradient(
-    90deg,
-    #be0269 0%,
-    #7b11a4 4%,
-    #421bd6 20%,
-    #266cdd 40%,
-    #00d8e4 100%
-  );
+  background: linear-gradient(90deg,
+      #be0269 0%,
+      #7b11a4 4%,
+      #421bd6 20%,
+      #266cdd 40%,
+      #00d8e4 100%);
 }
 
 .lvl-bar {
@@ -170,6 +169,7 @@ a {
   border-radius: 10px;
   position: absolute;
 }
+
 .lvl-dot svg {
   position: absolute;
   left: 40px;
@@ -177,6 +177,7 @@ a {
   width: 20px;
   height: 20px;
 }
+
 .lvl-dot {
   position: absolute;
   right: -48px;
@@ -201,12 +202,15 @@ a {
   top: -50px;
   width: 60px;
 }
+
 .lv5-onbar {
   width: 100%;
 }
+
 .lv5-onbar .lvl-dot {
   background-color: #01d8e4;
 }
+
 .lv5-onbar .lvl-dot svg {
   fill: #01d8e4;
 }
@@ -219,12 +223,15 @@ a {
   top: -50px;
   width: 60px;
 }
+
 .lv4-onbar {
   width: 44%;
 }
+
 .lv4-onbar .lvl-dot {
   background-color: #266cdd;
 }
+
 .lv4-onbar .lvl-dot svg {
   fill: #266cdd;
 }
@@ -237,12 +244,15 @@ a {
   top: -50px;
   width: 60px;
 }
+
 .lv3-onbar {
   width: 20%;
 }
+
 .lv3-onbar .lvl-dot {
   background-color: #421bd6;
 }
+
 .lv3-onbar .lvl-dot svg {
   fill: #421bd6;
 }
@@ -255,12 +265,15 @@ a {
   top: -50px;
   width: 60px;
 }
+
 .lv2-onbar {
   width: 4%;
 }
+
 .lv2-onbar .lvl-dot {
   background-color: #7b11a4;
 }
+
 .lv2-onbar .lvl-dot svg {
   fill: #7b11a4;
 }
@@ -273,12 +286,15 @@ a {
   top: -50px;
   width: 60px;
 }
+
 .lv1-onbar {
   width: 1%;
 }
+
 .lv1-onbar .lvl-dot {
   background-color: #be0369;
 }
+
 .lv1-onbar .lvl-dot svg {
   fill: #be0369;
 }
