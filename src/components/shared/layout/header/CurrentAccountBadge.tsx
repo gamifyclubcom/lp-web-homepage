@@ -12,8 +12,9 @@ const CurrentAccountBadge: React.FC = ({ children }) => {
   const { setAccountBalance, balance } = useGlobal();
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showErr, setShowErr] = useState(false);
 
-  const { alertInfo } = useAlert();
+  const { alertInfo, alertError } = useAlert();
   const { refreshWalletBalance } = useSmartContract();
 
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
@@ -33,7 +34,8 @@ const CurrentAccountBadge: React.FC = ({ children }) => {
 
   const openModal = useCallback(() => {
     setVisible(true);
-  }, [setVisible]);
+    setShowErr(true);
+  }, [setVisible, setShowErr]);
 
   useEffect(() => {
     const initBalance = async () => {
@@ -65,6 +67,24 @@ const CurrentAccountBadge: React.FC = ({ children }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [copied]);
+
+  useEffect(() => {
+    if (wallet && showErr && !visible) {
+      const solanaWallet = typeof window !== 'undefined' && window.solana;
+      const solletWallet = typeof window !== 'undefined' && window.sollet;
+
+      if (
+        wallet.name === 'Phantom' &&
+        (!solanaWallet || (solanaWallet && !solanaWallet.isPhantom))
+      ) {
+        alertError('Please install Phantom wallet extension');
+        setShowErr(false);
+      } else if (wallet.name === 'Sollet (Extension)' && !solletWallet) {
+        alertError('Please install Sollet wallet extension');
+        setShowErr(false);
+      }
+    }
+  }, [wallet, alertError, showErr, visible]);
 
   if (!wallet || (!visible && !connected)) {
     return (
