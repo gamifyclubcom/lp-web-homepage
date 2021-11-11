@@ -70,7 +70,7 @@ const CurrentAccountBadge: React.FC = ({ children }) => {
     return (
       <button
         onClick={openModal}
-        className="w-64 h-9 overflow-hidden text-white rounded-full shadow-md bg-secondary-500 text-sm"
+        className="w-64 h-12 overflow-hidden text-sm font-semibold text-white rounded-full shadow-md bg-secondary-500"
       >
         Connect Wallet
       </button>
@@ -78,14 +78,14 @@ const CurrentAccountBadge: React.FC = ({ children }) => {
   }
   if (!base58) {
     return (
-      <button className="w-64 h-9 overflow-hidden text-white rounded-full shadow-md bg-secondary-500 text-sm">
+      <button className="w-64 h-12 overflow-hidden text-sm font-semibold text-white rounded-full shadow-md bg-secondary-500">
         Connecting...
       </button>
     );
   }
 
   return (
-    <div className="flex items-center justify-between w-64 h-9 overflow-hidden rounded-full shadow-md bg-secondary-500 text-sm">
+    <div className="flex items-center justify-between w-64 h-12 overflow-hidden text-sm rounded-full shadow-md bg-secondary-500">
       <button
         onClick={disconnect}
         className="flex items-center justify-center p-2 mx-2 bg-black rounded-full bg-opacity-30"
@@ -97,7 +97,7 @@ const CurrentAccountBadge: React.FC = ({ children }) => {
         {loading ? (
           <span className="h-3 bg-gray-300 rounded-full w-14 animate-pulse"></span>
         ) : (
-          <span className="ml-auto text-sm text-white">{balance?.formatted} SOL</span>
+          <span className="ml-auto text-sm font-semibold text-white">{balance?.formatted} SOL</span>
         )}
         <div
           onClick={copyAddress}

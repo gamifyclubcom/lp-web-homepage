@@ -1,8 +1,10 @@
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { PublicKey } from '@solana/web3.js';
+import clsx from 'clsx';
 import Decimal from 'decimal.js';
 import moment from 'moment';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useMemo } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import { AiOutlineCheck } from 'react-icons/ai';
 import NumberFormat from 'react-number-format';
@@ -14,6 +16,9 @@ import { poolAPI } from '../../../sdk/pool';
 import { IPool, IPoolStatus } from '../../../sdk/pool/interface';
 import { PoolStatusType } from '../../../shared/enum';
 import { renderTokenBalance } from '../../../utils/helper';
+import BalanceBadge from '../../shared/BalanceBadge';
+import PoolCardTitle from '../../shared/pool/PoolCardTitle';
+import PoolClaimProgressBar from '../../shared/pool/PoolClaimProgressBar';
 import ClaimSuccessModal from './modals/ClaimSuccessModal';
 import ConfirmClaimTokenModal from './modals/ConfirmClaimTokenModal';
 
@@ -52,67 +57,33 @@ const SecuredAllocation: React.FC<Props> = ({
   const { alertSuccess, alertError } = useAlert();
   const { handleUserClaimToken, refreshAllocation, refreshWalletBalance } = useSmartContract();
   const { getPoolFullInfo } = usePool();
-  const { publicKey } = useWallet();
+  const { publicKey, connected } = useWallet();
+  const { setVisible } = useWalletModal();
   const { connection } = useConnection();
   const tokenBalanceMarkup = renderTokenBalance(userAllocation, pool.token_decimals);
   const tokenBalanceClaimableMarkup = renderTokenBalance(
     new Decimal(userAllocation || 0).times(pool.claimable_percentage).dividedBy(100),
     pool.token_decimals,
   );
-
-  const renderClaimAction = () => {
-    let msg = '';
-    let disabled = false;
-    if (
-      moment.unix(now).isAfter(pool.claim_at) &&
-      status.type === PoolStatusType.CLOSED &&
-      userAllocation !== 0 &&
-      !isClaimed
-    ) {
-      msg =
-        pool.claimable_percentage === 100
-          ? `You can now claim your ${pool.token_symbol} tokens!`
-          : `You can now claim your ${tokenBalanceClaimableMarkup} ${pool.token_symbol}`;
-    } else if (isClaimed) {
-      msg = `You've claimed ${tokenBalanceClaimableMarkup} ${pool.token_symbol} on ${moment(
-        userClaimedAt,
-      )
-        .utc()
-        .format('MM/DD/YYYY @ LT')} (UTC)`;
-    } else {
-      disabled = true;
-      msg =
-        pool.claimable_percentage === 100
-          ? `This is how much ${pool.token_symbol} you be able to claim at
-      ${moment(pool.claim_at).utc().format('MMM DD, LT')} (UTC)`
-          : `You can claim ${tokenBalanceClaimableMarkup} ${pool.token_symbol} at ${moment(
-              pool.claim_at,
-            )
-              .utc()
-              .format('MMM DD, LT')} (UTC)`;
+  const claimTokenProgress = useMemo(() => {
+    if (isClaimed) {
+      return 100;
     }
 
-    return (
-      <div className="flex-col items-center justify-center hidden w-full lg:flex">
-        <span className="text-center text-white opacity-75" style={{ maxWidth: 300 }}>
-          {msg}
-        </span>
-        {isClaimed ? (
-          <div className="flex items-center justify-center px-12 py-4 mt-6 overflow-hidden text-green-500 bg-transparent border border-green-500 rounded-full cursor-pointer h-14">
-            Already Claimed <AiOutlineCheck className="ml-3 text-lg" />
-          </div>
-        ) : moment.unix(now).isBefore(pool.join_pool_end) ? null : (
-          <button
-            className="w-48 h-12 mt-6 overflow-hidden text-white transition-all duration-300 bg-green-700 rounded-full hover:bg-green-900"
-            disabled={disabled || isClaimed}
-            onClick={confirmClaim}
-          >
-            Claim token
-          </button>
-        )}
-      </div>
-    );
-  };
+    return 0;
+  }, [isClaimed]);
+
+  const claimContent = useMemo(() => {
+    if (!connected) {
+      return 'Connect Wallet';
+    } else {
+      return 'Claim Tokens';
+    }
+  }, [connected]);
+
+  const canClaim = useMemo(() => {
+    return moment.unix(now).isAfter(pool.claim_at) && !isClaimed;
+  }, [isClaimed, now, pool.claim_at]);
 
   const handleClaimToken = async () => {
     let txId: string;
@@ -188,31 +159,134 @@ const SecuredAllocation: React.FC<Props> = ({
     });
   };
 
+  const handleClaim = async () => {
+    if (!connected) {
+      setVisible(true);
+    } else {
+      confirmClaim();
+    }
+  };
+
   return (
-    <div className="p-4">
-      <div className="flex flex-col items-center py-2">
-        {loading || spinning ? (
-          <span className="w-24 h-6 bg-gray-600 animate-pulse"></span>
-        ) : userAllocation || (!userAllocation && moment.unix(now).isBefore(pool.claim_at)) ? (
-          <>
-            <p className="mb-4 text-4xl font-medium text-white">
+    <div className="w-full p-4">
+      <div className="mb-4">
+        <PoolCardTitle title="Token Claim" />
+      </div>
+
+      <div className="mb-4">
+        <div className="flex items-center my-2">
+          <span className="w-40 text-sm font-semibold text-white opacity-30">
+            Total Bought Tokens
+          </span>
+          <BalanceBadge
+            variant="basic"
+            price={tokenBalanceMarkup}
+            mint={pool.token_symbol}
+            className="text-sm font-semibold text-secondary-400"
+          />
+        </div>
+        <div className="flex items-center my-2">
+          <span className="w-40 text-sm font-semibold text-white opacity-30">Have Bought</span>
+          <div className="flex items-center text-sm font-light text-white">
+            <NumberFormat
+              thousandSeparator
+              value={new Decimal(tokenBalanceMarkup).dividedBy(pool.token_ratio).toNumber()}
+              displayType="text"
+              className="mr-1"
+            />
+            <span className="mr-1">/</span>
+            <NumberFormat
+              thousandSeparator
+              value={new Decimal(tokenBalanceMarkup).dividedBy(pool.token_ratio).toNumber()}
+              displayType="text"
+              className="mr-1"
+            />
+            <span>{pool.token_to}</span>
+          </div>
+          {/* <span className="text-sm font-light text-white">123</span> */}
+        </div>
+        <div className="flex items-center my-2">
+          <span className="w-40 text-sm font-semibold text-white opacity-30">Claim Policy</span>
+          <span className="text-sm font-light text-white">
+            You can claim all token after {moment(pool.claim_at).utc().format('MMM DD, LT')} (UTC)
+          </span>
+        </div>
+        <div className="flex items-center my-2">
+          <span className="w-40 text-sm font-semibold text-white opacity-30">You have claimed</span>
+          <BalanceBadge
+            variant="basic"
+            price={isClaimed ? tokenBalanceMarkup : 0}
+            mint={pool.token_symbol}
+            className="text-sm font-semibold text-secondary-400"
+          />
+        </div>
+      </div>
+
+      <div className="w-full mt-8">
+        <PoolClaimProgressBar progress={claimTokenProgress} loading={loading} />
+        <div className="flex items-start justify-between w-full mt-4">
+          <span className="text-sm font-semibold text-secondary-400">{claimTokenProgress}%</span>
+          <div className="flex flex-col items-end">
+            <div className="flex items-center text-sm font-light text-white">
+              <span className="mr-1 text-sm">100%</span>
+              <span>(</span>
               <NumberFormat
                 thousandSeparator
-                displayType="text"
                 value={tokenBalanceMarkup}
-                className="mr-2"
+                displayType="text"
+                className="text-sm font-light text-white"
               />
-              <span className="text-2xl font-medium uppercase">{pool.token_symbol}</span>
-            </p>
-            {renderClaimAction()}
-          </>
-        ) : (
-          <p className="text-lg text-center text-white opacity-60">
-            Your address did not participate in this pool.
-          </p>
-        )}
+
+              <span>{pool.token_symbol})</span>
+            </div>
+            {isClaimed && (
+              <span className="text-sm font-light text-white opacity-30">
+                {moment(userClaimedAt).utc().format('MM/DD/YYYY @ LT')} (UTC)
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <button
+          onClick={handleClaim}
+          className={clsx(
+            'hidden w-64 h-12 text-sm font-semibold text-center text-white rounded-full bg-secondary-500 lg:block',
+            {
+              'bg-secondary-600': !canClaim,
+            },
+          )}
+          disabled={!canClaim}
+        >
+          {claimContent}
+        </button>
       </div>
     </div>
+    // <div className="p-4">
+    //   <div className="flex flex-col items-center py-2">
+    //     {loading || spinning ? (
+    //       <span className="w-24 h-6 bg-gray-600 animate-pulse"></span>
+    //     ) : userAllocation || (!userAllocation && moment.unix(now).isBefore(pool.claim_at)) ? (
+    //       <>
+    //         <p className="mb-4 text-4xl font-medium text-white">
+    //           <NumberFormat
+    //             thousandSeparator
+    //             displayType="text"
+    //             value={tokenBalanceMarkup}
+    //             className="mr-2"
+    //           />
+    //           <span className="text-2xl font-medium uppercase">{pool.token_symbol}</span>
+    //         </p>
+    //         {renderClaimAction()}
+    //       </>
+    //     ) : (
+    //       <p className="text-lg text-center text-white opacity-60">
+    //         Your address did not participate in this pool.
+    //       </p>
+    //     )}
+    //   </div>
+    // </div>
   );
 };
 

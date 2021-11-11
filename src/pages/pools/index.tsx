@@ -87,12 +87,8 @@ const Pools: React.FC<Props> = () => {
         {upcomingPools.length > 0 && (
           <div className="flex flex-col items-center w-full p-8">
             <h3 className="mb-8 text-2xl font-light text-center text-white">Upcoming Pools</h3>
-
             <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
               {upcomingLoading && <PoolCardLoading variant="upcoming-pool" />}
-              {upcomingPools.length <= 0 && (
-                <span className="text-sm text-white">No Pools Founds</span>
-              )}
               {upcomingPools.slice(0, 3).map((pool) => (
                 <div key={pool.id}>
                   <PoolCard variant="upcoming-pool" pool={pool} loading={upcomingLoading} />
@@ -108,9 +104,6 @@ const Pools: React.FC<Props> = () => {
 
             <div className="grid w-full grid-cols-1 gap-4">
               {featureLoading && <PoolCardLoading variant="feature-pool" />}
-              {featurePools.length <= 0 && (
-                <span className="text-sm text-white">No Pools Founds</span>
-              )}
               {featurePools.slice(0, 5).map((pool) => (
                 <div className="w-full mx-auto" style={{ maxWidth: 800 }} key={pool.id}>
                   <PoolCard variant="feature-pool" pool={pool} loading={featureLoading} />
@@ -123,24 +116,19 @@ const Pools: React.FC<Props> = () => {
         {completedPools.length > 0 && (
           <div className="flex flex-col items-center w-full p-8">
             <h3 className="mb-8 text-2xl font-light text-center text-white">Completed Pools</h3>
-
             <div className="grid w-full grid-cols-1 gap-4">
               {completedLoading && <PoolCardLoading variant="completed-pool" />}
-              {completedPools.length <= 0 && (
-                <span className="text-sm text-white">No Pools Founds</span>
-              )}
               {completedPools.slice(0, 5).map((pool) => (
                 <div className="w-full" key={pool.id}>
                   <PoolCard variant="completed-pool" pool={pool} loading={completedLoading} />
                 </div>
               ))}
             </div>
-
-            <div className="mt-8">
-              <ViewAllPoolBtn />
-            </div>
           </div>
         )}
+        <div className="flex items-center justify-center mt-8">
+          <ViewAllPoolBtn />
+        </div>
         <div className="flex flex-col items-center w-full p-8 mt-12">
           <h3 className="mb-8 text-4xl font-light text-center text-pool_title">
             Want to launch your game on Gamify?

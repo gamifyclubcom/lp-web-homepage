@@ -49,6 +49,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
     return new Decimal(pool.token_max_contribution_size).dividedBy(pool.token_ratio);
   });
   const [userClaimedAt, setUserClaimedAt] = useState<string | undefined>(undefined);
+  const [joinPoolDates, setJoinPoolDates] = useState<string[]>([]);
   const status = useMemo(() => {
     return getPoolStatus({
       start_date: pool.start_date,
@@ -111,6 +112,8 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
     const init = async () => {
       setFetching(true);
       await fetchPool();
+      const userJoinPoolHistory = await poolAPI.getUserJoinPoolHistory('', ''); // TODO: Should update
+      setJoinPoolDates(userJoinPoolHistory);
       setFetching(false);
     };
 
@@ -190,12 +193,13 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
               telegram={pool.telegram}
               twitter={pool.twitter}
               image={pool.logo}
+              description={pool.description}
             />
           </div>
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <div className="flex flex-col">
-              <div className="w-full mb-4 overflow-hidden bg-gray-800 rounded-lg">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 lg:col-span-1">
+              <div className="w-full overflow-hidden bg-gray-800 rounded-lg">
                 <PoolSwapInfo
                   totalRaise={pool.token_total_raise}
                   participants={participants}
@@ -208,7 +212,13 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
                   loading={fetching}
                 />
               </div>
-
+            </div>
+            <div className="col-span-2 lg:col-span-1">
+              <div className="w-full h-full overflow-hidden bg-gray-800 rounded-lg">
+                <PoolRounds pool={pool} whitelistStatus="" disabled={false} loading={fetching} />
+              </div>
+            </div>
+            <div className="col-span-2">
               <div className="w-full overflow-hidden bg-gray-800 rounded-lg">
                 <PoolSwapAction
                   contributionLevel={allocationLevel}
@@ -222,6 +232,8 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
                   participantAddress={participantAddress}
                   allocationLevel={allocationLevel}
                   maxContributeSize={maxContributeSize.toNumber()}
+                  currentSwap={tokenCurrentRaise}
+                  joinPoolDates={joinPoolDates}
                   setSpinning={setSpinning}
                   setIsClaimed={setIsClaimed}
                   setAllocation={setAllocation}
@@ -232,14 +244,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
                 />
               </div>
             </div>
-
-            <div className="flex flex-col">
-              {!isPoolEnd && (
-                <div className="w-full mb-4 overflow-hidden bg-gray-800 rounded-lg">
-                  <PoolRounds pool={pool} whitelistStatus="" disabled={false} />
-                </div>
-              )}
-
+            <div className="col-span-2">
               <div className="w-full overflow-hidden bg-gray-800 rounded-lg">
                 <SecuredAllocation
                   status={status}

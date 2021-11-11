@@ -12,6 +12,7 @@ export interface TokenAccount {
 
 export interface IAllocationLevel {
   level: TAllocationLevel;
+  rank: string;
   color: string;
   textColor: string;
   title: string;
@@ -34,4 +35,12 @@ export interface INavbarPoolMenu {
   key: string;
   section?: PoolsSectionFilter | PoolsVotingFilter;
   needConnectWallet: boolean;
+}
+
+export interface ITimeline {
+  key: string;
+  index: number;
+  name: string;
+  startAt?: Date;
+  endAt?: Date;
 }

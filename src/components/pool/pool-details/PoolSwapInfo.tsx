@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
 import Decimal from 'decimal.js';
+import { useMemo } from 'react';
 import { IPoolStatus } from '../../../sdk/pool/interface';
-import { transformLamportsToSOL } from '../../../utils/helper';
+import { TOKEN_TO_DECIMALS } from '../../../utils/constants';
 import BalanceBadge from '../../shared/BalanceBadge';
+import PoolCardTitle from '../../shared/pool/PoolCardTitle';
 import PoolProgressBar from '../../shared/pool/PoolProgressBar';
 import PoolStatus from '../../shared/pool/PoolStatus';
 
@@ -30,14 +31,17 @@ const PoolSwapInfo: React.FC<Props> = ({
   loading,
 }) => {
   const tokenFromLeft = useMemo(() => {
-    return transformLamportsToSOL(new Decimal(totalRaise).minus(currentSwap).toNumber());
-  }, [currentSwap, totalRaise]);
+    return new Decimal(totalRaise)
+      .minus(currentSwap)
+      .dividedBy(tokenRatio)
+      .toFixed(TOKEN_TO_DECIMALS);
+  }, [currentSwap, totalRaise, tokenRatio]);
   const progressExtraMarkup = `(${tokenFromLeft} ${mintTokenFrom} left) ${currentSwap} / ${totalRaise} ${mintTokenTo}`;
 
   return (
     <div className="flex flex-col p-4">
       <div className="flex items-start justify-between mb-8">
-        <h1 className="text-lg font-semibold text-white uppercase">Swap Info</h1>
+        <PoolCardTitle title="Swap Info" />
         <PoolStatus status={status} loading={loading} />
       </div>
 
@@ -47,7 +51,9 @@ const PoolSwapInfo: React.FC<Props> = ({
           <BalanceBadge
             mint="SOL"
             variant="basic"
-            price={1300}
+            price={parseFloat(
+              new Decimal(totalRaise).dividedBy(tokenRatio).toFixed(TOKEN_TO_DECIMALS),
+            )}
             className="text-2xl font-semibold text-secondary-400"
           />
         </div>
@@ -58,7 +64,7 @@ const PoolSwapInfo: React.FC<Props> = ({
             mintFrom={mintTokenFrom}
             mintTo={mintTokenTo}
             price={tokenRatio}
-            className="mb-4 text-white uppercase opacity-30"
+            className="mb-4 text-white opacity-30"
           />
           <div className="flex items-center justify-between">
             <span className="text-sm text-white">Participants</span>

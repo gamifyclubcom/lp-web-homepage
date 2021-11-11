@@ -30,16 +30,16 @@ const ScrollTop: React.FC = () => {
   return (
     <div
       onClick={scrollToTop}
-      className="fixed text-center text-white bottom-4 md:bottom-20 right-2 md:right-10 z-50 cursor-pointer"
+      className="fixed z-50 text-center text-white cursor-pointer bottom-4 md:bottom-20 right-2 md:right-10"
     >
       <Image
         width={32}
         height={32}
         src="/images/up-top.svg"
         alt="up top"
-        className="text-center z-50"
+        className="z-50 text-center"
       />
-      <div className="text-sm hidden md:block">Back to Top</div>
+      <div className="hidden text-sm md:block">Back to Top</div>
     </div>
   );
 };
