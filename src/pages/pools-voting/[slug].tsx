@@ -80,8 +80,8 @@ const PoolsVotingDetails: React.FC<Props> = ({ poolVotingServer }) => {
     <Layout title={PageTitle.PoolsVotingPage + ' | ' + poolVoting.name}>
       <LoadingScreen loading={fetching} />
 
-      <div className="mx-auto layout-container">
-        <div className="pt-24">
+      <div className="mx-auto layout-container md:px-12">
+        <div className="pt-12">
           <div className="mb-8">
             <DetailsLeadingInfo
               name={poolVoting.name}

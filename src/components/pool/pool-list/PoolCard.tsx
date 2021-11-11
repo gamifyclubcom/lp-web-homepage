@@ -215,7 +215,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
                   <div className="mr-2">
                     <PoolStatus loading={loading} status={status} />
                   </div>
-                  <CompletedPoolBadge variant={isClaimable ? 'claimable' : 'ended'} />
+                  <CompletedPoolBadge variant="claimable" />
                 </div>
                 <span className="mt-8 text-sm font-light text-white truncate">{pool.name}</span>
               </div>

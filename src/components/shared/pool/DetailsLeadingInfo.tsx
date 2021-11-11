@@ -42,7 +42,13 @@ const DetailsLeadingInfo: React.FC<Props> = ({
         </h1>
       </div>
 
-      <ul className="flex items-center justify-between mb-4">
+      {description && (
+        <span className="max-w-md mb-4 text-sm font-light text-center text-white truncate">
+          {description}
+        </span>
+      )}
+
+      <ul className="flex items-center justify-between">
         <li className="mx-4">
           <a href={tokenAddressUrl} target="_blank" rel="noreferrer" className="flex items-center">
             <Image src="/icons/contract-icon.svg" width={24} height={24} alt="Token logo" />
@@ -70,12 +76,6 @@ const DetailsLeadingInfo: React.FC<Props> = ({
           </li>
         )}
       </ul>
-
-      {description && (
-        <span className="max-w-md text-xs font-light text-center text-white truncate">
-          {description}
-        </span>
-      )}
     </div>
   );
 };

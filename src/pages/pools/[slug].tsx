@@ -182,8 +182,8 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
     <Layout title={PageTitle.PoolsPage + ' | ' + pool.name}>
       <LoadingScreen loading={fetching || spinning} />
 
-      <div className="mx-auto layout-container">
-        <div className="pt-24">
+      <div className="mx-auto md:px-12 layout-container">
+        <div className="pt-12">
           <div className="mb-8">
             <DetailsLeadingInfo
               name={pool.name}
