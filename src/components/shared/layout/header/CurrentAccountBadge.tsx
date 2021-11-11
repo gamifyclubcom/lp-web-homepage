@@ -8,7 +8,7 @@ import useSmartContract from '../../../../hooks/useSmartContract';
 
 const CurrentAccountBadge: React.FC = ({ children }) => {
   const { publicKey, wallet, connected, disconnect } = useWallet();
-  const { setVisible } = useWalletModal();
+  const { visible, setVisible } = useWalletModal();
   const { setAccountBalance, balance } = useGlobal();
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -66,7 +66,7 @@ const CurrentAccountBadge: React.FC = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [copied]);
 
-  if (!wallet) {
+  if (!wallet || (!visible && !connected)) {
     return (
       <button
         onClick={openModal}
