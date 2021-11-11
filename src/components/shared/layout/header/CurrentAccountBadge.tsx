@@ -7,7 +7,7 @@ import { useGlobal } from '../../../../hooks/useGlobal';
 import useSmartContract from '../../../../hooks/useSmartContract';
 
 const CurrentAccountBadge: React.FC = ({ children }) => {
-  const { publicKey, wallet, connected, disconnect } = useWallet();
+  const { publicKey, wallet, connected, connecting, disconnect } = useWallet();
   const { setVisible } = useWalletModal();
   const { setAccountBalance, balance } = useGlobal();
   const [copied, setCopied] = useState(false);
@@ -65,7 +65,7 @@ const CurrentAccountBadge: React.FC = ({ children }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [copied]);
-
+  console.log(connecting, wallet, base58, content);
   if (!wallet) {
     return (
       <button

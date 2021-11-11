@@ -52,6 +52,9 @@ module.exports = {
         modal_unstake_header: '#872020',
         pool_title: '#733434',
         staking: '#022BBE',
+        gcpurp: {
+          200: 'rgba(217,191,245,1)'
+        }
       },
       backgroundImage: {
         'pools-voting-list': "url('/images/gamify_bg_orb.jpeg')",
