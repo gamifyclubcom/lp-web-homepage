@@ -25,9 +25,10 @@ interface Props {
   pool: IPool;
   loading: boolean;
   is_home?: boolean;
+  auto_scroll?: boolean;
 }
 
-const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
+const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scroll }) => {
   const { now } = useGlobal();
   const { handleGoToPoolDetails } = usePool();
   const thumbnail = useMemo(() => getPoolThumbnail(pool.thumbnail), [pool.thumbnail]);
@@ -291,7 +292,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home }) => {
     <div
       onClick={goToPool}
       className={clsx('w-full p-4 overflow-hidden bg-gray-800 rounded-lg cursor-pointer', {
-        'w-300p min-w-300px': is_home,
+        'w-300p min-w-300px': is_home && auto_scroll,
       })}
     >
       {poolCardMarkup}
