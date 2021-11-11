@@ -12,10 +12,10 @@ const Banner: React.FC<Props> = () => {
             <h1 className="text-white text-4xl lg:text-5xl font-medium pb-3 md:pb-5">
               The All-In-One Hub for the Solana Metaverse
             </h1>
-            <span className="text-gcpurp-200 font-medium md:text-2xl pb-3">
+            <span className="text-white font-medium md:text-2xl pb-3">
               Metaverse Marketplace | Guild Integrator | Game Launchpad
             </span>
-            <p className="text-gcpurp-200 font-light text-normal text-lg">
+            <p className="text-white font-light text-normal text-lg">
               Welcome to Gamify Club, a single platform to enhance your play-to-earn gaming
               experience: For players, guilds, investors & project owners. Your club for game
               finance.
