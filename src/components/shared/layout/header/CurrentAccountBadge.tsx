@@ -70,7 +70,9 @@ const CurrentAccountBadge: React.FC = ({ children }) => {
 
   useEffect(() => {
     if (wallet && showErr && !visible) {
+      // @ts-ignore
       const solanaWallet = typeof window !== 'undefined' && window.solana;
+      // @ts-ignore
       const solletWallet = typeof window !== 'undefined' && window.sollet;
 
       if (

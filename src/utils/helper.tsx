@@ -47,7 +47,7 @@ export const getPercent = (curr: number, total: number): number => {
 // open: start_date --> current_date --> end_date
 // closed: start_date --> end_date --> current_date
 // timeline: start_date -> join_pool_start -> join_pool_end
-const getDiffWithCurrent = (futureDate: Date, passDate: Date): string => {
+export const getDiffWithCurrent = (futureDate: Date, passDate: Date): string => {
   let diff: number;
 
   if (moment(futureDate).diff(passDate, 'days') > 0) {
