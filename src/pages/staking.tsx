@@ -431,7 +431,7 @@ const Staking: React.FC = () => {
             </div>
           </div>
 
-          <div className='py-10'>
+          <div className='pt-10'>
           <div className='grid w-full max-w-screen-lg gap-5 has-1-col bg-hero-pattern bg-hero-pattern bg-100% bg-no-repeat bg-center-50%'>
           {currentLevel > 0 && (
             <div className='flex justify-center w-full max-w-screen-lg pt-25 pb-10 ralative '>
@@ -454,7 +454,7 @@ const Staking: React.FC = () => {
               </div>
             )}
 
-            <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+            <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 mb-6'>
               {/* HAS STAKED ISOLA STATE */}
               {/* %%%%%%%%%%%%%%%% SIDE NOTE: the bg of the header and unstake buttons must match the level of staking color. %%%%%%%%%%%%%%%%% */}
               {/* %%%%%%%%%%%%%%%% level 1: BE0369    level2: 7B11A4   level3: 421BD6   level4:266CDD   level5: 01D8E4 %%%%%%%%%%%%%%%%% */}
@@ -654,15 +654,6 @@ const Staking: React.FC = () => {
               {/* END STAKED ISOLA BOX */}
             </div>
 
-            <div className='flex justify-center w-full pt-3'>
-              <a
-                className='flex flex-col px-6 py-2 font-semibold text-center text-white uppercase rounded-md md:flex-row bg-staking hover:bg-opacity-60 text-bold'
-                href='https://raydium.io/swap/?ammId=69Mo81rUPDgru4UbigPQovx7cYBxpEm44qQok8wcut4M'
-              >
-                Buy GMFC now on{' '}
-                <img src='/images/radium_logo.svg' className='ml-3 w-28' />
-              </a>
-            </div>
           </div>
           </div>
         </div>
