@@ -506,6 +506,11 @@ const Staking: React.FC = () => {
                             value: new Decimal(value),
                             formatted: formattedValue,
                           });
+                        } else {
+                          setAmountUnStake({
+                            value: new Decimal(0),
+                            formatted: '0',
+                          });
                         }
                       }}
                       onFocus={e => e.target.select()}
@@ -600,6 +605,14 @@ const Staking: React.FC = () => {
                               setAmountStake({
                                 value: new Decimal(value),
                                 formatted: formattedValue,
+                              });
+                            } else {
+                              setSliderValue(() => {
+                                return new Decimal(0).toNumber();
+                              });
+                              setAmountStake({
+                                value: new Decimal(0),
+                                formatted: '0',
                               });
                             }
                           }}
