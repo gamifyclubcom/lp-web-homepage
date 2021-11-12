@@ -22,7 +22,6 @@ import useSmartContract from '../hooks/useSmartContract';
 import { useGlobal } from '../hooks/useGlobal';
 import { poolAPI } from '../sdk/pool';
 import { IAllocationLevel } from '../shared/interface';
-import { Errors } from '../utils/errors';
 import { getUserAllocationLevel, isEmpty } from '../utils/helper';
 
 
@@ -320,7 +319,7 @@ const Staking: React.FC = () => {
             alertSuccess('User stake success');
           })
           .catch(err => {
-            if (err.message !== Errors.TransactionCancelled.message) {
+            if (typeof err.err === 'undefined') {
               alertError(err.message);
             }
           })
@@ -385,7 +384,7 @@ const Staking: React.FC = () => {
             alertSuccess('User unStake success!');
           })
           .catch(err => {
-            if (err.message !== Errors.TransactionCancelled.message) {
+            if (typeof err.err === 'undefined') {
               alertError(err.message);
             }
           })
