@@ -21,7 +21,7 @@ const Banner: React.FC<Props> = () => {
               finance.
             </p>
             <div className="mt-4 md:mt-14">
-              <ViewAllPoolBtn link="/pools" content="View All Pools" />
+              <ViewAllPoolBtn link="/pools" content="View All Projects" />
             </div>
           </div>
         </div>
