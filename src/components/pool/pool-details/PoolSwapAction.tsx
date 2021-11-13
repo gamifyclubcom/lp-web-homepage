@@ -18,7 +18,6 @@ import { isEmpty, isInWhitelistRound, roundNumberByDecimal } from '../../../util
 import BalanceBadge from '../../shared/BalanceBadge';
 import MaxButton from '../../shared/MaxButton';
 import PoolCardTitle from '../../shared/pool/PoolCardTitle';
-import AllocationLevel from './AllocationLevel';
 import ConfirmJoinModal from './modals/ConfirmJoinModal';
 import JoinPoolSuccessModal from './modals/JoinPoolSuccessModal';
 
@@ -36,6 +35,7 @@ interface Props {
   maxContributeSize: number;
   currentSwap: number;
   joinPoolDates: string[];
+  allowContribute: boolean;
   setSpinning: Dispatch<SetStateAction<boolean>>;
   setIsClaimed: Dispatch<SetStateAction<boolean>>;
   setAllocation: Dispatch<SetStateAction<number | null>>;
@@ -43,6 +43,7 @@ interface Props {
   setProgress: Dispatch<SetStateAction<number>>;
   setTokenCurrentRaise: Dispatch<SetStateAction<number>>;
   setMaxContributeSize: Dispatch<SetStateAction<Decimal>>;
+  setJoinPoolDates: Dispatch<SetStateAction<string[]>>;
 }
 
 const PoolSwapAction: React.FC<Props> = ({
@@ -59,6 +60,7 @@ const PoolSwapAction: React.FC<Props> = ({
   maxContributeSize,
   currentSwap,
   joinPoolDates,
+  allowContribute,
   setSpinning,
   setIsClaimed,
   setAllocation,
@@ -66,6 +68,7 @@ const PoolSwapAction: React.FC<Props> = ({
   setProgress,
   setTokenCurrentRaise,
   setMaxContributeSize,
+  setJoinPoolDates,
 }) => {
   const { connection } = useConnection();
   const { now, balance, setAccountBalance } = useGlobal();
@@ -230,6 +233,12 @@ const PoolSwapAction: React.FC<Props> = ({
       const newMaxContributeSize = await getUserMaxContributeSize(pool, allocationLevel);
       setMaxContributeSize(new Decimal(newMaxContributeSize));
 
+      const newUserJoinPoolHistories = await poolAPI.getUserJoinPoolHistory(
+        publicKey!.toString(),
+        pool.contract_address.toString(),
+      );
+      setJoinPoolDates(newUserJoinPoolHistories);
+
       setAmountSwap({
         value: new Decimal(0),
         formatted: '0',
@@ -369,85 +378,33 @@ const PoolSwapAction: React.FC<Props> = ({
             <h6 className="mb-2 text-sm font-semibold text-white">You will get approximately</h6>
             <BalanceBadge
               variant="basic"
-              mint={pool.token_to}
-              price={amountSwap.value.toNumber()}
-              className="text-lg font-semibold uppercase text-secondary-400"
+              mint={pool.token_symbol}
+              price={parseFloat(
+                new Decimal(amountSwap.value).times(pool.token_ratio).toFixed(pool.token_decimals),
+              )}
+              className="text-lg font-semibold text-secondary-400"
             />
           </div>
 
           <div className="flex items-center justify-center w-full mt-8">
-            <button
-              onClick={handleContribute}
-              className={clsx(
-                'hidden w-64 h-12 text-sm font-semibold text-center text-white rounded-full bg-secondary-500 lg:block',
-                {
-                  'bg-secondary-600': !canSwap,
-                },
-              )}
-              disabled={!canSwap}
-            >
-              {contributeButtonContent}
-            </button>
+            {allowContribute && (
+              <button
+                onClick={handleContribute}
+                className={clsx(
+                  'hidden w-64 h-12 text-sm font-semibold text-center text-white rounded-full bg-secondary-500 lg:block',
+                  {
+                    'bg-secondary-600': !canSwap,
+                  },
+                )}
+                disabled={!canSwap}
+              >
+                {contributeButtonContent}
+              </button>
+            )}
           </div>
         </div>
       </div>
     </div>
-    // <div className="p-4">
-    //   <div className="flex flex-col mb-4">
-    //     <div className="flex items-center justify-between">
-    //       <span className="text-xs text-white">Contribution Level</span>
-    //       <AllocationLevel currLevel={contributionLevel} />
-    //     </div>
-    //     <span className="text-xs text-white">Swap Amount: {allocation}</span>
-    //     <span className="text-xs text-white">
-    //       Your guaranteed allocation for exclusive round: {guaranteedAllocationExclusiveRound}
-    //     </span>
-    //     <span className="text-xs text-white">
-    //       Your current contribution: {currentContribution}/{maxAllocation}
-    //     </span>
-    //   </div>
-
-    //   <div className="flex items-center justify-between">
-    //     <div className="flex flex-col">
-    //       <span className="text-sm font-semibold text-white">Balance</span>
-    //       <span className="text-sm font-light text-white uppercase">{balance.formatted} SOL</span>
-    //     </div>
-
-    //     <div className="relative">
-    //       <MaxButton isDisabled={!canSwap} onClick={handleGetMaxValueCanSwap} />
-    //       <NumberFormat
-    //         thousandSeparator={true}
-    //         value={amountSwap.value.toNumber()}
-    //         onValueChange={(values) => {
-    //           const { formattedValue, value } = values;
-    //           if (!isEmpty(value)) {
-    //             setAmountSwap({
-    //               value: new Decimal(value),
-    //               formatted: formattedValue,
-    //             });
-    //           } else {
-    //             setAmountSwap({
-    //               value: new Decimal(0),
-    //               formatted: '0',
-    //             });
-    //           }
-    //         }}
-    //         onFocus={(e) => e.target.select()}
-    //         className="flex-1 w-56 px-2 py-1 pl-16 pr-2 text-3xl font-medium text-right bg-transparent border border-gray-500 rounded-md text-secondary-400 focus:outline-none"
-    //         disabled={!canSwap}
-    //       />
-    //     </div>
-    //   </div>
-
-    //   <div className="mt-4">
-    //     <button
-    //       onClick={handleContribute}
-    //       className="hidden w-full h-12 text-lg font-semibold text-center text-white rounded-full bg-primary-400 lg:block"
-    //     >
-    //       {contributeButtonContent}
-    //     </button>
-    //   </div>
-    // </div>
   );
 };
 

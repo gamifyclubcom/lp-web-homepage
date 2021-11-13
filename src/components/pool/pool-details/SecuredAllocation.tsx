@@ -263,30 +263,6 @@ const SecuredAllocation: React.FC<Props> = ({
         </button>
       </div>
     </div>
-    // <div className="p-4">
-    //   <div className="flex flex-col items-center py-2">
-    //     {loading || spinning ? (
-    //       <span className="w-24 h-6 bg-gray-600 animate-pulse"></span>
-    //     ) : userAllocation || (!userAllocation && moment.unix(now).isBefore(pool.claim_at)) ? (
-    //       <>
-    //         <p className="mb-4 text-4xl font-medium text-white">
-    //           <NumberFormat
-    //             thousandSeparator
-    //             displayType="text"
-    //             value={tokenBalanceMarkup}
-    //             className="mr-2"
-    //           />
-    //           <span className="text-2xl font-medium uppercase">{pool.token_symbol}</span>
-    //         </p>
-    //         {renderClaimAction()}
-    //       </>
-    //     ) : (
-    //       <p className="text-lg text-center text-white opacity-60">
-    //         Your address did not participate in this pool.
-    //       </p>
-    //     )}
-    //   </div>
-    // </div>
   );
 };
 
