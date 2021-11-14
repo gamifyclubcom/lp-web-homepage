@@ -5,7 +5,7 @@ import Button from '../button';
 
 const HomeStakePool: React.FC = () => {
   return (
-    <div className="layout-container text-center md:flex md:text-left pt-32 lg:pt-64 justify-center items-center">
+    <div className="layout-container text-center md:flex md:text-left pt-32 lg:pt-40 justify-center items-center">
       <Image width={460} height={411} src="/images/gamify_central.jpeg" alt="gamify central" />
       <CardText
         title={'Staking Pools'}

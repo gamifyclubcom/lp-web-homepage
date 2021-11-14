@@ -15,26 +15,26 @@ const PoolCountDownItem: React.FC<Props> = ({ label, value, active, variant = 'd
       })}
     >
       <span
-        className={clsx('mb-2 text-sm uppercase opacity-75', {
-          'opacity-30': !active,
-        })}
-      >
-        {label}
-      </span>
-      <span
         suppressHydrationWarning
         className={clsx(
-          'w-full p-2 text-lg font-semibold text-center rounded-md relative overflow-hidden',
+          'w-full p-2 text-2xl font-semibold text-center rounded-md relative overflow-hidden',
           {
-            'text-secondary-300': active,
+            'text-white': active,
             'opacity-50': !active,
-            'bg-gray-900': variant === 'dark',
-            'bg-gray-700': variant === 'light',
+            /* 'bg-gray-900': variant === 'dark',
+            'bg-gray-700': variant === 'light', */
           },
         )}
       >
         {!active && <span className="absolute inset-0 bg-white opacity-50" />}
         {value}
+      </span>
+      <span
+        className={clsx('text-sm uppercase opacity-75', {
+          'opacity-30': !active,
+        })}
+      >
+        {label}
       </span>
     </div>
   );

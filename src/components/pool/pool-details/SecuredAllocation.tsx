@@ -182,7 +182,7 @@ const SecuredAllocation: React.FC<Props> = ({
             variant="basic"
             price={tokenBalanceMarkup}
             mint={pool.token_symbol}
-            className="text-sm font-semibold text-secondary-400"
+            className="text-sm font-semibold text-pool_focus_1"
           />
         </div>
         <div className="flex items-center my-2">
@@ -217,7 +217,7 @@ const SecuredAllocation: React.FC<Props> = ({
             variant="basic"
             price={isClaimed ? tokenBalanceMarkup : 0}
             mint={pool.token_symbol}
-            className="text-sm font-semibold text-secondary-400"
+            className="text-sm font-semibold text-pool_focus_1"
           />
         </div>
       </div>
@@ -225,7 +225,7 @@ const SecuredAllocation: React.FC<Props> = ({
       <div className="w-full mt-8">
         <PoolClaimProgressBar progress={claimTokenProgress} loading={loading} />
         <div className="flex items-start justify-between w-full mt-4">
-          <span className="text-sm font-semibold text-secondary-400">{claimTokenProgress}%</span>
+          <span className="text-sm text-pool_focus_1">{claimTokenProgress}%</span>
           <div className="flex flex-col items-end">
             <div className="flex items-center text-sm font-light text-white">
               <span className="mr-1 text-sm">100%</span>
@@ -252,7 +252,7 @@ const SecuredAllocation: React.FC<Props> = ({
         <button
           onClick={handleClaim}
           className={clsx(
-            'hidden w-64 h-12 text-sm font-semibold text-center text-white rounded-full bg-secondary-500 lg:block',
+            'hidden w-64 h-12 text-sm text-center text-white rounded-full bg-secondary-500 lg:block',
             {
               'bg-secondary-600': !canClaim,
             },

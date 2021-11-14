@@ -3,7 +3,7 @@ interface Props {
 }
 
 const PoolCardTitle: React.FC<Props> = ({ title }) => {
-  return <h2 className="text-xl font-semibold text-white uppercase opacity-30">{title}</h2>;
+  return <h2 className="text-base text-white uppercase">{title}</h2>;
 };
 
 export default PoolCardTitle;

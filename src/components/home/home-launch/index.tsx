@@ -77,7 +77,7 @@ const HomeLaunch: React.FC = () => {
       >
         Apply to launch
       </Button>
-      <ul className="mt-6 mb-20 md:mb-64">
+      <ul className="mt-6 mb-10">
         {games.map((game, ind) => (
           <li key={ind} className={`inline-block ${ind !== 0 ? 'ml-1.5' : ''}`}>
             <Image

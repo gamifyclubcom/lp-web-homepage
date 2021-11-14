@@ -54,7 +54,8 @@ module.exports = {
         staking: '#022BBE',
         gcpurp: {
           200: 'rgba(217,191,245,1)'
-        }
+        },
+        pool_focus_1: '#6398FF'
       },
       backgroundImage: {
         'pools-voting-list': "url('/images/gamify_bg_orb.jpeg')",
@@ -75,7 +76,9 @@ module.exports = {
         '3232DC': '#3232DC',
         '38383D': '#38383D',
         222228: '#222228',
-        '1e1945': '#1e1945'
+        '1e1945': '#1e1945',
+        '303035': '#303035',
+        pool_focus_1: '#6398FF'
       },
       padding: {
         325: '325px',

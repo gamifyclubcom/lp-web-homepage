@@ -336,19 +336,19 @@ const PoolSwapAction: React.FC<Props> = ({
         </div>
 
         <div className="w-full col-span-2 p-4 md:col-span-1">
-          <div className="flex items-center justify-between w-full mb-4">
-            <span className="text-sm font-semibold text-white">Your Wallet Balance</span>
+          <div className="flex items-center justify-between w-full mb-1">
+            <span className="text-sm text-white">Your Wallet Balance</span>
             <BalanceBadge
               variant="basic"
               mint={pool.token_to}
               price={balance.value || 0}
-              className="text-sm font-semibold uppercase text-secondary-400"
+              className="text-sm font-semibold uppercase text-pool_focus_1"
             />
           </div>
 
           <div className="relative w-full mb-8">
             <MaxButton isDisabled={!canSwap} onClick={handleGetMaxValueCanSwap} />
-            <span className="absolute flex items-center justify-center h-full font-semibold text-white uppercase right-14">
+            <span className="absolute flex items-center justify-center h-full font-semibold text-white uppercase right-20">
               {pool.token_to}
             </span>
             <NumberFormat
@@ -369,7 +369,7 @@ const PoolSwapAction: React.FC<Props> = ({
                 }
               }}
               onFocus={(e) => e.target.select()}
-              className="flex-1 w-full px-2 py-1 pl-2 pr-32 text-3xl font-medium bg-transparent border border-gray-500 rounded-md text-secondary-400 focus:outline-none"
+              className="flex-1 w-full px-2 py-1 pl-2 pr-32 text-3xl font-medium bg-transparent border border-gray-500 rounded-md text-pool_focus_1 focus:outline-none"
               disabled={!canSwap}
             />
           </div>
@@ -382,7 +382,7 @@ const PoolSwapAction: React.FC<Props> = ({
               price={parseFloat(
                 new Decimal(amountSwap.value).times(pool.token_ratio).toFixed(pool.token_decimals),
               )}
-              className="text-lg font-semibold text-secondary-400"
+              className="text-lg font-semibold text-pool_focus_1"
             />
           </div>
 
@@ -391,7 +391,7 @@ const PoolSwapAction: React.FC<Props> = ({
               <button
                 onClick={handleContribute}
                 className={clsx(
-                  'hidden w-64 h-12 text-sm font-semibold text-center text-white rounded-full bg-secondary-500 lg:block',
+                  'hidden w-64 h-12 text-sm text-center text-white rounded-full bg-secondary-500 lg:block',
                   {
                     'bg-secondary-600': !canSwap,
                   },

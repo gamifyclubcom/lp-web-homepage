@@ -19,6 +19,7 @@ import { mappingPoolServerResponse, poolAPI } from '../../sdk/pool';
 import { ServerResponsePool } from '../../sdk/pool/interface';
 import { PageTitle, PoolStatusType } from '../../shared/enum';
 import { FETCH_INTERVAL, TOKEN_TO_DECIMALS } from '../../utils/constants';
+import PoolUserWhitelist from '../../components/pool/pool-details/PoolUserWhitelist';
 import {
   getPoolStatus,
   isInExclusiveRound,
@@ -207,7 +208,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
       <div className="mx-auto md:px-12 layout-container">
         <div className="pt-12">
-          <div className="mb-8">
+          <div className="mb-3.5 grid grid-cols-1 lg:grid-cols-2 gap-3">
             <DetailsLeadingInfo
               name={pool.name}
               tokenAddress={pool.token_address}
@@ -218,11 +219,17 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
               image={pool.logo}
               description={pool.description}
             />
+            <PoolUserWhitelist
+              connected={connected}
+              allocationLevel={allocationLevel}
+              pool={pool}
+              participantAddress={participantAddress}
+            />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2 lg:col-span-1">
-              <div className="w-full overflow-hidden bg-gray-800 rounded-lg">
+              <div className="w-full overflow-hidden bg-303035 rounded-lg">
                 <PoolSwapInfo
                   totalRaise={pool.token_total_raise}
                   participants={participants}
@@ -238,7 +245,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
             </div>
             <div className="col-span-2 lg:col-span-1">
               {isShowPoolRoundSection && (
-                <div className="w-full h-full overflow-hidden bg-gray-800 rounded-lg">
+                <div className="w-full h-full overflow-hidden bg-303035 rounded-lg">
                   <PoolRounds pool={pool} loading={fetching} allowContribute={allowContribute} />
                 </div>
               )}
@@ -275,7 +282,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
             </div>
             <div className="col-span-2">
               {isShowPoolClaimSection && (
-                <div className="w-full overflow-hidden bg-gray-800 rounded-lg">
+                <div className="w-full overflow-hidden bg-303035 rounded-lg">
                   <SecuredAllocation
                     status={status}
                     loading={fetching}
@@ -297,8 +304,8 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
           </div>
         </div>
 
-        <div className="pb-8 mt-4">
-          <div className="w-full h-full overflow-hidden bg-gray-800 rounded-lg">
+        <div className="pb-8 mt-3">
+          <div className="w-full h-full overflow-hidden bg-303035 rounded-lg">
             <DetailsMainInfo pool={pool} />
           </div>
         </div>

@@ -72,39 +72,44 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
   return (
     <div className="p-8">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-white uppercase opacity-30">Pool details</h3>
-        {pool.description && <span className="text-xs text-white">{pool.description}</span>}
+        <h3 className="text-base text-white uppercase opacity-30">Pool details</h3>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         {/* left */}
         <div className="col-span-2 lg:col-span-1">
-          <div className="flex flex-col">
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Token Swap Time</div>
+          <div className="flex flex-col text-white">
+            {pool.description && (
+              <div className="flex flex-col mb-5">
+                <div className="text-base opacity-30">Project Information</div>
+                <div className="text-sm mt-2.5">{pool.description}</div>
+              </div>
+            )}
+            <div className="flex items-center mt-4 text-sm">
+              <div className="w-1/3 opacity-30">Token Swap Time</div>
               <div className="w-2/3">{tokenSwapTime}</div>
             </div>
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Type</div>
+            <div className="flex items-center mt-4 text-sm">
+              <div className="w-1/3 opacity-30">Type</div>
               <div className="w-2/3">Claimable {pool.claimable_percentage}%</div>
             </div>
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Website</div>
-              <div className="w-2/3">{pool.website}</div>
+            <div className="flex items-center mt-4 text-sm">
+              <div className="w-1/3 opacity-30">Website</div>
+              <div className="w-2/3 break-all">{pool.website}</div>
             </div>
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Token Distribution</div>
+            <div className="flex items-center mt-4 text-sm">
+              <div className="w-1/3 opacity-30">Token Distribution</div>
               <div className="w-2/3">{tokenDistribution}</div>
             </div>
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Symbol</div>
+            <div className="flex items-center mt-4 text-sm">
+              <div className="w-1/3 opacity-30">Symbol</div>
               <div className="w-2/3">{pool.token_symbol}</div>
             </div>
-            <div className="flex items-center my-4 text-sm text-white">
-              <Accordion title={<div>FCFS round</div>}>
+            <div className="flex items-center mt-1 text-sm">
+              <Accordion title={<div className="opacity-30">FCFS round</div>}>
                 <ul className="pl-6 text-sm">
                   <li className="flex items-center justify-between py-2">
-                    <span>Max contribution size</span>
+                    <span className="opacity-30">Max contribution size</span>
                     <span>{`${tokenToSOL(
                       pool.campaign.public_phase.max_individual_alloc,
                       pool.token_ratio,
@@ -118,27 +123,27 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
 
         {/* right */}
         <div className="col-span-2 lg:col-span-1">
-          <div className="flex flex-col">
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Access</div>
-              <div className="w-2/3">{poolAccess}</div>
+          <div className="flex flex-col text-white">
+            <div className="flex items-center text-sm">
+              <div className="w-1/3 opacity-30">Access</div>
+              <div className="w-2/3 text-pool_focus_1">{poolAccess}</div>
             </div>
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Total Raise</div>
+            <div className="flex items-center mt-4 text-sm">
+              <div className="w-1/3 opacity-30">Total Raise</div>
               <div className="w-2/3">
                 <BalanceBadge variant="basic" price={totalRaise} mint={pool.token_to} />
               </div>
             </div>
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Lock Schedule</div>
-              <div className="w-2/3">TBA</div>
+            <div className="flex items-center mt-4 text-sm">
+              <div className="w-1/3 opacity-30">Lock Schedule</div>
+              <div className="w-2/3 text-pool_focus_1">TBA</div>
             </div>
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Liquidity Percentage</div>
+            <div className="flex items-center mt-4 text-sm">
+              <div className="w-1/3 opacity-30">Liquidity Percentage</div>
               <div className="w-2/3">{pool.liquidity_percentage}%</div>
             </div>
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Address</div>
+            <div className="flex items-center mt-4 text-sm">
+              <div className="w-1/3 opacity-30">Address</div>
               <div className="w-2/3">
                 <a
                   className="block w-full underline truncate"
@@ -150,8 +155,8 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
                 </a>
               </div>
             </div>
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Supply</div>
+            <div className="flex items-center mt-4 text-sm text-white">
+              <div className="w-1/3 opacity-30">Supply</div>
               <div className="w-2/3">
                 {tokenInfo.loading ? (
                   <div className="w-12 h-3 rounded-lg animate-pulse" />
@@ -160,12 +165,12 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
                 )}
               </div>
             </div>
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Token Price</div>
+            <div className="flex items-center mt-4 text-sm text-white">
+              <div className="w-1/3 opacity-30">Token Price</div>
               <div className="w-2/3">{tokenPrice}</div>
             </div>
-            <div className="flex items-center my-4 text-sm text-white">
-              <div className="w-1/3">Token Economics</div>
+            <div className="flex items-center mt-4 text-sm text-white">
+              <div className="w-1/3 opacity-30">Token Economics</div>
               <div className="w-2/3">
                 <a
                   className="underline cursor-pointer"
