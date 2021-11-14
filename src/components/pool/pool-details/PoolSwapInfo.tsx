@@ -54,7 +54,7 @@ const PoolSwapInfo: React.FC<Props> = ({
             price={parseFloat(
               new Decimal(totalRaise).dividedBy(tokenRatio).toFixed(TOKEN_TO_DECIMALS),
             )}
-            className="text-2xl font-semibold text-secondary-400"
+            className="text-2xl text-pool_focus_1"
           />
         </div>
 
@@ -68,12 +68,12 @@ const PoolSwapInfo: React.FC<Props> = ({
           />
           <div className="flex items-center justify-between">
             <span className="text-sm text-white">Participants</span>
-            <span className="text-lg font-semibold text-secondary-400">{participants}</span>
+            <span className="text-lg text-pool_focus_1">{participants}</span>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col mt-8 mb-4">
+      <div className="flex flex-col mt-6 mb-4">
         <span className="mb-4 text-sm text-white">Swap Progress</span>
         <div className="flex flex-col">
           <div className="flex items-center justify-between mb-2">

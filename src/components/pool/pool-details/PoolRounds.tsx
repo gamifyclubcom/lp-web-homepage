@@ -68,7 +68,7 @@ const PoolRounds: React.FC<Props> = ({ pool, whitelistStatus, disabled, loading 
 
     return (
       <>
-        <h5 className="mb-4 font-semibold text-white">{countdownTitle}</h5>
+        <h5 className="mb-4 text-white">{countdownTitle}</h5>
 
         <Countdown
           onComplete={() => {}}

@@ -14,7 +14,7 @@ const PoolTimelineItem: React.FC<Props> = ({ timeline, totalTimelines, active })
         className={clsx(
           'flex items-center justify-center w-8 h-8 text-sm font-semibold text-white rounded-full cursor-pointer relative',
           {
-            'bg-secondary-400': active,
+            'bg-pool_focus_1': active,
             'bg-gray-600': !active,
           },
         )}
@@ -24,7 +24,7 @@ const PoolTimelineItem: React.FC<Props> = ({ timeline, totalTimelines, active })
           className={clsx(
             'absolute text-center text-gray-500 transform -translate-x-1/2 translate-y-1/2 top-full left-1/2 text-xs',
             {
-              'text-secondary-400': active,
+              'text-pool_focus_1': active,
             },
           )}
           style={{ minWidth: 80 }}

@@ -8,9 +8,9 @@ const MaxButton: React.FC<Props> = ({ isDisabled, onClick }) => {
     <button
       onClick={onClick}
       disabled={isDisabled}
-      className="absolute px-2 py-1 text-xs font-semibold text-white uppercase transform -translate-y-1/2 rounded-md shadow-lg bg-secondary-300 right-2 top-1/2"
+      className="absolute px-4 py-1.5 text-xs text-white transform -translate-y-1/2 rounded shadow-lg bg-pool_focus_1 right-2 top-1/2"
     >
-      max
+      Max
     </button>
   );
 };

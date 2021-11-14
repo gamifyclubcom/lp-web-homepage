@@ -28,7 +28,7 @@ const PoolProgressBar: React.FC<Props> = ({ current, total, loading, variant }) 
         className={clsx(
           'transition-all duration-500 ease-out rounded-full absolute left-0 flex items-center h-2',
           {
-            'bg-secondary-500': variant === 'simple',
+            'bg-pool_focus_1': variant === 'simple',
             'bg-red-700': variant === 'complex',
           },
         )}
