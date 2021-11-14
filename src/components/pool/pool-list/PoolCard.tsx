@@ -55,7 +55,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
   const goToPool = () => handleGoToPoolDetails(pool);
 
   const upcomingPoolBadge = useMemo(() => {
-    if (moment.unix(now).isAfter(pool.join_pool_start)) {
+    if (moment.unix(now).isAfter(pool.join_pool_start) || !pool.is_active) {
       return <span className="text-lg font-semibold text-white uppercase">TBA</span>;
     }
 
@@ -73,7 +73,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
         </span>
       </div>
     );
-  }, [now, pool.join_pool_start]);
+  }, [now, pool.is_active, pool.join_pool_start]);
 
   const poolCardMarkup = useMemo(() => {
     switch (variant) {
@@ -88,7 +88,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
             </div>
 
             <div className="w-full">
-              <h6 className="mb-4 text-lg font-semibold text-white truncate">
+              <h6 className="w-full mb-4 text-lg font-semibold text-white truncate">
                 {pool.name} ({pool.token_symbol})
               </h6>
               <div className="flex items-center justify-between my-2">
@@ -216,7 +216,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
                   <div className="mr-2">
                     <PoolStatus loading={loading} status={status} />
                   </div>
-                  <CompletedPoolBadge variant="claimable" />
+                  {isClaimable && <CompletedPoolBadge variant="claimable" />}
                 </div>
                 <span className="mt-8 text-sm font-light text-white truncate w-full">
                   {pool.name}
@@ -231,7 +231,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
                   variant="basic"
                   mint={pool.token_to}
                   price={totalRaise}
-                  className="text-sm text-white uppercase"
+                  className="text-sm text-white"
                 />
               </div>
               <div className="flex flex-col flex-1">

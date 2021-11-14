@@ -802,15 +802,25 @@ const createUserStakeHistory = async (
   }
 };
 
-const getUserJoinPoolHistory = (
+const getUserJoinPoolHistory = async (
   userAddress: string,
   poolContractAddress: string,
 ): Promise<string[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([new Date().toISOString(), new Date().toISOString(), new Date().toISOString()]);
-    }, 300);
+  const queryObject = {
+    user_address: userAddress,
+    pool_address: poolContractAddress,
+  };
+  const url = queryString.stringifyUrl({
+    url: `${baseBackendUrl}/join_pool/histories`,
+    query: queryObject,
   });
+  const histories = await fetchWrapper.get<
+    {
+      createdAt: string;
+    }[]
+  >(url);
+
+  return histories.map((h) => h.createdAt);
 };
 
 export const poolAPI = {

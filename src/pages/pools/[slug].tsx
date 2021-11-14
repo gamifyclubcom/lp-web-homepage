@@ -17,7 +17,7 @@ import { usePool } from '../../hooks/usePool';
 import useSmartContract from '../../hooks/useSmartContract';
 import { mappingPoolServerResponse, poolAPI } from '../../sdk/pool';
 import { ServerResponsePool } from '../../sdk/pool/interface';
-import { PageTitle } from '../../shared/enum';
+import { PageTitle, PoolStatusType } from '../../shared/enum';
 import { FETCH_INTERVAL, TOKEN_TO_DECIMALS } from '../../utils/constants';
 import PoolUserWhitelist from '../../components/pool/pool-details/PoolUserWhitelist';
 import {
@@ -32,7 +32,7 @@ interface Props {
 }
 
 const PoolDetails: React.FC<Props> = ({ poolServer }) => {
-  const { connected } = useWallet();
+  const { connected, publicKey } = useWallet();
   const { now } = useGlobal();
   const { refreshAllocation, getUserAllocationLevel, getParticipantAddress } = useSmartContract();
   const { getPoolFullInfo, getMaxIndividualAllocationFCFSForStaker } = usePool();
@@ -65,6 +65,9 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
   const isPoolEnd = useMemo(() => {
     return moment.unix(now).isAfter(pool.join_pool_end);
   }, [pool.join_pool_end, now]);
+  const allowContribute = useMemo(() => {
+    return status.type === PoolStatusType.OPEN && progress < 100;
+  }, [progress, status.type]);
 
   const maxContribution = useMemo(() => {
     const { totalStaker, individualStaker } = getMaxIndividualAllocationFCFSForStaker(
@@ -99,6 +102,16 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
     return parseFloat(((allocation || 0) / pool.token_ratio).toFixed(TOKEN_TO_DECIMALS));
   }, [allocation, pool.token_ratio]);
 
+  const isShowPoolSwapActionSection = useMemo(() => {
+    return status.type !== PoolStatusType.UPCOMING && status.type !== PoolStatusType.CLOSED;
+  }, [status.type]);
+  const isShowPoolClaimSection = useMemo(() => {
+    return pool.is_active && moment.unix(now).isAfter(pool.claim_at);
+  }, [now, pool.claim_at, pool.is_active]);
+  const isShowPoolRoundSection = useMemo(() => {
+    return status.type !== PoolStatusType.UPCOMING;
+  }, [status.type]);
+
   const guaranteedAllocationExclusiveRound = useMemo(() => {
     let result: number = 0;
     if (isInExclusiveRound(pool, now)) {
@@ -111,11 +124,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
   useEffect(() => {
     const init = async () => {
-      setFetching(true);
       await fetchPool();
-      const userJoinPoolHistory = await poolAPI.getUserJoinPoolHistory('', ''); // TODO: Should update
-      setJoinPoolDates(userJoinPoolHistory);
-      setFetching(false);
     };
 
     init();
@@ -126,6 +135,22 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const init = async () => {
+      if (publicKey) {
+        setFetching(true);
+        const userJoinPoolHistory = await poolAPI.getUserJoinPoolHistory(
+          publicKey.toString(),
+          pool.contract_address.toString(),
+        );
+        setJoinPoolDates(userJoinPoolHistory);
+        setFetching(false);
+      }
+    };
+
+    init();
+  }, [pool.contract_address, publicKey]);
 
   useEffect(() => {
     const initParticipantAddress = async () => {
@@ -219,54 +244,62 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
               </div>
             </div>
             <div className="col-span-2 lg:col-span-1">
-              <div className="w-full h-full overflow-hidden bg-303035 rounded-lg">
-                <PoolRounds pool={pool} whitelistStatus="" disabled={false} loading={fetching} />
-              </div>
+              {isShowPoolRoundSection && (
+                <div className="w-full h-full overflow-hidden bg-303035 rounded-lg">
+                  <PoolRounds pool={pool} loading={fetching} allowContribute={allowContribute} />
+                </div>
+              )}
             </div>
             <div className="col-span-2">
-              <div className="w-full overflow-hidden bg-303035 rounded-lg">
-                <PoolSwapAction
-                  contributionLevel={allocationLevel}
-                  guaranteedAllocationExclusiveRound={guaranteedAllocationExclusiveRound}
-                  maxAllocation={maxContribution}
-                  currentContribution={currentContribution}
-                  allocation={allocation || 0}
-                  status={status}
-                  spinning={spinning}
-                  pool={pool}
-                  participantAddress={participantAddress}
-                  allocationLevel={allocationLevel}
-                  maxContributeSize={maxContributeSize.toNumber()}
-                  currentSwap={tokenCurrentRaise}
-                  joinPoolDates={joinPoolDates}
-                  setSpinning={setSpinning}
-                  setIsClaimed={setIsClaimed}
-                  setAllocation={setAllocation}
-                  setParticipants={setParticipants}
-                  setProgress={setProgress}
-                  setTokenCurrentRaise={setTokenCurrentRaise}
-                  setMaxContributeSize={setMaxContributeSize}
-                />
-              </div>
+              {isShowPoolSwapActionSection && (
+                <div className="w-full overflow-hidden bg-gray-800 rounded-lg">
+                  <PoolSwapAction
+                    contributionLevel={allocationLevel}
+                    guaranteedAllocationExclusiveRound={guaranteedAllocationExclusiveRound}
+                    maxAllocation={maxContribution}
+                    currentContribution={currentContribution}
+                    allocation={allocation || 0}
+                    status={status}
+                    spinning={spinning}
+                    pool={pool}
+                    participantAddress={participantAddress}
+                    allocationLevel={allocationLevel}
+                    maxContributeSize={maxContributeSize.toNumber()}
+                    currentSwap={tokenCurrentRaise}
+                    joinPoolDates={joinPoolDates}
+                    allowContribute={allowContribute}
+                    setSpinning={setSpinning}
+                    setIsClaimed={setIsClaimed}
+                    setAllocation={setAllocation}
+                    setParticipants={setParticipants}
+                    setProgress={setProgress}
+                    setTokenCurrentRaise={setTokenCurrentRaise}
+                    setMaxContributeSize={setMaxContributeSize}
+                    setJoinPoolDates={setJoinPoolDates}
+                  />
+                </div>
+              )}
             </div>
             <div className="col-span-2">
-              <div className="w-full overflow-hidden bg-303035 rounded-lg">
-                <SecuredAllocation
-                  status={status}
-                  loading={fetching}
-                  isClaimed={isClaimed}
-                  userClaimedAt={userClaimedAt}
-                  pool={pool}
-                  spinning={spinning}
-                  userAllocation={allocation}
-                  setSpinning={setSpinning}
-                  setIsClaimed={setIsClaimed}
-                  setParticipants={setParticipants}
-                  setProgress={setProgress}
-                  setTokenCurrentRaise={setTokenCurrentRaise}
-                  setUserClaimedAt={setUserClaimedAt}
-                />
-              </div>
+              {isShowPoolClaimSection && (
+                <div className="w-full overflow-hidden bg-303035 rounded-lg">
+                  <SecuredAllocation
+                    status={status}
+                    loading={fetching}
+                    isClaimed={isClaimed}
+                    userClaimedAt={userClaimedAt}
+                    pool={pool}
+                    spinning={spinning}
+                    userAllocation={allocation}
+                    setSpinning={setSpinning}
+                    setIsClaimed={setIsClaimed}
+                    setParticipants={setParticipants}
+                    setProgress={setProgress}
+                    setTokenCurrentRaise={setTokenCurrentRaise}
+                    setUserClaimedAt={setUserClaimedAt}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

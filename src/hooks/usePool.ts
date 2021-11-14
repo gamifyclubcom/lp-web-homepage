@@ -183,8 +183,8 @@ export function usePool() {
       }
 
       return {
-        totalStaker: maxIndividualAlloc,
-        individualStaker: new Decimal(maxIndividualAlloc).times(multiplicationRate).toNumber(),
+        totalStaker: new Decimal(maxIndividualAlloc).times(multiplicationRate).toNumber(),
+        individualStaker: maxIndividualAlloc,
       };
 
       // return new Decimal(maxIndividualAlloc).times(multiplicationRate).toNumber();
