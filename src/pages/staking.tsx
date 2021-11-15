@@ -596,16 +596,18 @@ const Staking: React.FC = () => {
                           onValueChange={values => {
                             const { formattedValue, value } = values;
                             if (!isEmpty(value)) {
-                              setSliderValue(() => {
-                                return new Decimal(value)
-                                  .times(100)
-                                  .dividedBy(unStakeBalance)
-                                  .toNumber();
-                              });
-                              setAmountStake({
-                                value: new Decimal(value),
-                                formatted: formattedValue,
-                              });
+                              if(new Decimal(value).toNumber() <= new Decimal(unStakeBalance).toNumber()) {
+                                setSliderValue(() => {
+                                  return new Decimal(value)
+                                    .times(100)
+                                    .dividedBy(unStakeBalance)
+                                    .toNumber();
+                                });
+                                setAmountStake({
+                                  value: new Decimal(value),
+                                  formatted: formattedValue,
+                                });
+                              }
                             } else {
                               setSliderValue(() => {
                                 return new Decimal(0).toNumber();
