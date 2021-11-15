@@ -26,6 +26,7 @@ import {
   isInFCFSForStakerRound,
   isInWhitelistRound,
 } from '../../utils/helper';
+import clsx from 'clsx';
 
 interface Props {
   poolServer: ServerResponsePool;
@@ -211,8 +212,8 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
   return (
     <Layout title={PageTitle.PoolsPage + ' | ' + pool.name}>
-      {/* <LoadingScreen loading={fetching || spinning} /> */}
-      <LoadingScreen loading={false} />
+      <LoadingScreen loading={fetching || spinning} />
+      {/* <LoadingScreen loading={false} /> */}
 
       <div className="mx-auto md:px-12 layout-container">
         <div className="pt-12">
@@ -251,16 +252,16 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
                 />
               </div>
             </div>
-            <div className="col-span-2 lg:col-span-1">
-              {isShowPoolRoundSection && (
+            {isShowPoolRoundSection && (
+              <div className="col-span-2 lg:col-span-1">
                 <div className="w-full h-full overflow-hidden rounded-lg bg-303035">
                   <PoolRounds pool={pool} loading={fetching} allowContribute={allowContribute} />
                 </div>
-              )}
-            </div>
-            <div className="col-span-2">
-              {isShowPoolSwapActionSection && (
-                <div className="w-full overflow-hidden bg-303035 rounded-lg">
+              </div>
+            )}
+            {isShowPoolSwapActionSection && (
+              <div className="col-span-2">
+                <div className="w-full overflow-hidden rounded-lg bg-303035">
                   <PoolSwapAction
                     contributionLevel={allocationLevel}
                     guaranteedAllocationExclusiveRound={guaranteedAllocationExclusiveRound}
@@ -286,10 +287,10 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
                     setJoinPoolDates={setJoinPoolDates}
                   />
                 </div>
-              )}
-            </div>
-            <div className="col-span-2">
-              {isShowPoolClaimSection && (
+              </div>
+            )}
+            {isShowPoolClaimSection && (
+              <div className="col-span-2">
                 <div className="w-full overflow-hidden rounded-lg bg-303035">
                   <SecuredAllocation
                     status={status}
@@ -307,14 +308,14 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
                     setUserClaimedAt={setUserClaimedAt}
                   />
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
+              </div>
+            )}
 
-        <div className="pb-8 mt-2">
-          <div className="w-full h-full overflow-hidden rounded-lg bg-303035">
-            <DetailsMainInfo pool={pool} />
+            <div className="col-span-2 mb-8">
+              <div className="w-full h-full overflow-hidden rounded-lg bg-303035">
+                <DetailsMainInfo pool={pool} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
