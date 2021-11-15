@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import PoolCard from '../../components/pool/pool-list/PoolCard';
 import PoolCardLoading from '../../components/pool/pool-list/PoolCardLoading';
@@ -77,50 +78,52 @@ const Pools: React.FC<Props> = () => {
     <Layout title={PageTitle.PoolsPage}>
       <LoadingScreen loading={loading} />
       <div className="mx-auto layout-container">
-        {/* UPCOMING POOL */}
-        {upcomingPools.length > 0 || loading ? (
-          <div className="flex flex-col items-center w-full p-8">
-            <h3 className="mb-8 text-2xl font-light text-center text-white">Upcoming Pools</h3>
-            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
-              {upcomingLoading && <PoolCardLoading variant="upcoming-pool" />}
-              {upcomingPools.slice(0, 3).map((pool) => (
-                <div key={pool.id}>
-                  <PoolCard variant="upcoming-pool" pool={pool} loading={upcomingLoading} />
-                </div>
-              ))}
+        <div className="pb-8">
+          {/* UPCOMING POOL */}
+          {upcomingPools.length > 0 || loading ? (
+            <div className="flex flex-col items-center w-full p-8">
+              <h3 className="mb-8 text-2xl font-light text-center text-white">Upcoming Pools</h3>
+              <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
+                {upcomingLoading && <PoolCardLoading variant="upcoming-pool" />}
+                {upcomingPools.slice(0, 3).map((pool) => (
+                  <div key={pool.id}>
+                    <PoolCard variant="upcoming-pool" pool={pool} loading={upcomingLoading} />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ) : null}
-        {/* FEATURE POOL */}
-        {featurePools.length > 0 || loading ? (
-          <div className="flex flex-col items-center w-full p-8">
-            <h3 className="mb-8 text-2xl font-light text-center text-white">Feature Pools</h3>
+          ) : null}
+          {/* FEATURE POOL */}
+          {featurePools.length > 0 || loading ? (
+            <div className="flex flex-col items-center w-full p-8">
+              <h3 className="mb-8 text-2xl font-light text-center text-white">Feature Pools</h3>
 
-            <div className="grid w-full grid-cols-1 gap-4">
-              {featureLoading && <PoolCardLoading variant="feature-pool" />}
-              {featurePools.slice(0, 3).map((pool) => (
-                <div className="w-full mx-auto" style={{ maxWidth: 800 }} key={pool.id}>
-                  <PoolCard variant="feature-pool" pool={pool} loading={featureLoading} />
-                </div>
-              ))}
+              <div className="grid w-full grid-cols-1 gap-4">
+                {featureLoading && <PoolCardLoading variant="feature-pool" />}
+                {featurePools.slice(0, 3).map((pool) => (
+                  <div className="w-full mx-auto" style={{ maxWidth: 800 }} key={pool.id}>
+                    <PoolCard variant="feature-pool" pool={pool} loading={featureLoading} />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ) : null}
-        {/* COMPLETED POOL */}
-        {completedPools.length > 0 || loading ? (
-          <div className="flex flex-col items-center w-full p-8">
-            <h3 className="mb-8 text-2xl font-light text-center text-white">Completed Pools</h3>
-            <div className="grid w-full grid-cols-1 gap-4">
-              {completedLoading && <PoolCardLoading variant="completed-pool" />}
-              {completedPools.slice(0, 5).map((pool) => (
-                <div className="w-full" key={pool.id}>
-                  <PoolCard variant="completed-pool" pool={pool} loading={completedLoading} />
-                </div>
-              ))}
+          ) : null}
+          {/* COMPLETED POOL */}
+          {completedPools.length > 0 || loading ? (
+            <div className="flex flex-col items-center w-full p-8">
+              <h3 className="mb-8 text-2xl font-light text-center text-white">Completed Pools</h3>
+              <div className="grid w-full grid-cols-1 gap-4">
+                {completedLoading && <PoolCardLoading variant="completed-pool" />}
+                {completedPools.slice(0, 5).map((pool) => (
+                  <div className="w-full" key={pool.id}>
+                    <PoolCard variant="completed-pool" pool={pool} loading={completedLoading} />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ) : null}
-        <div className="flex items-center justify-center mt-8">
+          ) : null}
+        </div>
+        <div className={clsx('flex items-center justify-center', {})}>
           <ViewAllPoolBtn content="View all Pools" />
         </div>
         <div className="flex flex-col items-center w-full p-8 mt-12">

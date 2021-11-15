@@ -2,7 +2,8 @@ import clsx from 'clsx';
 import Decimal from 'decimal.js';
 import moment from 'moment';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo } from 'react';
 import NumberFormat from 'react-number-format';
 import { useGlobal } from '../../../hooks/useGlobal';
 import { usePool } from '../../../hooks/usePool';
@@ -29,6 +30,7 @@ interface Props {
 }
 
 const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scroll }) => {
+  const router = useRouter();
   const { now } = useGlobal();
   const { handleGoToPoolDetails } = usePool();
   const thumbnail = useMemo(() => getPoolThumbnail(pool.thumbnail), [pool.thumbnail]);
@@ -53,6 +55,12 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
   }, [pool.token_ratio, pool.token_total_raise]);
 
   const goToPool = () => handleGoToPoolDetails(pool);
+  const countdownToOpen = useMemo(() => {
+    return getDiffWithCurrent(
+      new Date(pool.join_pool_start),
+      new Date(moment.unix(now).toISOString()),
+    );
+  }, [now, pool.join_pool_start]);
 
   const upcomingPoolBadge = useMemo(() => {
     if (moment.unix(now).isAfter(pool.join_pool_start) || !pool.is_active) {
@@ -65,15 +73,21 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img alt="button image" className="mx-2" src="/icons/icon_btn_pool.svg" />
 
-        <span className="text-sm font-semibold text-white uppercase">
-          {getDiffWithCurrent(
-            new Date(pool.join_pool_start),
-            new Date(moment.unix(now).toISOString()),
-          )}
-        </span>
+        <span className="text-sm font-semibold text-white uppercase">{countdownToOpen}</span>
       </div>
     );
-  }, [now, pool.is_active, pool.join_pool_start]);
+  }, [countdownToOpen, now, pool.is_active, pool.join_pool_start]);
+
+  useEffect(() => {
+    if (countdownToOpen === '1 seconds') {
+      if (typeof window === 'undefined') {
+        router.reload();
+      } else {
+        window.location.reload();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countdownToOpen]);
 
   const poolCardMarkup = useMemo(() => {
     switch (variant) {
@@ -138,7 +152,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
             </div>
 
             <div className="flex flex-col items-center w-full md:ml-4">
-              <h6 className="mb-8 text-lg font-semibold text-white truncate w-full max-w-md">
+              <h6 className="w-full max-w-md mb-8 text-lg font-semibold text-white truncate">
                 {pool.name} ({pool.token_symbol})
               </h6>
 
@@ -172,7 +186,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
                     className="opacity-30"
                     value={pool.token_total_raise}
                   />
-                  <span className="opacity-30 ml-1">{pool.token_symbol}</span>
+                  <span className="ml-1 opacity-30">{pool.token_symbol}</span>
                 </div>
               </div>
 
@@ -218,7 +232,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
                   </div>
                   {isClaimable && <CompletedPoolBadge variant="claimable" />}
                 </div>
-                <span className="mt-8 text-lg font-semibold text-white truncate w-full">
+                <span className="w-full mt-8 text-lg font-semibold text-white truncate">
                   {pool.name}
                 </span>
               </div>

@@ -113,54 +113,14 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
     return status.type !== PoolStatusType.UPCOMING && status.type !== PoolStatusType.CLOSED;
   }, [status.type]);
   const isShowPoolClaimSection = useMemo(() => {
-    return pool.is_active && moment.unix(now).isAfter(pool.claim_at);
-  }, [now, pool.claim_at, pool.is_active]);
+    return pool.is_active && moment.unix(now).isAfter(pool.join_pool_end);
+  }, [now, pool.is_active, pool.join_pool_end]);
   const isShowPoolRoundSection = useMemo(() => {
-    return status.type !== PoolStatusType.UPCOMING;
-  }, [status.type]);
-  const isWhitelisted = useMemo(() => {
-    if (!connected) {
-      return false;
-    }
-
-    let result = false;
-    if (
-      pool.private_join_enabled &&
-      moment.unix(now).isBefore(pool.private_join_end) &&
-      Boolean(participantAddress)
-    ) {
-      result = true;
-    }
-
-    if (
-      pool.exclusive_join_enable &&
-      moment.unix(now).isBefore(pool.exclusive_join_end) &&
-      allocationLevel > 0
-    ) {
-      result = true;
-    }
-
-    if (
-      pool.fcfs_join_for_staker_enabled &&
-      moment.unix(now).isBefore(pool.fcfs_join_for_staker_end) &&
-      allocationLevel > 0
-    ) {
-      result = true;
-    }
-
-    return result;
-  }, [
-    allocationLevel,
-    connected,
-    now,
-    participantAddress,
-    pool.exclusive_join_enable,
-    pool.exclusive_join_end,
-    pool.fcfs_join_for_staker_enabled,
-    pool.fcfs_join_for_staker_end,
-    pool.private_join_enabled,
-    pool.private_join_end,
-  ]);
+    return true;
+  }, []);
+  const isShowPoolUserWhitelist = useMemo(() => {
+    return pool.is_active;
+  }, [pool.is_active]);
 
   const guaranteedAllocationExclusiveRound = useMemo(() => {
     let result: number = 0;
@@ -290,14 +250,16 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
             </div>
 
             <div className="col-span-2 lg:col-span-1">
-              <div className="w-full h-full overflow-hidden rounded-lg bg-303035">
-                <PoolUserWhitelist
-                  connected={connected}
-                  allocationLevel={allocationLevel}
-                  pool={pool}
-                  isWhitelist={isWhitelisted}
-                />
-              </div>
+              {isShowPoolUserWhitelist && (
+                <div className="w-full h-full">
+                  <PoolUserWhitelist
+                    connected={connected}
+                    allocationLevel={allocationLevel}
+                    pool={pool}
+                    participantAddress={participantAddress}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="col-span-2 lg:col-span-1">
@@ -318,7 +280,12 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
             {isShowPoolRoundSection && (
               <div className="col-span-2 lg:col-span-1">
                 <div className="w-full h-full overflow-hidden rounded-lg bg-303035">
-                  <PoolRounds pool={pool} loading={fetching} allowContribute={allowContribute} />
+                  <PoolRounds
+                    pool={pool}
+                    loading={fetching}
+                    allowContribute={allowContribute}
+                    alreadyContribute={Boolean(allocation && allocation > 0)}
+                  />
                 </div>
               </div>
             )}

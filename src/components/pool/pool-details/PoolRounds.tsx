@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { useRouter } from 'next/router';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import Countdown from 'react-countdown';
 import { useCountDown } from '../../../hooks/useCountDown';
 import { useGlobal } from '../../../hooks/useGlobal';
@@ -14,9 +14,10 @@ interface Props {
   pool: IPool;
   loading: boolean;
   allowContribute: boolean;
+  alreadyContribute: boolean;
 }
 
-const PoolRounds: React.FC<Props> = ({ pool, allowContribute, loading }) => {
+const PoolRounds: React.FC<Props> = ({ pool, allowContribute, alreadyContribute, loading }) => {
   const router = useRouter();
   const { renderCountDownValue } = useCountDown();
   const { getPoolTimelines } = usePool();
@@ -38,8 +39,12 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, loading }) => {
       }
     }
 
-    return 'claimable';
-  }, [pool.is_active, timelines, now]);
+    if (moment.unix(now).isAfter(pool.join_pool_end)) {
+      return 'claimable';
+    }
+
+    return null;
+  }, [pool.is_active, pool.join_pool_end, now, timelines]);
   const countdownTitle = useMemo(() => {
     switch (activeKey) {
       case null:
@@ -72,10 +77,22 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, loading }) => {
 
   const countdownMarkup = useMemo(() => {
     if (!pool.is_active) {
-      return null;
+      return <span className="text-sm font-semibold text-white uppercase">TBA</span>;
     }
-    if (activeKey === 'claimable' && moment.unix(now).isAfter(pool.claim_at)) {
-      return <h5 className="mt-8 text-lg font-semibold text-white">Pool is claimable!</h5>;
+    if (activeKey === 'claimable') {
+      if (moment.unix(now).isAfter(pool.claim_at)) {
+        return <h5 className="mt-8 text-lg font-semibold text-white">Pool is claimable!</h5>;
+      } else if (moment.unix(now).isBetween(pool.join_pool_end, pool.claim_at)) {
+        return (
+          <h5 className="mt-8 text-sm font-semibold text-white">
+            {alreadyContribute
+              ? `Please wait until ${moment(pool.claim_at)
+                  .utc()
+                  .format('MMM DD, LT')} (UTC) to claim all tokens`
+              : 'Your address did not participate in this pool.'}
+          </h5>
+        );
+      }
     }
 
     return (
@@ -91,10 +108,12 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, loading }) => {
         ) : (
           <Countdown
             onComplete={() => {
-              if (typeof window === 'undefined') {
-                router.reload();
-              } else {
-                window.location.reload();
+              if (activeKey !== 'claimable') {
+                if (typeof window === 'undefined') {
+                  router.reload();
+                } else {
+                  window.location.reload();
+                }
               }
             }}
             date={activeTimeline?.endAt}
@@ -153,6 +172,17 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, loading }) => {
     pool.claim_at,
     pool.is_active,
   ]);
+
+  useEffect(() => {
+    if (moment.unix(now).isAfter(pool.claim_at)) {
+      if (typeof window === 'undefined') {
+        router.reload();
+      } else {
+        window.location.reload();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [now, pool.claim_at]);
 
   return (
     <div className="w-full h-full p-4" style={{ minHeight: 200 }}>
