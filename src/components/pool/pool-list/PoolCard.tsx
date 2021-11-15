@@ -138,7 +138,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
             </div>
 
             <div className="flex flex-col items-center w-full md:ml-4">
-              <h6 className="mb-8 text-sm font-semibold text-white truncate w-full max-w-md">
+              <h6 className="mb-8 text-lg font-semibold text-white truncate w-full max-w-md">
                 {pool.name} ({pool.token_symbol})
               </h6>
 
@@ -218,7 +218,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
                   </div>
                   {isClaimable && <CompletedPoolBadge variant="claimable" />}
                 </div>
-                <span className="mt-8 text-sm font-light text-white truncate w-full">
+                <span className="mt-8 text-lg font-semibold text-white truncate w-full">
                   {pool.name}
                 </span>
               </div>
