@@ -151,6 +151,8 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
         } catch (err) {
           setFetching(false);
         }
+      } else {
+        setFetching(false);
       }
     };
 
@@ -257,7 +259,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
             </div>
             <div className="col-span-2">
               {isShowPoolSwapActionSection && (
-                <div className="w-full overflow-hidden bg-gray-800 rounded-lg">
+                <div className="w-full overflow-hidden bg-303035 rounded-lg">
                   <PoolSwapAction
                     contributionLevel={allocationLevel}
                     guaranteedAllocationExclusiveRound={guaranteedAllocationExclusiveRound}
