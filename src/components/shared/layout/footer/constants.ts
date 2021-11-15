@@ -36,7 +36,7 @@ export const products = [
     description:
       'Get early access to new play to earn game launches, GameFi projects and loot drops.',
     image: '/images/products/acid_01.jpeg',
-    redirectLink: 'https://facebook.com',
+    // redirectLink: 'https://facebook.com',
   },
   {
     name: 'GUILD TOOLS',
