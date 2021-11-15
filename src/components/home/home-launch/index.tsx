@@ -11,59 +11,58 @@ const HomeLaunch: React.FC = () => {
     {
       src: '/images/games/aurory.png',
       title: 'aurory',
-      link: '/',
     },
     {
       src: '/images/games/defiland.png',
       title: 'defiland',
-      link: '/',
     },
     {
       src: '/images/games/kaiju.png',
       title: 'kaiju',
-      link: '/',
     },
     {
       src: '/images/games/magicbeasties.png',
       title: 'magicbeasties',
-      link: '/',
     },
     {
       src: '/images/games/ninjaprotocol.png',
       title: 'ninjaprotocol',
-      link: '/',
     },
     {
       src: '/images/games/openera.png',
       title: 'openera',
-      link: '/',
     },
     {
       src: '/images/games/projectseed.png',
       title: 'projectseed',
-      link: '/',
     },
     {
       src: '/images/games/scallop.png',
       title: 'scallop',
-      link: '/',
     },
     {
       src: '/images/games/solaknights.png',
       title: 'solaknights',
-      link: '/',
     },
     {
       src: '/images/games/solife.png',
       title: 'solife',
-      link: '/',
     },
     {
       src: '/images/games/staratlas.png',
       title: 'staratlas',
-      link: '/',
     },
   ];
+
+  const handleClickNav = (navLink?: string, newTab: boolean = false) => {
+    if (navLink) {
+      if (!newTab) {
+        router.push(navLink);
+      } else {
+        window.open(navLink, '_blank');
+      }
+    }
+  };
 
   return (
     <div className="mt-12 text-center layout-container">
@@ -80,72 +79,67 @@ const HomeLaunch: React.FC = () => {
       <ul className="mt-6 mb-10">
         {games.map((game, ind) => (
           <li key={ind} className={`inline-block ${ind !== 0 ? 'ml-1.5' : ''}`}>
-            <Image
-              width={50}
-              height={50}
-              src={game.src}
-              alt={game.title}
-              className="cursor-pointer"
-              onClick={() => router.push(game.link)}
-            />
+            <Image width={50} height={50} src={game.src} alt={game.title} />
           </li>
         ))}
       </ul>
       <ul className="pb-5">
-        <li className="inline-block">
-          <Link href="https://t.me/gamifyclub" passHref={true}>
-            <Image
-              width={24}
-              height={20}
-              src={'/images/socials/telegram.svg'}
-              alt={'telegram'}
-              className="cursor-pointer"
-            />
-          </Link>
+        <li
+          className="inline-block"
+          onClick={() => handleClickNav('https://t.me/gamifyclub', true)}
+        >
+          <Image
+            width={24}
+            height={20}
+            src={'/images/socials/telegram.svg'}
+            alt={'telegram'}
+            className="cursor-pointer"
+          />
         </li>
-        <li className="inline-block ml-7">
-          <Link href="https://twitter.com/gamifyclub" passHref={true}>
-            <Image
-              width={23}
-              height={19}
-              src={'/images/socials/twitter.svg'}
-              alt={'twitter'}
-              className="cursor-pointer"
-            />
-          </Link>
+        <li
+          className="inline-block ml-7"
+          onClick={() => handleClickNav('https://twitter.com/gamifyclub', true)}
+        >
+          <Image
+            width={23}
+            height={19}
+            src={'/images/socials/twitter.svg'}
+            alt={'twitter'}
+            className="cursor-pointer"
+          />
         </li>
-        <li className="inline-block ml-7">
-          <Link href="https://intersola.medium.com/" passHref={true}>
-            <Image
-              width={24}
-              height={14}
-              src={'/images/socials/medium.svg'}
-              alt={'medium'}
-              className="cursor-pointer"
-            />
-          </Link>
+        <li
+          className="inline-block ml-7"
+          onClick={() => handleClickNav('https://intersola.medium.com/', true)}
+        >
+          <Image
+            width={24}
+            height={14}
+            src={'/images/socials/medium.svg'}
+            alt={'medium'}
+            className="cursor-pointer"
+          />
         </li>
-        <li className="inline-block ml-7">
-          <Link href="/" passHref={true}>
-            <Image
-              width={20}
-              height={21}
-              src={'/images/socials/about.svg'}
-              alt={'about'}
-              className="cursor-pointer"
-            />
-          </Link>
+        <li className="inline-block ml-7" onClick={() => handleClickNav('/', false)}>
+          <Image
+            width={20}
+            height={21}
+            src={'/images/socials/about.svg'}
+            alt={'about'}
+            className="cursor-pointer"
+          />
         </li>
-        <li className="inline-block ml-7">
-          <Link href="http://docs.gamify.io/" passHref={true}>
-            <Image
-              width={23}
-              height={23}
-              src={'/images/socials/document.svg'}
-              alt={'document'}
-              className="cursor-pointer"
-            />
-          </Link>
+        <li
+          className="inline-block ml-7"
+          onClick={() => handleClickNav('http://docs.gamify.io/', true)}
+        >
+          <Image
+            width={23}
+            height={23}
+            src={'/images/socials/document.svg'}
+            alt={'document'}
+            className="cursor-pointer"
+          />
         </li>
       </ul>
     </div>
