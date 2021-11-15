@@ -12,7 +12,7 @@ import PoolContext from '../contexts/pool';
 import fetchWrapper from '../sdk/fetch-wrapper';
 import { IPool, IPoolVoting } from '../sdk/pool/interface';
 import { ITimeline } from '../shared/interface';
-import { isInFCFSForStakerRound } from '../utils/helper';
+import { isInExclusiveRound, isInFCFSForStakerRound } from '../utils/helper';
 import { mappingPoolOnChainResponse, mappingPoolVotingOnChainResponse } from './../sdk/pool/index';
 import { useGlobal } from './useGlobal';
 
@@ -144,7 +144,7 @@ export function usePool() {
     pool: IPool,
     currentUserLevel: number,
   ): { totalStaker: number; individualStaker: number } => {
-    if (isInFCFSForStakerRound(pool, now)) {
+    if (isInFCFSForStakerRound(pool, now) || isInExclusiveRound(pool, now)) {
       let maxIndividualAlloc: number = 0;
       let multiplicationRate: number = 1;
 

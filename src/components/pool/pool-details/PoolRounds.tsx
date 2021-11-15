@@ -71,7 +71,7 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, loading }) => {
   }, [activeKey, pool.is_active, timelines]);
 
   const countdownMarkup = useMemo(() => {
-    if (!pool.is_active || !allowContribute) {
+    if (!pool.is_active) {
       return null;
     }
     if (activeKey === 'claimable' && moment.unix(now).isAfter(pool.claim_at)) {
@@ -123,10 +123,18 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, loading }) => {
 
               return (
                 <div className="flex items-center justify-between w-full max-w-xs">
-                  <PoolCountDownItem label="days" value={daysValue} active={true} />
-                  <PoolCountDownItem label="hours" value={hoursValue} active={true} />
-                  <PoolCountDownItem label="minutes" value={minutesValue} active={true} />
-                  <PoolCountDownItem label="seconds" value={secondsValue} active={true} />
+                  <PoolCountDownItem label="days" value={daysValue} active={allowContribute} />
+                  <PoolCountDownItem label="hours" value={hoursValue} active={allowContribute} />
+                  <PoolCountDownItem
+                    label="minutes"
+                    value={minutesValue}
+                    active={allowContribute}
+                  />
+                  <PoolCountDownItem
+                    label="seconds"
+                    value={secondsValue}
+                    active={allowContribute}
+                  />
                 </div>
               );
             }}
@@ -135,7 +143,16 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, loading }) => {
       </>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeKey, activeTimeline?.endAt, countdownTitle]);
+  }, [
+    activeKey,
+    activeTimeline?.endAt,
+    allowContribute,
+    countdownTitle,
+    loading,
+    now,
+    pool.claim_at,
+    pool.is_active,
+  ]);
 
   return (
     <div className="w-full h-full p-4" style={{ minHeight: 200 }}>

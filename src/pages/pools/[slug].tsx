@@ -15,7 +15,7 @@ import DetailsLeadingInfo from '../../components/shared/pool/DetailsLeadingInfo'
 import { useGlobal } from '../../hooks/useGlobal';
 import { usePool } from '../../hooks/usePool';
 import useSmartContract from '../../hooks/useSmartContract';
-import { mappingPoolServerResponse, poolAPI } from '../../sdk/pool';
+import { fakeWithClaimablePercentage, mappingPoolServerResponse, poolAPI } from '../../sdk/pool';
 import { ServerResponsePool } from '../../sdk/pool/interface';
 import { PageTitle, PoolStatusType } from '../../shared/enum';
 import { FETCH_INTERVAL, TOKEN_TO_DECIMALS } from '../../utils/constants';
@@ -83,16 +83,18 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
       maxContributionInTokenUnit = pool.campaign.early_join_phase.max_individual_alloc;
     } else if (isInFCFSForStakerRound(pool, now)) {
       if (allocationLevel > 0) {
-        maxContributionInTokenUnit = individualStaker;
+        maxContributionInTokenUnit = totalStaker;
       } else {
         maxContributionInTokenUnit = 0;
       }
     } else if (isInExclusiveRound(pool, now)) {
-      maxContributionInTokenUnit = totalStaker;
+      maxContributionInTokenUnit = individualStaker;
     }
 
     return parseFloat(
-      new Decimal(maxContributionInTokenUnit)
+      new Decimal(
+        fakeWithClaimablePercentage(maxContributionInTokenUnit, pool.claimable_percentage),
+      )
         .dividedBy(pool.token_ratio)
         .toFixed(TOKEN_TO_DECIMALS),
     );
@@ -100,8 +102,12 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
   }, [allocationLevel, connected, now, participantAddress]);
 
   const currentContribution = useMemo(() => {
-    return parseFloat(((allocation || 0) / pool.token_ratio).toFixed(TOKEN_TO_DECIMALS));
-  }, [allocation, pool.token_ratio]);
+    const realContributionInSOL = parseFloat(
+      new Decimal(allocation || 0).dividedBy(pool.token_ratio).toFixed(TOKEN_TO_DECIMALS),
+    );
+
+    return fakeWithClaimablePercentage(realContributionInSOL, pool.claimable_percentage);
+  }, [allocation, pool.token_ratio, pool.claimable_percentage]);
 
   const isShowPoolSwapActionSection = useMemo(() => {
     return status.type !== PoolStatusType.UPCOMING && status.type !== PoolStatusType.CLOSED;
@@ -112,6 +118,49 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
   const isShowPoolRoundSection = useMemo(() => {
     return status.type !== PoolStatusType.UPCOMING;
   }, [status.type]);
+  const isWhitelisted = useMemo(() => {
+    if (!connected) {
+      return false;
+    }
+
+    let result = false;
+    if (
+      pool.private_join_enabled &&
+      moment.unix(now).isBefore(pool.private_join_end) &&
+      Boolean(participantAddress)
+    ) {
+      result = true;
+    }
+
+    if (
+      pool.exclusive_join_enable &&
+      moment.unix(now).isBefore(pool.exclusive_join_end) &&
+      allocationLevel > 0
+    ) {
+      result = true;
+    }
+
+    if (
+      pool.fcfs_join_for_staker_enabled &&
+      moment.unix(now).isBefore(pool.fcfs_join_for_staker_end) &&
+      allocationLevel > 0
+    ) {
+      result = true;
+    }
+
+    return result;
+  }, [
+    allocationLevel,
+    connected,
+    now,
+    participantAddress,
+    pool.exclusive_join_enable,
+    pool.exclusive_join_end,
+    pool.fcfs_join_for_staker_enabled,
+    pool.fcfs_join_for_staker_end,
+    pool.private_join_enabled,
+    pool.private_join_end,
+  ]);
 
   const guaranteedAllocationExclusiveRound = useMemo(() => {
     let result: number = 0;
@@ -125,7 +174,14 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
   useEffect(() => {
     const init = async () => {
-      await fetchPool();
+      setFetching(true);
+
+      try {
+        await fetchPool();
+        setFetching(false);
+      } catch (err) {
+        setFetching(false);
+      }
     };
 
     init();
@@ -217,26 +273,33 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
       <div className="mx-auto md:px-12 layout-container">
         <div className="pt-12">
-          <div className="mb-3.5 grid grid-cols-1 lg:grid-cols-2 gap-3">
-            <DetailsLeadingInfo
-              name={pool.name}
-              tokenAddress={pool.token_address}
-              tagLine={pool.tag_line}
-              medium={pool.medium}
-              telegram={pool.telegram}
-              twitter={pool.twitter}
-              image={pool.logo}
-              description={pool.description}
-            />
-            <PoolUserWhitelist
-              connected={connected}
-              allocationLevel={allocationLevel}
-              pool={pool}
-              participantAddress={participantAddress}
-            />
-          </div>
-
           <div className="grid grid-cols-2 gap-3">
+            <div className="col-span-2 lg:col-span-1">
+              <div className="w-full h-full">
+                <DetailsLeadingInfo
+                  name={pool.name}
+                  tokenAddress={pool.token_address}
+                  tagLine={pool.tag_line}
+                  medium={pool.medium}
+                  telegram={pool.telegram}
+                  twitter={pool.twitter}
+                  image={pool.logo}
+                  description={pool.description}
+                />
+              </div>
+            </div>
+
+            <div className="col-span-2 lg:col-span-1">
+              <div className="w-full h-full overflow-hidden rounded-lg bg-303035">
+                <PoolUserWhitelist
+                  connected={connected}
+                  allocationLevel={allocationLevel}
+                  pool={pool}
+                  isWhitelist={isWhitelisted}
+                />
+              </div>
+            </div>
+
             <div className="col-span-2 lg:col-span-1">
               <div className="w-full overflow-hidden rounded-lg bg-303035">
                 <PoolSwapInfo

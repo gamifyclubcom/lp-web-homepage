@@ -28,8 +28,8 @@ const DetailsLeadingInfo: React.FC<Props> = ({
 
   return (
     <div className="flex flex-col items-left">
-      <div className="flex items-left mb-2">
-        <div className="flex items-left justify-center w-12 h-12 mr-2 overflow-hidden rounded-full">
+      <div className="flex mb-2 items-left">
+        <div className="flex justify-center w-12 h-12 mr-2 overflow-hidden rounded-full items-left">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={logo} className="w-full h-full rounded-full" alt="Pool logo" />
         </div>
@@ -43,12 +43,12 @@ const DetailsLeadingInfo: React.FC<Props> = ({
       </div>
 
       {description && (
-        <span className="max-w-md mb-4 text-sm font-light text-center text-white truncate">
+        <span className="max-w-md mb-4 text-sm font-light text-left text-white truncate">
           {description}
         </span>
       )}
 
-      <ul className="flex items-left justify-start">
+      <ul className="flex justify-start items-left">
         <li className="px-3 pl-0">
           <a href={tokenAddressUrl} target="_blank" rel="noreferrer" className="flex items-center">
             <Image src="/images/socials/document.svg" width={24} height={24} alt="Token logo" />

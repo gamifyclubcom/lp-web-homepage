@@ -98,8 +98,13 @@ const PoolSwapAction: React.FC<Props> = ({
     }
   }, [connected]);
   const tokenLeft = useMemo(() => {
-    return new Decimal(pool.token_total_raise).minus(currentSwap).toNumber();
-  }, [currentSwap, pool.token_total_raise]);
+    return parseFloat(
+      new Decimal(pool.token_total_raise)
+        .minus(currentSwap)
+        .dividedBy(pool.token_ratio)
+        .toFixed(TOKEN_TO_DECIMALS),
+    );
+  }, [currentSwap, pool.token_total_raise, pool.token_ratio]);
 
   useEffect(() => {
     const initBalance = async () => {
@@ -298,7 +303,7 @@ const PoolSwapAction: React.FC<Props> = ({
               <BalanceBadge
                 variant="basic"
                 price={maxAllocation}
-                mint={pool.token_symbol}
+                mint={pool.token_to}
                 className="text-sm font-light text-white"
               />
             </div>
@@ -307,7 +312,7 @@ const PoolSwapAction: React.FC<Props> = ({
               <BalanceBadge
                 variant="basic"
                 price={currentContribution}
-                mint={pool.token_symbol}
+                mint={pool.token_to}
                 className="text-sm font-light text-white"
               />
             </div>
@@ -316,7 +321,7 @@ const PoolSwapAction: React.FC<Props> = ({
               <BalanceBadge
                 variant="basic"
                 price={tokenLeft}
-                mint={pool.token_symbol}
+                mint={pool.token_to}
                 className="text-sm font-light text-white"
               />
             </div>
@@ -326,7 +331,7 @@ const PoolSwapAction: React.FC<Props> = ({
                 {joinPoolDates.map((item, index) => (
                   <li key={`${item}__${index}`}>
                     <span className="text-sm font-light text-white">
-                      {moment(item).format('ddd MMM DD, YYYY LT')} (UTC)
+                      {moment.utc(item).format('ddd MMM DD, YYYY LT')} (UTC)
                     </span>
                   </li>
                 ))}

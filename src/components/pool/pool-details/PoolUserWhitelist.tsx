@@ -1,42 +1,39 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { usePool } from '../../../hooks/usePool';
 import { IPool } from '../../../sdk/pool/interface';
-import { isInWhitelistRound } from '../../../utils/helper';
-import { useGlobal } from '../../../hooks/useGlobal';
 
 interface Props {
   connected: boolean;
   allocationLevel?: number;
   pool: IPool;
-  participantAddress: string | null;
+  isWhitelist: boolean;
 }
 
-const PoolUserWhitelist: React.FC<Props> = ({
-  connected,
-  allocationLevel,
-  pool,
-  participantAddress,
-}) => {
-  const { now } = useGlobal();
+const PoolUserWhitelist: React.FC<Props> = ({ connected, allocationLevel, pool, isWhitelist }) => {
+  const { getMaxIndividualAllocationFCFSForStaker } = usePool();
 
-  return (
-    <div className="w-full overflow-hidden bg-303035 rounded-lg text-white flex flex-col justify-center h-28 px-8 text-sm">
-      {connected ? (
-        isInWhitelistRound(pool, now) && !Boolean(participantAddress) ? (
-          <>
-            <div className="">You are not whitelisted!</div>
-            <div className="mt-6">{`Allocation of ${allocationLevel} GMFC`}</div>
-          </>
-        ) : (
-          <>
-            <div className="">You are whitelisted!</div>
-            <div className="mt-6">{`Allocation of ${allocationLevel} GMFC`}</div>
-          </>
-        )
-      ) : (
-        'Please connect to wallet to continue.'
-      )}
-    </div>
-  );
+  const childrenMarkup = useMemo(() => {
+    if (!connected) {
+      return <span>Please connect wallet to continue</span>;
+    }
+
+    const { individualStaker } = getMaxIndividualAllocationFCFSForStaker(
+      pool,
+      allocationLevel || 0,
+    );
+
+    return (
+      <div className="flex flex-col">
+        <span>{isWhitelist ? 'You are whitelisted' : 'You are not whitelisted'}</span>
+        <span className="mt-6">
+          Your guaranteed allocation for exclusive round: {individualStaker}
+        </span>
+      </div>
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allocationLevel, connected, pool]);
+
+  return <div className="w-full h-full p-4 text-sm text-white">{childrenMarkup}</div>;
 };
 
 export default PoolUserWhitelist;
