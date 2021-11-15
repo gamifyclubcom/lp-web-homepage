@@ -2,12 +2,15 @@ import React from 'react';
 import { IPool } from '../../../sdk/pool/interface';
 import { isInWhitelistRound } from '../../../utils/helper';
 import { useGlobal } from '../../../hooks/useGlobal';
+import { IPoolStatus } from '../../../sdk/pool/interface';
+import { PoolStatusType } from '../../../shared/enum';
 
 interface Props {
   connected: boolean;
   allocationLevel?: number;
   pool: IPool;
   participantAddress: string | null;
+  status: IPoolStatus;
 }
 
 const PoolUserWhitelist: React.FC<Props> = ({
@@ -15,6 +18,7 @@ const PoolUserWhitelist: React.FC<Props> = ({
   allocationLevel,
   pool,
   participantAddress,
+  status,
 }) => {
   const { now } = useGlobal();
 
@@ -24,12 +28,16 @@ const PoolUserWhitelist: React.FC<Props> = ({
         isInWhitelistRound(pool, now) && !Boolean(participantAddress) ? (
           <>
             <div className="">You are not whitelisted!</div>
-            <div className="mt-6">{`Allocation of ${allocationLevel} GMFC`}</div>
+            {status.type !== PoolStatusType.UPCOMING && (
+              <div className="mt-6">{`Allocation of ${allocationLevel} GMFC`}</div>
+            )}
           </>
         ) : (
           <>
             <div className="">You are whitelisted!</div>
-            <div className="mt-6">{`Allocation of ${allocationLevel} GMFC`}</div>
+            {status.type !== PoolStatusType.UPCOMING && (
+              <div className="mt-6">{`Allocation of ${allocationLevel} GMFC`}</div>
+            )}
           </>
         )
       ) : (
