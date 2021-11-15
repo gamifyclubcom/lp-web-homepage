@@ -55,7 +55,6 @@ const Footer: React.FC<Props> = () => {
                         name={product.name}
                         description={product.description}
                         image={product.image}
-                        redirectLink={product.redirectLink}
                       />
                     ))}
                   </div>
@@ -76,11 +75,11 @@ const Footer: React.FC<Props> = () => {
 
         {!isInHomePage && (
           <div className="w-full mx-auto layout-container">
-            <div className="flex flex-col items-end  pt-6">
-            <BuyGMFCTokenButton />
+            <div className="flex flex-col items-end pt-6">
+              <BuyGMFCTokenButton />
             </div>
             <div className="flex flex-col items-center justify-between pb-3 border-b border-primary-300">
-            <Logo />
+              <Logo />
             </div>
             <div className="flex flex-col items-center my-4">
               <span className="my-4 text-sm text-white opacity-70">
