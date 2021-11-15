@@ -16,8 +16,8 @@ interface Props {
 
 const Layout: React.FC<Props> = ({ title = PageTitle.HomePage, children }) => {
   const router = useRouter();
-  const { setTotalStaked, setAllocationLevel, setLoading } = useGlobal();
-  const { getUserStakeData } = useSmartContract();
+  const { setTotalStaked, setAllocationLevel, setLoading, setIsEnabledVotingFeature } = useGlobal();
+  const { getUserStakeData, getCommonSettings } = useSmartContract();
   const { connected } = useWallet();
 
   const isInPoolVotingPage = useMemo(() => {
@@ -26,6 +26,20 @@ const Layout: React.FC<Props> = ({ title = PageTitle.HomePage, children }) => {
   const isInPoolsDashboardPage = useMemo(() => {
     return router.pathname === '/pools-dashboard';
   }, [router.pathname]);
+
+  useEffect(() => {
+    const initCheckVotingFeatureEnabled = async () => {
+      const { vote_setting } = await getCommonSettings(4);
+      if (vote_setting.is_enabled) {
+        setIsEnabledVotingFeature(true);
+      } else {
+        setIsEnabledVotingFeature(false);
+      }
+    };
+
+    initCheckVotingFeatureEnabled();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const init = async () => {
