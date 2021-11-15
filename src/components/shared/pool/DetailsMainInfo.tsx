@@ -79,12 +79,7 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
         {/* left */}
         <div className="col-span-2 lg:col-span-1">
           <div className="flex flex-col text-white">
-            {pool.description && (
-              <div className="flex flex-col mb-5">
-                <div className="text-base opacity-30">Project Information</div>
-                <div className="text-sm mt-2.5">{pool.description}</div>
-              </div>
-            )}
+            {pool.description && <div className="text-sm mb-5">{pool.description}</div>}
             <div className="flex items-center mt-4 text-sm">
               <div className="w-1/3 opacity-30">Token Swap Time</div>
               <div className="w-2/3">{tokenSwapTime}</div>
@@ -95,7 +90,11 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
             </div>
             <div className="flex items-center mt-4 text-sm">
               <div className="w-1/3 opacity-30">Website</div>
-              <div className="w-2/3 break-all">{pool.website}</div>
+              <div className="w-2/3 break-all">
+                <a className="block w-full truncate" rel="noreferrer" href={pool.website}>
+                  {pool.website}
+                </a>
+              </div>
             </div>
             <div className="flex items-center mt-4 text-sm">
               <div className="w-1/3 opacity-30">Token Distribution</div>
@@ -172,14 +171,18 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
             <div className="flex items-center mt-4 text-sm text-white">
               <div className="w-1/3 opacity-30">Token Economics</div>
               <div className="w-2/3">
-                <a
-                  className="underline cursor-pointer"
-                  rel="noreferrer"
-                  href={pool.token_economic}
-                  target="_blank"
-                >
-                  See more
-                </a>
+                {pool.token_economic ? (
+                  <a
+                    className="underline cursor-pointer"
+                    rel="noreferrer"
+                    href={pool.token_economic}
+                    target="_blank"
+                  >
+                    See more
+                  </a>
+                ) : (
+                  'See more'
+                )}
               </div>
             </div>
           </div>

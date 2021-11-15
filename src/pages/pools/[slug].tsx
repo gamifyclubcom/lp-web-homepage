@@ -228,12 +228,16 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
               image={pool.logo}
               description={pool.description}
             />
-            <PoolUserWhitelist
-              connected={connected}
-              allocationLevel={allocationLevel}
-              pool={pool}
-              participantAddress={participantAddress}
-            />
+            {pool.is_active &&
+              (status.type === PoolStatusType.OPEN || status.type === PoolStatusType.UPCOMING) && (
+                <PoolUserWhitelist
+                  connected={connected}
+                  allocationLevel={allocationLevel}
+                  pool={pool}
+                  participantAddress={participantAddress}
+                  status={status}
+                />
+              )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">

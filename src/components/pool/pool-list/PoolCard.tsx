@@ -172,7 +172,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
                     className="opacity-30"
                     value={pool.token_total_raise}
                   />
-                  <span className="opacity-30">({pool.token_symbol})</span>
+                  <span className="opacity-30 ml-1">{pool.token_symbol}</span>
                 </div>
               </div>
 

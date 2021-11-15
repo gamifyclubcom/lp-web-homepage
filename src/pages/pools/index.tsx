@@ -77,23 +77,18 @@ const Pools: React.FC<Props> = () => {
     <Layout title={PageTitle.PoolsPage}>
       <LoadingScreen loading={loading} />
       <div className="mx-auto layout-container">
-        <div
-          className="relative bg-center bg-cover"
-          style={{ backgroundImage: "url('/images/gamify_bg_orb.jpeg')", height: 400 }}
-        >
-          {/* <div className="absolute inset-0 bg-black bg-opacity-30" /> */}
-        </div>
         {/* UPCOMING POOL */}
         {upcomingPools.length > 0 && (
           <div className="flex flex-col items-center w-full p-8">
             <h3 className="mb-8 text-2xl font-light text-center text-white">Upcoming Pools</h3>
             <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
               {upcomingLoading && <PoolCardLoading variant="upcoming-pool" />}
-              {upcomingPools.slice(0, 3).map((pool) => (
-                <div key={pool.id}>
-                  <PoolCard variant="upcoming-pool" pool={pool} loading={upcomingLoading} />
-                </div>
-              ))}
+              {!upcomingLoading &&
+                upcomingPools.slice(0, 3).map((pool) => (
+                  <div key={pool.id}>
+                    <PoolCard variant="upcoming-pool" pool={pool} loading={upcomingLoading} />
+                  </div>
+                ))}
             </div>
           </div>
         )}
@@ -104,11 +99,12 @@ const Pools: React.FC<Props> = () => {
 
             <div className="grid w-full grid-cols-1 gap-4">
               {featureLoading && <PoolCardLoading variant="feature-pool" />}
-              {featurePools.slice(0, 3).map((pool) => (
-                <div className="w-full mx-auto" style={{ maxWidth: 800 }} key={pool.id}>
-                  <PoolCard variant="feature-pool" pool={pool} loading={featureLoading} />
-                </div>
-              ))}
+              {!featureLoading &&
+                featurePools.slice(0, 3).map((pool) => (
+                  <div className="w-full mx-auto" style={{ maxWidth: 800 }} key={pool.id}>
+                    <PoolCard variant="feature-pool" pool={pool} loading={featureLoading} />
+                  </div>
+                ))}
             </div>
           </div>
         )}
@@ -118,16 +114,17 @@ const Pools: React.FC<Props> = () => {
             <h3 className="mb-8 text-2xl font-light text-center text-white">Completed Pools</h3>
             <div className="grid w-full grid-cols-1 gap-4">
               {completedLoading && <PoolCardLoading variant="completed-pool" />}
-              {completedPools.slice(0, 5).map((pool) => (
-                <div className="w-full" key={pool.id}>
-                  <PoolCard variant="completed-pool" pool={pool} loading={completedLoading} />
-                </div>
-              ))}
+              {!completedLoading &&
+                completedPools.slice(0, 5).map((pool) => (
+                  <div className="w-full" key={pool.id}>
+                    <PoolCard variant="completed-pool" pool={pool} loading={completedLoading} />
+                  </div>
+                ))}
             </div>
           </div>
         )}
         <div className="flex items-center justify-center mt-8">
-          <ViewAllPoolBtn />
+          <ViewAllPoolBtn content="View all Pools" />
         </div>
         <div className="flex flex-col items-center w-full p-8 mt-12">
           <h3 className="mb-8 text-4xl font-light text-center text-pool_title">
