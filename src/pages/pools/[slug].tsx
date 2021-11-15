@@ -140,12 +140,17 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
     const init = async () => {
       if (publicKey) {
         setFetching(true);
-        const userJoinPoolHistory = await poolAPI.getUserJoinPoolHistory(
-          publicKey.toString(),
-          pool.contract_address.toString(),
-        );
-        setJoinPoolDates(userJoinPoolHistory);
-        setFetching(false);
+        try {
+          const userJoinPoolHistory = await poolAPI.getUserJoinPoolHistory(
+            publicKey.toString(),
+            pool.contract_address.toString(),
+          );
+          setJoinPoolDates(userJoinPoolHistory);
+
+          setFetching(false);
+        } catch (err) {
+          setFetching(false);
+        }
       }
     };
 
@@ -229,7 +234,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2 lg:col-span-1">
-              <div className="w-full overflow-hidden bg-303035 rounded-lg">
+              <div className="w-full overflow-hidden rounded-lg bg-303035">
                 <PoolSwapInfo
                   totalRaise={pool.token_total_raise}
                   participants={participants}
@@ -245,7 +250,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
             </div>
             <div className="col-span-2 lg:col-span-1">
               {isShowPoolRoundSection && (
-                <div className="w-full h-full overflow-hidden bg-303035 rounded-lg">
+                <div className="w-full h-full overflow-hidden rounded-lg bg-303035">
                   <PoolRounds pool={pool} loading={fetching} allowContribute={allowContribute} />
                 </div>
               )}
@@ -282,7 +287,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
             </div>
             <div className="col-span-2">
               {isShowPoolClaimSection && (
-                <div className="w-full overflow-hidden bg-303035 rounded-lg">
+                <div className="w-full overflow-hidden rounded-lg bg-303035">
                   <SecuredAllocation
                     status={status}
                     loading={fetching}
@@ -304,8 +309,8 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
           </div>
         </div>
 
-        <div className="pb-8 mt-3">
-          <div className="w-full h-full overflow-hidden bg-303035 rounded-lg">
+        <div className="pb-8 mt-2">
+          <div className="w-full h-full overflow-hidden rounded-lg bg-303035">
             <DetailsMainInfo pool={pool} />
           </div>
         </div>
