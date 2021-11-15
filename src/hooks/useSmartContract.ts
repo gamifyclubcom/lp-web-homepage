@@ -328,7 +328,6 @@ function useSmartContract() {
       throw new WalletNotConnectedError();
     }
 
-    setLoading(true);
     const actions = new Actions(connection);
     try {
       const {
@@ -341,7 +340,6 @@ function useSmartContract() {
         tier4,
         tier5,
       } = await actions.readTiers();
-      setLoading(false);
       return {
         user_staking_amount: transformUnit(user_staking_amount, tokenDecimal, 'on-chain-to-token'),
         min_days_stake: min_days_stake,
@@ -354,7 +352,6 @@ function useSmartContract() {
         tier5: tier5,
       };
     } catch (err) {
-      setLoading(false);
       return Promise.reject({ err });
     }
   };
@@ -378,7 +375,6 @@ function useSmartContract() {
     }
 
     const actions = new Actions(connection);
-    setLoading(true);
 
     try {
       const { exists, associatedAddress } = await actions.getAssociatedAccountInfo(
@@ -392,11 +388,9 @@ function useSmartContract() {
 
       const data = await connection.getTokenAccountBalance(associatedAddress);
 
-      setLoading(false);
 
       return data.value.uiAmount || 0;
     } catch (err) {
-      setLoading(false);
       return Promise.reject({ err });
     }
   };
