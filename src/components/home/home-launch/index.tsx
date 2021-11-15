@@ -1,7 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import Button from '../button';
 
 const HomeLaunch: React.FC = () => {
