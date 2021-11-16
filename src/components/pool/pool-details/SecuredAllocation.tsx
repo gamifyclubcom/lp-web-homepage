@@ -163,7 +163,9 @@ const SecuredAllocation: React.FC<Props> = ({
     if (!connected) {
       setVisible(true);
     } else {
-      confirmClaim();
+      if (canClaim) {
+        confirmClaim();
+      }
     }
   };
 
@@ -251,13 +253,10 @@ const SecuredAllocation: React.FC<Props> = ({
       <div className="mt-8">
         <button
           onClick={handleClaim}
-          className={clsx(
-            'hidden w-64 h-12 text-sm text-center text-white rounded-full bg-secondary-500 lg:block',
-            {
-              'bg-secondary-600': !canClaim,
-            },
-          )}
-          disabled={!canClaim}
+          className={clsx('hidden w-64 h-12 text-sm text-center text-white rounded-full lg:block', {
+            'bg-gray-600': !canClaim,
+            'bg-secondary-500': canClaim || !connected,
+          })}
         >
           {claimContent}
         </button>

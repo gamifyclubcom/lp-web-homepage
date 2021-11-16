@@ -1,3 +1,4 @@
+import { useWallet } from '@solana/wallet-adapter-react';
 import moment from 'moment';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
@@ -22,6 +23,7 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, alreadyContribute,
   const { renderCountDownValue } = useCountDown();
   const { getPoolTimelines } = usePool();
   const { now } = useGlobal();
+  const { connected } = useWallet();
   const timelines = getPoolTimelines(pool);
 
   const activeKey = useMemo(() => {
@@ -85,7 +87,9 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, alreadyContribute,
       } else if (moment.unix(now).isBetween(pool.join_pool_end, pool.claim_at)) {
         return (
           <h5 className="mt-8 text-sm font-semibold text-white">
-            {alreadyContribute
+            {connected
+              ? 'Please connect wallet to continue'
+              : alreadyContribute
               ? `Please wait until ${moment(pool.claim_at)
                   .utc()
                   .format('MMM DD, LT')} (UTC) to claim all tokens`
@@ -172,17 +176,6 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, alreadyContribute,
     pool.claim_at,
     pool.is_active,
   ]);
-
-  useEffect(() => {
-    if (moment.unix(now).isAfter(pool.claim_at)) {
-      if (typeof window === 'undefined') {
-        router.reload();
-      } else {
-        window.location.reload();
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [now, pool.claim_at]);
 
   return (
     <div className="w-full h-full p-4" style={{ minHeight: 200 }}>
