@@ -72,15 +72,20 @@ const PoolUserWhitelist: React.FC<Props> = ({
         {(isShowWhitelistStatus || isShowGuaranteedAllocationExclusiveRound) && (
           <div className="w-full h-full p-4 overflow-hidden text-sm text-white rounded-lg bg-303035">
             <div className="flex flex-col">
-              {!connected && <span>Please connect wallet to continue</span>}
-              {isShowWhitelistStatus && <span>{msg}</span>}
-              {isShowGuaranteedAllocationExclusiveRound && (
-                <span className="mt-6">
-                  Your guaranteed allocation for exclusive round:{' '}
-                  {`${new Decimal(individualStaker)
-                    .dividedBy(pool.token_ratio)
-                    .toFixed(TOKEN_TO_DECIMALS)} ${pool.token_to}`}
-                </span>
+              {!connected ? (
+                <span>Please connect wallet to continue</span>
+              ) : (
+                <>
+                  {isShowWhitelistStatus && <span>{msg}</span>}
+                  {isShowGuaranteedAllocationExclusiveRound && (
+                    <span className="mt-6">
+                      Your guaranteed allocation for exclusive round:{' '}
+                      {`${new Decimal(individualStaker)
+                        .dividedBy(pool.token_ratio)
+                        .toFixed(TOKEN_TO_DECIMALS)} ${pool.token_to}`}
+                    </span>
+                  )}
+                </>
               )}
             </div>
           </div>
