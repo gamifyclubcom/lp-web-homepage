@@ -87,7 +87,7 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, alreadyContribute,
       } else if (moment.unix(now).isBetween(pool.join_pool_end, pool.claim_at)) {
         return (
           <h5 className="mt-8 text-sm font-semibold text-white">
-            {connected
+            {!connected
               ? 'Please connect wallet to continue'
               : alreadyContribute
               ? `Please wait until ${moment(pool.claim_at)
