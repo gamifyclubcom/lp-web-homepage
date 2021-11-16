@@ -144,6 +144,10 @@ const PoolUserWhitelist: React.FC<Props> = ({
       msg = 'You are not whitelisted';
     }
 
+    const guaranteed = parseFloat(
+      new Decimal(individualStaker).dividedBy(pool.token_ratio).toFixed(TOKEN_TO_DECIMALS),
+    );
+
     return (
       <>
         {(isShowWhitelistStatus || isShowGuaranteedAllocationExclusiveRound) && (
@@ -159,9 +163,7 @@ const PoolUserWhitelist: React.FC<Props> = ({
                   {isShowGuaranteedAllocationExclusiveRound && (
                     <span className="mt-6">
                       Your guaranteed allocation for exclusive round:{' '}
-                      {`${new Decimal(individualStaker)
-                        .dividedBy(pool.token_ratio)
-                        .toFixed(TOKEN_TO_DECIMALS)} ${pool.token_to}`}
+                      {`${guaranteed} ${pool.token_to}`}
                     </span>
                   )}
                 </>

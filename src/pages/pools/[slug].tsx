@@ -4,14 +4,15 @@ import Decimal from 'decimal.js';
 import moment from 'moment';
 import { GetServerSideProps } from 'next';
 import { useEffect, useMemo, useState } from 'react';
-import DetailsMainInfo from '../../components/shared/pool/DetailsMainInfo';
 import PoolRounds from '../../components/pool/pool-details/PoolRounds';
 import PoolSwapAction from '../../components/pool/pool-details/PoolSwapAction';
 import PoolSwapInfo from '../../components/pool/pool-details/PoolSwapInfo';
+import PoolUserWhitelist from '../../components/pool/pool-details/PoolUserWhitelist';
 import SecuredAllocation from '../../components/pool/pool-details/SecuredAllocation';
 import Layout from '../../components/shared/Layout';
 import LoadingScreen from '../../components/shared/LoadingScreen';
 import DetailsLeadingInfo from '../../components/shared/pool/DetailsLeadingInfo';
+import DetailsMainInfo from '../../components/shared/pool/DetailsMainInfo';
 import { useGlobal } from '../../hooks/useGlobal';
 import { usePool } from '../../hooks/usePool';
 import useSmartContract from '../../hooks/useSmartContract';
@@ -19,14 +20,12 @@ import { fakeWithClaimablePercentage, mappingPoolServerResponse, poolAPI } from 
 import { ServerResponsePool } from '../../sdk/pool/interface';
 import { PageTitle, PoolStatusType } from '../../shared/enum';
 import { FETCH_INTERVAL, TOKEN_TO_DECIMALS } from '../../utils/constants';
-import PoolUserWhitelist from '../../components/pool/pool-details/PoolUserWhitelist';
 import {
   getPoolStatus,
   isInExclusiveRound,
   isInFCFSForStakerRound,
   isInWhitelistRound,
 } from '../../utils/helper';
-import clsx from 'clsx';
 
 interface Props {
   poolServer: ServerResponsePool;
@@ -63,9 +62,6 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
     });
   }, [now, pool, progress]);
 
-  const isPoolEnd = useMemo(() => {
-    return moment.unix(now).isAfter(pool.join_pool_end);
-  }, [pool.join_pool_end, now]);
   const allowContribute = useMemo(() => {
     return status.type === PoolStatusType.OPEN && progress < 100;
   }, [progress, status.type]);
@@ -203,14 +199,10 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
         try {
           const { allocation: allocationResult, amountToken: amountTokenResult } =
             await refreshAllocation(pool);
-          if (
-            allocationResult &&
-            allocationResult > 0 &&
-            amountTokenResult &&
-            amountTokenResult === 0
-          ) {
+          if (allocationResult && allocationResult > 0 && amountTokenResult === 0) {
             setIsClaimed(true);
           }
+
           const allocationLevelResult = await getUserAllocationLevel(pool);
 
           setAllocation(allocationResult);
@@ -237,6 +229,16 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
     setParticipants(data.participants);
 
     return Promise.resolve();
+  };
+
+  const refresh = async () => {
+    setSpinning(true);
+    try {
+      await fetchPool();
+      setSpinning(false);
+    } catch (err) {
+      setSpinning(false);
+    }
   };
 
   return (
@@ -288,7 +290,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
                   mintTokenTo={pool.token_symbol}
                   tokenRatio={pool.token_ratio}
                   status={status}
-                  loading={fetching}
+                  loading={fetching || spinning}
                 />
               </div>
             </div>
@@ -300,6 +302,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
                     loading={fetching}
                     allowContribute={allowContribute}
                     alreadyContribute={Boolean(allocation && allocation > 0)}
+                    refreshData={refresh}
                   />
                 </div>
               </div>

@@ -1,7 +1,7 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import moment from 'moment';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import Countdown from 'react-countdown';
 import { useCountDown } from '../../../hooks/useCountDown';
 import { useGlobal } from '../../../hooks/useGlobal';
@@ -16,9 +16,16 @@ interface Props {
   loading: boolean;
   allowContribute: boolean;
   alreadyContribute: boolean;
+  refreshData: () => Promise<void>;
 }
 
-const PoolRounds: React.FC<Props> = ({ pool, allowContribute, alreadyContribute, loading }) => {
+const PoolRounds: React.FC<Props> = ({
+  pool,
+  allowContribute,
+  alreadyContribute,
+  loading,
+  refreshData,
+}) => {
   const router = useRouter();
   const { renderCountDownValue } = useCountDown();
   const { getPoolTimelines } = usePool();
@@ -98,6 +105,7 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, alreadyContribute,
         );
       }
     }
+    const countDownDate = activeTimeline?.endAt;
 
     return (
       <>
@@ -112,34 +120,27 @@ const PoolRounds: React.FC<Props> = ({ pool, allowContribute, alreadyContribute,
         ) : (
           <Countdown
             onComplete={() => {
-              if (activeKey !== 'claimable') {
-                if (typeof window === 'undefined') {
-                  router.reload();
-                } else {
-                  window.location.reload();
-                }
-              }
+              refreshData();
             }}
-            date={activeTimeline?.endAt}
+            date={countDownDate}
             renderer={({ days, hours, minutes, seconds, completed }) => {
-              const date = activeTimeline?.endAt;
               const daysValue = renderCountDownValue({
-                targetDate: date,
+                targetDate: countDownDate,
                 isCompleted: completed,
                 timeUnit: days,
               });
               const hoursValue = renderCountDownValue({
-                targetDate: date,
+                targetDate: countDownDate,
                 isCompleted: completed,
                 timeUnit: hours,
               });
               const minutesValue = renderCountDownValue({
-                targetDate: date,
+                targetDate: countDownDate,
                 isCompleted: completed,
                 timeUnit: minutes,
               });
               const secondsValue = renderCountDownValue({
-                targetDate: date,
+                targetDate: countDownDate,
                 isCompleted: completed,
                 timeUnit: seconds,
               });

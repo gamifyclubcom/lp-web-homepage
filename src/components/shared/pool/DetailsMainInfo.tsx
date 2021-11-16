@@ -1,6 +1,7 @@
 import Decimal from 'decimal.js';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
+import NumberFormat from 'react-number-format';
 import { usePool } from '../../../hooks/usePool';
 import { IPool } from '../../../sdk/pool/interface';
 import { TOKEN_TO_DECIMALS } from '../../../utils/constants';
@@ -36,9 +37,11 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
     return generateOnChainUrl('address', pool.token_address);
   }, [pool.token_address]);
   const tokenPrice = useMemo(() => {
-    return `${new Decimal(1).dividedBy(pool.token_ratio).toFixed(TOKEN_TO_DECIMALS)} ${
-      pool.token_to
-    }`;
+    const result = parseFloat(
+      new Decimal(1).dividedBy(pool.token_ratio).toFixed(TOKEN_TO_DECIMALS),
+    );
+
+    return `${result} ${pool.token_to}`;
   }, [pool.token_ratio, pool.token_to]);
   const [tokenInfo, setTokenInfo] = useState<{
     loading: boolean;
@@ -79,7 +82,7 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
         {/* left */}
         <div className="col-span-2 lg:col-span-1">
           <div className="flex flex-col text-white">
-            {pool.description && <div className="text-sm mb-5">{pool.description}</div>}
+            {pool.description && <div className="mb-5 text-sm">{pool.description}</div>}
             <div className="flex items-center mt-4 text-sm">
               <div className="w-1/3 opacity-30">Token Swap Time</div>
               <div className="w-2/3">{tokenSwapTime}</div>
@@ -156,13 +159,16 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
             </div>
             <div className="flex items-center mt-4 text-sm text-white">
               <div className="w-1/3 opacity-30">Supply</div>
-              <div className="w-2/3">
-                {tokenInfo.loading ? (
-                  <div className="w-12 h-3 rounded-lg animate-pulse" />
-                ) : (
-                  tokenInfo.total_supply
-                )}
-              </div>
+              {tokenInfo.loading ? (
+                <div className="w-12 h-3 rounded-lg animate-pulse" />
+              ) : (
+                <NumberFormat
+                  thousandSeparator={true}
+                  value={tokenInfo.total_supply}
+                  displayType="text"
+                  className="w-2/3 text-sm"
+                />
+              )}
             </div>
             <div className="flex items-center mt-4 text-sm text-white">
               <div className="w-1/3 opacity-30">Token Price</div>

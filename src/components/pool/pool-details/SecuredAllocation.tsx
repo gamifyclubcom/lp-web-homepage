@@ -76,10 +76,12 @@ const SecuredAllocation: React.FC<Props> = ({
   const claimContent = useMemo(() => {
     if (!connected) {
       return 'Connect Wallet';
+    } else if (isClaimed) {
+      return 'Already claimed';
     } else {
       return 'Claim Tokens';
     }
-  }, [connected]);
+  }, [connected, isClaimed]);
 
   const canClaim = useMemo(() => {
     return moment.unix(now).isAfter(pool.claim_at) && !isClaimed;
