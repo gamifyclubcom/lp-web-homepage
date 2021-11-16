@@ -197,9 +197,19 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
       if (!connected) {
         setAllocation(null);
         setAllocationLevel(0);
+        setIsClaimed(false);
       } else {
         try {
-          const { allocation: allocationResult } = await refreshAllocation(pool);
+          const { allocation: allocationResult, amountToken: amountTokenResult } =
+            await refreshAllocation(pool);
+          if (
+            allocationResult &&
+            allocationResult > 0 &&
+            amountTokenResult &&
+            amountTokenResult === 0
+          ) {
+            setIsClaimed(true);
+          }
           const allocationLevelResult = await getUserAllocationLevel(pool);
 
           setAllocation(allocationResult);
