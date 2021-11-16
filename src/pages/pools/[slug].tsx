@@ -199,6 +199,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
         setAllocationLevel(0);
         setIsClaimed(false);
       } else {
+        setSpinning(true);
         try {
           const { allocation: allocationResult, amountToken: amountTokenResult } =
             await refreshAllocation(pool);
@@ -214,9 +215,11 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
           setAllocation(allocationResult);
           setAllocationLevel(allocationLevelResult);
+          setSpinning(false);
         } catch (err) {
           setAllocation(null);
           setAllocationLevel(0);
+          setSpinning(false);
         }
       }
     };
@@ -267,6 +270,8 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
                     allocationLevel={allocationLevel}
                     pool={pool}
                     participantAddress={participantAddress}
+                    status={status}
+                    loading={fetching || spinning}
                   />
                 </div>
               )}

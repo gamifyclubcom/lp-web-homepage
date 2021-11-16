@@ -1,21 +1,24 @@
-import moment from 'moment';
 import Decimal from 'decimal.js';
+import moment from 'moment';
 import React, { useMemo } from 'react';
 import { useGlobal } from '../../../hooks/useGlobal';
 import { usePool } from '../../../hooks/usePool';
-import { IPool } from '../../../sdk/pool/interface';
+import { IPool, IPoolStatus } from '../../../sdk/pool/interface';
+import { PoolStatusType } from '../../../shared/enum';
+import { TOKEN_TO_DECIMALS } from '../../../utils/constants';
 import {
   isInExclusiveRound,
   isInFCFSForStakerRound,
   isInWhitelistRound,
 } from '../../../utils/helper';
-import { TOKEN_TO_DECIMALS } from '../../../utils/constants';
 
 interface Props {
   connected: boolean;
   allocationLevel?: number;
   pool: IPool;
   participantAddress: string | null;
+  status: IPoolStatus;
+  loading: boolean;
 }
 
 const PoolUserWhitelist: React.FC<Props> = ({
@@ -23,9 +26,83 @@ const PoolUserWhitelist: React.FC<Props> = ({
   allocationLevel,
   pool,
   participantAddress,
+  status,
+  loading,
 }) => {
   const { now } = useGlobal();
   const { getMaxIndividualAllocationFCFSForStaker } = usePool();
+
+  const whitelistStatus = useMemo((): string => {
+    if (!connected) {
+      return 'Connect wallet';
+    }
+
+    let isWhitelisted = false;
+    if (
+      pool.private_join_enabled &&
+      moment.unix(now).isBefore(pool.private_join_end) &&
+      Boolean(participantAddress)
+    ) {
+      isWhitelisted = true;
+    }
+
+    if (
+      pool.exclusive_join_enable &&
+      moment.unix(now).isBefore(pool.exclusive_join_end) &&
+      allocationLevel &&
+      allocationLevel > 0
+    ) {
+      isWhitelisted = true;
+    }
+
+    if (
+      pool.fcfs_join_for_staker_enabled &&
+      moment.unix(now).isBefore(pool.fcfs_join_for_staker_end) &&
+      allocationLevel &&
+      allocationLevel > 0
+    ) {
+      isWhitelisted = true;
+    }
+
+    if (status.type === PoolStatusType.UPCOMING) {
+      if (!pool.is_active) {
+        return '';
+      }
+
+      if (isWhitelisted) {
+        return 'You are whitelisted 🎉';
+      }
+
+      return 'You are not in the whitelist';
+    }
+
+    if (
+      pool.private_join_enabled ||
+      pool.exclusive_join_enable ||
+      pool.fcfs_join_for_staker_enabled
+    ) {
+      if (isWhitelisted) {
+        return 'You are whitelisted 🎉';
+      }
+
+      return 'You are not in the whitelist';
+    }
+
+    return 'N/A';
+  }, [
+    allocationLevel,
+    connected,
+    now,
+    participantAddress,
+    pool.exclusive_join_enable,
+    pool.exclusive_join_end,
+    pool.fcfs_join_for_staker_enabled,
+    pool.fcfs_join_for_staker_end,
+    pool.is_active,
+    pool.private_join_enabled,
+    pool.private_join_end,
+    status.type,
+  ]);
 
   const childrenMarkup = useMemo(() => {
     const { individualStaker } = getMaxIndividualAllocationFCFSForStaker(
@@ -74,9 +151,11 @@ const PoolUserWhitelist: React.FC<Props> = ({
             <div className="flex flex-col">
               {!connected ? (
                 <span>Please connect wallet to continue</span>
+              ) : loading ? (
+                <span className="w-32 h-3 bg-gray-500 rounded-full animate-pulse"> </span>
               ) : (
                 <>
-                  {isShowWhitelistStatus && <span>{msg}</span>}
+                  {isShowWhitelistStatus && <span>{whitelistStatus}</span>}
                   {isShowGuaranteedAllocationExclusiveRound && (
                     <span className="mt-6">
                       Your guaranteed allocation for exclusive round:{' '}
@@ -93,7 +172,7 @@ const PoolUserWhitelist: React.FC<Props> = ({
       </>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allocationLevel, connected, pool]);
+  }, [allocationLevel, connected, pool, whitelistStatus]);
 
   return <>{childrenMarkup}</>;
 };
