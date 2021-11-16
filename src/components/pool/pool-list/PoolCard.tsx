@@ -111,7 +111,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
                   variant="basic"
                   mint={pool.token_to}
                   price={totalRaise}
-                  className="text-sm text-white"
+                  className="text-sm md:text-xs lg:text-sm text-white"
                 />
               </div>
               <div className="flex items-center justify-between my-2">
@@ -119,14 +119,14 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
                 <BalanceBadge
                   variant="with-ratio"
                   price={pool.token_ratio}
-                  className="text-sm text-white"
+                  className="text-sm md:text-xs lg:text-sm text-white"
                   mintFrom={pool.token_to}
                   mintTo={pool.token_symbol}
                 />
               </div>
               <div className="flex items-center justify-between my-2">
                 <span className="text-sm text-white opacity-30">Supported</span>
-                <span className="text-sm text-white">{pool.token_to}</span>
+                <span className="text-sm md:text-xs lg:text-sm text-white">{pool.token_to}</span>
               </div>
             </div>
 
@@ -264,8 +264,10 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
                   variant="complex"
                 />
                 <div className="flex items-center justify-between mt-2">
-                  <span className="text-xs text-white">({pool.progress}%)</span>
-                  <div className="text-xs text-white">
+                  <span className="text-xs md:text-xss lg:text-xs text-white">
+                    ({pool.progress}%)
+                  </span>
+                  <div className="text-xs md:text-xss lg:text-xs text-white">
                     <NumberFormat
                       thousandSeparator
                       displayType="text"

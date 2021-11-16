@@ -45,12 +45,12 @@ const PoolsTable: React.FC<Props> = ({
 
         <table className="w-full text-white table-fixed">
           <thead className={`border-b border-gray-500 text-gray-400 bg-gray-900`}>
-            <tr className="text-xl font-medium text-left">
-              <th className="w-32 p-4 md:w-48 lg:w-64">Pool name</th>
-              <th className="hidden w-64 p-4 md:table-cell">Ratio</th>
-              <th className="hidden p-4 w-36 md:table-cell">Total Raise</th>
-              <th className="w-full p-4">Progress</th>
-              <th className="p-4 w-36">Status</th>
+            <tr className="text-base md:text-xl font-medium text-left">
+              <th className="w-32 p-2 md:p-4 md:w-48 lg:w-64">Pool name</th>
+              <th className="hidden md:w-48 lg:w-64 p-2 md:p-4 md:table-cell">Ratio</th>
+              <th className="hidden p-2 md:p-4 w-36 md:table-cell">Total Raise</th>
+              <th className="w-full p-2 md:p-4">Progress</th>
+              <th className="p-2 md:p-4 w-32 text-center lg:text-left md:w-36">Status</th>
             </tr>
           </thead>
           <tbody>

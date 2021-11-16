@@ -105,6 +105,7 @@ module.exports = {
         '1.5xl2': ['1.25rem', '1.5rem'],
         '1.125lg': ['1.125rem', '1.625rem'],
         '15px': '15px',
+        'xss': ['0.625rem', '0.875rem'],
       },
       minWidth: {
         '300px': '300px'

@@ -65,13 +65,15 @@ const HomeLaunch: React.FC = () => {
 
   return (
     <div className="mt-12 text-center layout-container">
-      <h3 className="text-white text-4xl mb-3.5">Ready to launch your project on Gamify?</h3>
+      <h3 className="text-white text-3xl md:text-4xl mb-3.5">
+        Ready to launch your project on Gamify?
+      </h3>
       <p className="text-white text-15px">
         Built to support the growing Play-To-Earn experiences in the Solana Metaverse
       </p>
       <Button
         style="bg-3232DC mt-9 ml-auto mr-auto text-sm"
-        link="https://98a54lmwmqy.typeform.com/to/lypkBwld?typeform-source=intersola-dev-web.sotatek.works"
+        /* link="https://98a54lmwmqy.typeform.com/to/lypkBwld?typeform-source=intersola-dev-web.sotatek.works" */
       >
         Apply to launch
       </Button>
@@ -109,7 +111,7 @@ const HomeLaunch: React.FC = () => {
         </li>
         <li
           className="inline-block ml-7"
-          onClick={() => handleClickNav('https://intersola.medium.com/', true)}
+          onClick={() => handleClickNav('https://gamifyclub.medium.com/', true)}
         >
           <Image
             width={24}
@@ -119,7 +121,7 @@ const HomeLaunch: React.FC = () => {
             className="cursor-pointer"
           />
         </li>
-        <li className="inline-block ml-7" onClick={() => handleClickNav('/', false)}>
+        {/* <li className="inline-block ml-7" onClick={() => handleClickNav('/', false)}>
           <Image
             width={20}
             height={21}
@@ -127,10 +129,10 @@ const HomeLaunch: React.FC = () => {
             alt={'about'}
             className="cursor-pointer"
           />
-        </li>
+        </li> */}
         <li
           className="inline-block ml-7"
-          onClick={() => handleClickNav('http://docs.gamify.io/', true)}
+          onClick={() => handleClickNav('https://docs.gamifyclub.com/', true)}
         >
           <Image
             width={23}

@@ -89,7 +89,7 @@ const Footer: React.FC<Props> = () => {
           </div>
         )}
 
-        <div className="hidden w-full py-2 md:block">
+        {/* <div className="hidden w-full py-2 md:block">
           <ul className="flex items-center justify-center">
             <li className="p-1 text-sm font-light text-white opacity-30">Term of Service</li>
             <li className="p-1 text-sm font-light text-white opacity-30">|</li>
@@ -99,7 +99,7 @@ const Footer: React.FC<Props> = () => {
             <li className="p-1 text-sm font-light text-white opacity-30">|</li>
             <li className="p-1 text-sm font-light text-white opacity-30">support@gamify.com</li>
           </ul>
-        </div>
+        </div> */}
       </div>
 
       <div className="flex items-center justify-center py-2 bg-gray-700">
