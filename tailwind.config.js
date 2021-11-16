@@ -66,6 +66,7 @@ module.exports = {
       },
       backgroundSize: {
         '100%': '100%',
+        '190%': '190%',
       },
       backgroundPosition: {
         'center-50%': 'center 50%',

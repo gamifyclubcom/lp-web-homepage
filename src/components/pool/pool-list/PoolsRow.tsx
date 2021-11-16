@@ -98,9 +98,9 @@ const PoolsRow: React.FC<Props> = ({ pool, loading, isLastItem }) => {
           </span>
         </div>
       </td>
-      <td className="px-4 py-2">
+      <td className="px-4 py-2 md:hidden lg:table-cell">
         <div className="flex items-center w-full">
-          <span className="mr-2 text-sm" style={{ minWidth: 36 }}>
+          <span className="mr-2 text-sm lg:text-xs xl:text-sm" style={{ minWidth: 36 }}>
             {progressMarkup}
           </span>
           <div className="block w-full sm:hidden lg:block">

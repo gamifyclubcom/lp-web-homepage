@@ -17,16 +17,18 @@ const FeaturePool: React.FC<Props> = ({ pools, loading }) => {
 
   return (
     <div className="pt-16 layout-container md:pt-32">
-      <h3 className="mb-20 text-2xl text-center text-white uppercase">Feature Game Projects</h3>
+      <h3 className="mb-10 md:mb-20 text-2xl text-center text-white uppercase">
+        Feature Game Projects
+      </h3>
       <div className="md:flex">
         <CardText
           title={'Token Sale Launchpad'}
           description={
             'Gain early access to public and special token sales at a lower price before they hit the market'
           }
-          style="text-center mr-6 mt-20 mb-12 md:mb-0 md:w-72 md:text-left md:self-end"
+          style="text-center mr-6 mt-10 lg:mt-20 mb-12 md:mb-0 md:w-72 md:text-left md:self-end"
         >
-          <Button style="bg-3232DC mt-24 mx-auto md:mx-0 text-sm" link="/pools">
+          <Button style="bg-3232DC mt-10 md:mt-24 mx-auto md:mx-0 text-sm" link="/pools">
             <span className="mr-2">Join now</span>
             <Image
               width={16}
