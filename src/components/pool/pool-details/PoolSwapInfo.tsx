@@ -31,10 +31,11 @@ const PoolSwapInfo: React.FC<Props> = ({
   loading,
 }) => {
   const tokenFromLeft = useMemo(() => {
-    return new Decimal(totalRaise)
-      .minus(currentSwap)
-      .dividedBy(tokenRatio)
-      .toFixed(TOKEN_TO_DECIMALS);
+    const result = parseFloat(
+      new Decimal(totalRaise).minus(currentSwap).dividedBy(tokenRatio).toFixed(TOKEN_TO_DECIMALS),
+    );
+
+    return result;
   }, [currentSwap, totalRaise, tokenRatio]);
   const progressExtraMarkup = `(${tokenFromLeft} ${mintTokenFrom} left) ${currentSwap} / ${totalRaise} ${mintTokenTo}`;
 

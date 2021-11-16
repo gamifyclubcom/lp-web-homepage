@@ -388,7 +388,6 @@ function useSmartContract() {
 
       const data = await connection.getTokenAccountBalance(associatedAddress);
 
-
       return data.value.uiAmount || 0;
     } catch (err) {
       return Promise.reject({ err });
