@@ -81,7 +81,7 @@ const Pools: React.FC<Props> = () => {
         <div className="pb-8">
           {/* UPCOMING POOL */}
           {upcomingPools.length > 0 || loading ? (
-            <div className="flex flex-col items-center w-full p-8">
+            <div className="flex flex-col items-center w-full pt-8 pb-8 md:p-8">
               <h3 className="mb-8 text-2xl font-light text-center text-white">Upcoming Pools</h3>
               <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
                 {upcomingLoading && <PoolCardLoading variant="upcoming-pool" />}
@@ -95,7 +95,7 @@ const Pools: React.FC<Props> = () => {
           ) : null}
           {/* FEATURE POOL */}
           {featurePools.length > 0 || loading ? (
-            <div className="flex flex-col items-center w-full p-8">
+            <div className="flex flex-col items-center w-full pt-8 pb-8 md:p-8">
               <h3 className="mb-8 text-2xl font-light text-center text-white">Feature Pools</h3>
 
               <div className="grid w-full grid-cols-1 gap-4">
@@ -110,7 +110,7 @@ const Pools: React.FC<Props> = () => {
           ) : null}
           {/* COMPLETED POOL */}
           {completedPools.length > 0 || loading ? (
-            <div className="flex flex-col items-center w-full p-8">
+            <div className="flex flex-col items-center w-full pt-8 pb-8 md:p-8">
               <h3 className="mb-8 text-2xl font-light text-center text-white">Completed Pools</h3>
               <div className="grid w-full grid-cols-1 gap-4">
                 {completedLoading && <PoolCardLoading variant="completed-pool" />}
@@ -126,13 +126,13 @@ const Pools: React.FC<Props> = () => {
         <div className={clsx('flex items-center justify-center', {})}>
           <ViewAllPoolBtn content="View all Pools" />
         </div>
-        <div className="flex flex-col items-center w-full p-8 mt-12">
+        <div className="flex flex-col items-center w-full md:p-8 mt-12">
           <h3 className="mb-8 text-4xl font-light text-center text-pool_title">
             Want to launch your game on Gamify?
           </h3>
           <Button
             style="bg-3232DC mb-14 mx-auto md:mx-0 text-sm"
-            link="https://98a54lmwmqy.typeform.com/to/lypkBwld?typeform-source=intersola-dev-web.sotatek.works"
+            /* link="https://98a54lmwmqy.typeform.com/to/lypkBwld?typeform-source=intersola-dev-web.sotatek.works" */
           >
             <span className="mr-2">Apply to Launch</span>
           </Button>
