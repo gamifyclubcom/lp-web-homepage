@@ -142,7 +142,7 @@ function useSmartContract() {
         return resolve(txId);
       } catch (err) {
         setLoading(false);
-        return reject({ err });
+        return reject(err);
       }
     });
   };
@@ -163,7 +163,7 @@ function useSmartContract() {
         return resolve(txId);
       } catch (err) {
         setLoading(false);
-        return reject({ err });
+        return reject(err);
       }
     });
   };
