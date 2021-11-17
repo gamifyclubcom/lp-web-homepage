@@ -15,7 +15,7 @@ const ProductItem: React.FC<Props> = ({ name, description, image, redirectLink }
   return (
     <div className="w-full">
       <div
-        className="relative flex flex-col h-full p-4 overflow-hidden bg-center rounded-lg cursor-pointer bg-primary-400"
+        className="relative flex flex-col h-full p-4 overflow-hidden bg-center rounded-lg bg-primary-400"
         style={{
           backgroundImage: `url(${image})`,
         }}
