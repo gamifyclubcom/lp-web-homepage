@@ -111,7 +111,7 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
                   variant="basic"
                   mint={pool.token_to}
                   price={totalRaise}
-                  className="text-sm md:text-xs lg:text-sm text-white"
+                  className="text-sm text-white md:text-xs lg:text-sm"
                 />
               </div>
               <div className="flex items-center justify-between my-2">
@@ -119,14 +119,14 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
                 <BalanceBadge
                   variant="with-ratio"
                   price={pool.token_ratio}
-                  className="text-sm md:text-xs lg:text-sm text-white"
+                  className="text-sm text-white md:text-xs lg:text-sm"
                   mintFrom={pool.token_to}
                   mintTo={pool.token_symbol}
                 />
               </div>
               <div className="flex items-center justify-between my-2">
                 <span className="text-sm text-white opacity-30">Supported</span>
-                <span className="text-sm md:text-xs lg:text-sm text-white">{pool.token_to}</span>
+                <span className="text-sm text-white md:text-xs lg:text-sm">{pool.token_to}</span>
               </div>
             </div>
 
@@ -143,74 +143,78 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
         );
       case 'feature-pool':
         return (
-          <div className="flex items-start justify-between w-full">
-            <div
-              className="relative hidden h-48 overflow-hidden bg-center bg-cover rounded-lg md:block"
-              style={{ backgroundImage: `url(${thumbnail})`, width: 500 }}
-            >
-              <div className="absolute inset-0 bg-black bg-opacity-30" />
+          <div className="grid grid-cols-3 gap-4">
+            <div className="hidden md:col-span-1 md:block">
+              <div className="relative w-full overflow-hidden rounded-lg h-44">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={thumbnail} alt="pool image" className="object-cover w-full h-full" />
+                <div className="absolute inset-0 bg-black bg-opacity-30" />
+              </div>
             </div>
+            <div className="col-span-3 md:col-span-2">
+              <div className="w-full">
+                <div className="flex flex-col items-start w-full">
+                  <h6 className="w-full max-w-md mb-8 text-lg font-semibold text-white truncate">
+                    {pool.name} ({pool.token_symbol})
+                  </h6>
 
-            <div className="flex flex-col items-center w-full md:ml-4">
-              <h6 className="w-full max-w-md mb-8 text-lg font-semibold text-white truncate">
-                {pool.name} ({pool.token_symbol})
-              </h6>
+                  <div className="flex items-center justify-between w-full my-1">
+                    <span className="text-sm text-white">Total Raise</span>
+                    <BalanceBadge
+                      variant="basic"
+                      mint={pool.token_to}
+                      price={totalRaise}
+                      className="text-sm text-secondary-400"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between w-full my-1">
+                    <span className="text-sm text-white">Participants</span>
+                    <span className="text-sm font-semibold text-white">{pool.participants}</span>
+                  </div>
+                  <div className="flex items-center justify-between w-full my-1">
+                    <span className="text-sm text-white">Progress</span>
+                    <div className="flex items-center text-xs text-white">
+                      <span className="mr-2 text-sm">{pool.progress}%</span>
+                      <NumberFormat
+                        thousandSeparator
+                        displayType="text"
+                        className="opacity-30"
+                        value={pool.token_current_raise}
+                      />
+                      <span className="opacity-30">/</span>
+                      <NumberFormat
+                        thousandSeparator
+                        displayType="text"
+                        className="opacity-30"
+                        value={pool.token_total_raise}
+                      />
+                      <span className="ml-1 opacity-30">{pool.token_symbol}</span>
+                    </div>
+                  </div>
 
-              <div className="flex items-center justify-between w-full my-1">
-                <span className="text-sm text-white">Total Raise</span>
-                <BalanceBadge
-                  variant="basic"
-                  mint={pool.token_to}
-                  price={totalRaise}
-                  className="text-sm text-secondary-400"
-                />
-              </div>
-              <div className="flex items-center justify-between w-full my-1">
-                <span className="text-sm text-white">Participants</span>
-                <span className="text-sm font-semibold text-white">{pool.participants}</span>
-              </div>
-              <div className="flex items-center justify-between w-full my-1">
-                <span className="text-sm text-white">Progress</span>
-                <div className="flex items-center text-xs text-white">
-                  <span className="mr-2 text-sm">{pool.progress}%</span>
-                  <NumberFormat
-                    thousandSeparator
-                    displayType="text"
-                    className="opacity-30"
-                    value={pool.token_current_raise}
-                  />
-                  <span className="opacity-30">/</span>
-                  <NumberFormat
-                    thousandSeparator
-                    displayType="text"
-                    className="opacity-30"
-                    value={pool.token_total_raise}
-                  />
-                  <span className="ml-1 opacity-30">{pool.token_symbol}</span>
+                  <div className="w-full my-2">
+                    <PoolProgressBar
+                      loading={loading}
+                      variant="complex"
+                      current={pool.token_current_raise}
+                      total={pool.token_total_raise}
+                    />
+                  </div>
+                  <button
+                    onClick={goToPool}
+                    className="flex items-center justify-center h-10 px-8 py-2 mt-2 ml-auto transition-all duration-200 bg-transparent border rounded-full border-secondary-400 hover:bg-secondary-400 text-secondary-400 hover:text-white"
+                  >
+                    <span className="mr-4">View Pool</span>
+                    <Image
+                      width={16}
+                      height={8}
+                      src="/images/arrow.svg"
+                      alt="arrow"
+                      className="cursor-pointer"
+                    />
+                  </button>
                 </div>
               </div>
-
-              <div className="w-full my-2">
-                <PoolProgressBar
-                  loading={loading}
-                  variant="complex"
-                  current={pool.token_current_raise}
-                  total={pool.token_total_raise}
-                />
-              </div>
-              <button
-                onClick={goToPool}
-                className="flex items-center justify-center h-10 px-8 py-2 mt-2 ml-auto transition-all duration-200 bg-transparent border rounded-full border-secondary-400 hover:bg-secondary-400 text-secondary-400 hover:text-white"
-              >
-                <span className="mr-4">View Pool</span>
-                <Image
-                  width={16}
-                  height={8}
-                  src="/images/arrow.svg"
-                  alt="arrow"
-                  className="cursor-pointer"
-                />
-              </button>
             </div>
           </div>
         );
@@ -264,10 +268,10 @@ const PoolCard: React.FC<Props> = ({ pool, variant, loading, is_home, auto_scrol
                   variant="complex"
                 />
                 <div className="flex items-center justify-between mt-2">
-                  <span className="text-xs md:text-xss lg:text-xs text-white">
+                  <span className="text-xs text-white md:text-xss lg:text-xs">
                     ({pool.progress}%)
                   </span>
-                  <div className="text-xs md:text-xss lg:text-xs text-white">
+                  <div className="text-xs text-white md:text-xss lg:text-xs">
                     <NumberFormat
                       thousandSeparator
                       displayType="text"
