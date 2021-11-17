@@ -27,64 +27,68 @@ function useSmartContract() {
         throw new WalletNotConnectedError();
       }
 
-      let txId: string;
-      const actions = new Actions(connection);
+      try {
+        let txId: string;
+        const actions = new Actions(connection);
 
-      setLoading(true);
-      await handleCloseWrapAccount();
+        setLoading(true);
+        await handleCloseWrapAccount();
 
-      if (
-        pool.private_join_enabled &&
-        moment.unix(now).isBetween(pool.private_join_start, pool.private_join_end)
-      ) {
-        const { rawTx } = await actions.earlyJoin(
-          publicKey,
-          publicKey,
-          new PublicKey(pool.contract_address),
-          amount,
-        );
-        txId = await parseAndSendTransaction(rawTx);
-      } else if (
-        pool.exclusive_join_enable &&
-        moment.unix(now).isBetween(pool.exclusive_join_start, pool.exclusive_join_end)
-      ) {
-        const { rawTx } = await actions.exclusiveJoin(
-          publicKey,
-          publicKey,
-          new PublicKey(pool.contract_address),
-          amount,
-        );
-        txId = await parseAndSendTransaction(rawTx);
-      } else if (
-        pool.fcfs_join_for_staker_enabled &&
-        moment.unix(now).isBetween(pool.fcfs_join_for_staker_start, pool.fcfs_join_for_staker_end)
-      ) {
-        const { rawTx } = await actions.fcfsStakeJoin(
-          publicKey,
-          publicKey,
-          new PublicKey(pool.contract_address),
-          amount,
-        );
-        txId = await parseAndSendTransaction(rawTx);
-      } else if (
-        pool.public_join_enabled &&
-        moment.unix(now).isBetween(pool.public_join_start, pool.public_join_end)
-      ) {
-        const { rawTx } = await actions.join(
-          publicKey,
-          publicKey,
-          new PublicKey(pool.contract_address),
-          amount,
-        );
-        txId = await parseAndSendTransaction(rawTx);
-      } else {
+        if (
+          pool.private_join_enabled &&
+          moment.unix(now).isBetween(pool.private_join_start, pool.private_join_end)
+        ) {
+          const { rawTx } = await actions.earlyJoin(
+            publicKey,
+            publicKey,
+            new PublicKey(pool.contract_address),
+            amount,
+          );
+          txId = await parseAndSendTransaction(rawTx);
+        } else if (
+          pool.exclusive_join_enable &&
+          moment.unix(now).isBetween(pool.exclusive_join_start, pool.exclusive_join_end)
+        ) {
+          const { rawTx } = await actions.exclusiveJoin(
+            publicKey,
+            publicKey,
+            new PublicKey(pool.contract_address),
+            amount,
+          );
+          txId = await parseAndSendTransaction(rawTx);
+        } else if (
+          pool.fcfs_join_for_staker_enabled &&
+          moment.unix(now).isBetween(pool.fcfs_join_for_staker_start, pool.fcfs_join_for_staker_end)
+        ) {
+          const { rawTx } = await actions.fcfsStakeJoin(
+            publicKey,
+            publicKey,
+            new PublicKey(pool.contract_address),
+            amount,
+          );
+          txId = await parseAndSendTransaction(rawTx);
+        } else if (
+          pool.public_join_enabled &&
+          moment.unix(now).isBetween(pool.public_join_start, pool.public_join_end)
+        ) {
+          const { rawTx } = await actions.join(
+            publicKey,
+            publicKey,
+            new PublicKey(pool.contract_address),
+            amount,
+          );
+          txId = await parseAndSendTransaction(rawTx);
+        } else {
+          setLoading(false);
+          return reject({ message: 'Join pool not available' });
+        }
+
         setLoading(false);
-        return reject({ message: 'Join pool not available' });
+
+        return resolve(txId);
+      } catch (err) {
+        return reject(err);
       }
-
-      setLoading(false);
-
-      return resolve(txId);
     });
   };
 
@@ -117,7 +121,7 @@ function useSmartContract() {
         return resolve(txId);
       } catch (err) {
         setLoading(false);
-        return reject({ err });
+        return reject(err);
       }
     });
   };

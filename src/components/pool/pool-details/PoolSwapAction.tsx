@@ -270,13 +270,14 @@ const PoolSwapAction: React.FC<Props> = ({
       });
       alertSuccess('User swap amount success!');
     } catch (err) {
-      setAmountSwap({
-        value: new Decimal(0),
-        formatted: '0',
-      });
-
       setSpinning(false);
-      alertError((err as any).message);
+      if ((err as any).name !== 'WalletSignTransactionError') {
+        setAmountSwap({
+          value: new Decimal(0),
+          formatted: '0',
+        });
+        alertError((err as any).message);
+      }
     }
   };
 

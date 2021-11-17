@@ -137,7 +137,9 @@ const SecuredAllocation: React.FC<Props> = ({
       alertSuccess('User claim token success!');
     } catch (err) {
       setSpinning(false);
-      alertError((err as any).message);
+      if ((err as any).name !== 'WalletSignTransactionError') {
+        alertError((err as any).message);
+      }
     }
   };
 

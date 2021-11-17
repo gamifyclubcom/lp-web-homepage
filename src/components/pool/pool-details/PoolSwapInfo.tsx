@@ -1,5 +1,6 @@
 import Decimal from 'decimal.js';
 import { useMemo } from 'react';
+import NumberFormat from 'react-number-format';
 import { IPoolStatus } from '../../../sdk/pool/interface';
 import { TOKEN_TO_DECIMALS } from '../../../utils/constants';
 import BalanceBadge from '../../shared/BalanceBadge';
@@ -37,7 +38,35 @@ const PoolSwapInfo: React.FC<Props> = ({
 
     return result;
   }, [currentSwap, totalRaise, tokenRatio]);
-  const progressExtraMarkup = `(${tokenFromLeft} ${mintTokenFrom} left) ${currentSwap} / ${totalRaise} ${mintTokenTo}`;
+  const progressExtraMarkup = useMemo(() => {
+    return (
+      <div className="flex items-center text-xs text-white">
+        <span>(</span>
+        <span>
+          {tokenFromLeft} {mintTokenFrom} left
+        </span>
+        <span>)</span>
+
+        <NumberFormat
+          thousandSeparator
+          displayType="text"
+          className="mx-1 text-xs text-white"
+          value={currentSwap}
+        />
+
+        <span>/</span>
+
+        <NumberFormat
+          thousandSeparator
+          displayType="text"
+          className="mx-1 text-xs text-white"
+          value={totalRaise}
+        />
+
+        <span>{mintTokenTo}</span>
+      </div>
+    );
+  }, [currentSwap, mintTokenFrom, mintTokenTo, tokenFromLeft, totalRaise]);
 
   return (
     <div className="flex flex-col p-4">
@@ -79,7 +108,8 @@ const PoolSwapInfo: React.FC<Props> = ({
         <div className="flex flex-col">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-white">{swapProgress}%</span>
-            <span className="text-xs text-white">{progressExtraMarkup}</span>
+            {/* <span className="text-xs text-white">{progressExtraMarkup}</span> */}
+            {progressExtraMarkup}
           </div>
           <PoolProgressBar
             current={currentSwap}
