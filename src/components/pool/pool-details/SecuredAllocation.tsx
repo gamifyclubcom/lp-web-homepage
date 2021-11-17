@@ -84,8 +84,10 @@ const SecuredAllocation: React.FC<Props> = ({
   }, [connected, isClaimed]);
 
   const canClaim = useMemo(() => {
-    return moment.unix(now).isAfter(pool.claim_at) && !isClaimed;
-  }, [isClaimed, now, pool.claim_at]);
+    return (
+      userAllocation && userAllocation > 0 && moment.unix(now).isAfter(pool.claim_at) && !isClaimed
+    );
+  }, [isClaimed, now, pool.claim_at, userAllocation]);
 
   const handleClaimToken = async () => {
     let txId: string;
@@ -255,15 +257,22 @@ const SecuredAllocation: React.FC<Props> = ({
       </div>
 
       <div className="mt-8">
-        <button
-          onClick={handleClaim}
-          className={clsx('hidden w-64 h-12 text-sm text-center text-white rounded-full lg:block', {
-            'bg-gray-600': !canClaim,
-            'bg-secondary-500': canClaim || !connected,
-          })}
-        >
-          {claimContent}
-        </button>
+        {userAllocation && userAllocation > 0 ? (
+          <button
+            onClick={handleClaim}
+            className={clsx(
+              'hidden w-64 h-12 text-sm text-center text-white rounded-full lg:block',
+              {
+                'bg-gray-600': !canClaim,
+                'bg-secondary-500': canClaim || !connected,
+              },
+            )}
+          >
+            {claimContent}
+          </button>
+        ) : (
+          <span className="text-white">Your address is not a participant of this pool</span>
+        )}
       </div>
     </div>
   );

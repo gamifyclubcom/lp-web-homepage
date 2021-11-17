@@ -68,7 +68,7 @@ const Layout: React.FC<Props> = ({ title = PageTitle.HomePage, children }) => {
     <>
       <Head>
         <title>{title}</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/icons/favicon.ico" />
       </Head>
 
       <Header />
