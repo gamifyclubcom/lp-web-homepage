@@ -7,6 +7,7 @@ import { useCountDown } from '../../../hooks/useCountDown';
 import { useGlobal } from '../../../hooks/useGlobal';
 import { usePool } from '../../../hooks/usePool';
 import { IPool } from '../../../sdk/pool/interface';
+import { IPoolTimes } from '../../../shared/interface';
 import PoolCardTitle from '../../shared/pool/PoolCardTitle';
 import PoolCountDownItem from '../../shared/pool/PoolCountDownItem';
 import PoolTimelines from './PoolTimelines';
@@ -16,6 +17,7 @@ interface Props {
   loading: boolean;
   allowContribute: boolean;
   alreadyContribute: boolean;
+  poolTimes: IPoolTimes;
   refreshData: () => Promise<void>;
 }
 
@@ -24,6 +26,7 @@ const PoolRounds: React.FC<Props> = ({
   allowContribute,
   alreadyContribute,
   loading,
+  poolTimes,
   refreshData,
 }) => {
   const router = useRouter();
@@ -31,7 +34,7 @@ const PoolRounds: React.FC<Props> = ({
   const { getPoolTimelines } = usePool();
   const { now } = useGlobal();
   const { connected } = useWallet();
-  const timelines = getPoolTimelines(pool);
+  const timelines = getPoolTimelines(poolTimes);
 
   const activeKey = useMemo(() => {
     if (!pool.is_active) {

@@ -1,6 +1,7 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import Decimal from 'decimal.js';
+import { v4 as uuid } from 'uuid';
 import moment from 'moment';
 import { GetServerSideProps } from 'next';
 import { useEffect, useMemo, useState } from 'react';
@@ -26,6 +27,7 @@ import {
   isInFCFSForStakerRound,
   isInWhitelistRound,
 } from '../../utils/helper';
+import { IPoolTimes } from '../../shared/interface';
 
 interface Props {
   poolServer: ServerResponsePool;
@@ -51,16 +53,38 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
   });
   const [userClaimedAt, setUserClaimedAt] = useState<string | undefined>(undefined);
   const [joinPoolDates, setJoinPoolDates] = useState<string[]>([]);
+  const [fetchUid, setFetchUid] = useState(() => uuid());
+  const poolTimes: IPoolTimes = useMemo(() => {
+    return {
+      start_date: new Date(pool.start_date),
+      join_pool_start: new Date(pool.join_pool_start),
+      private_join_enabled: pool.private_join_enabled,
+      private_join_start: pool.private_join_start,
+      private_join_end: pool.private_join_end,
+      exclusive_join_enabled: pool.exclusive_join_enable,
+      exclusive_join_start: pool.exclusive_join_start,
+      exclusive_join_end: pool.exclusive_join_end,
+      fcfs_staker_join_enabled: pool.fcfs_join_for_staker_enabled,
+      fcfs_staker_join_start: pool.fcfs_join_for_staker_start,
+      fcfs_staker_join_end: pool.fcfs_join_for_staker_end,
+      public_join_enabled: pool.public_join_enabled,
+      public_join_start: pool.public_join_start,
+      public_join_end: pool.public_join_end,
+      join_pool_end: new Date(pool.join_pool_end),
+      claim_at: new Date(pool.claim_at),
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchUid]);
   const status = useMemo(() => {
     return getPoolStatus({
-      start_date: pool.start_date,
-      join_pool_start: pool.join_pool_start,
-      join_pool_end: pool.join_pool_end,
+      start_date: poolTimes.start_date.toISOString(),
+      join_pool_start: poolTimes.join_pool_start.toISOString(),
+      join_pool_end: poolTimes.join_pool_end.toISOString(),
       is_active: pool.is_active,
       progress: progress,
       now: now,
     });
-  }, [now, pool, progress]);
+  }, [now, pool.is_active, poolTimes, progress]);
 
   const allowContribute = useMemo(() => {
     return status.type === PoolStatusType.OPEN && progress < 100;
@@ -137,6 +161,8 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
         setFetching(false);
       } catch (err) {
         setFetching(false);
+      } finally {
+        setFetchUid(uuid());
       }
     };
 
@@ -302,6 +328,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
                     loading={fetching}
                     allowContribute={allowContribute}
                     alreadyContribute={Boolean(allocation && allocation > 0)}
+                    poolTimes={poolTimes}
                     refreshData={refresh}
                   />
                 </div>

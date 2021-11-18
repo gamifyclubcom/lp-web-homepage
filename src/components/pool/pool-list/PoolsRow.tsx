@@ -45,12 +45,8 @@ const PoolsRow: React.FC<Props> = ({ pool, loading, isLastItem }) => {
       return '0%';
     }
 
-    return `${new Decimal(pool.token_current_raise)
-      .times(100)
-      .dividedBy(pool.token_total_raise)
-      .toNumber()
-      .toFixed(2)}%`;
-  }, [pool.token_current_raise, pool.token_total_raise]);
+    return `${new Decimal(pool.progress).toNumber().toFixed(2)}%`;
+  }, [pool.progress, pool.token_total_raise]);
 
   return (
     <tr
