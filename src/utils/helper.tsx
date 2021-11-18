@@ -87,6 +87,18 @@ export const getPoolStatus = ({
   let diff: string;
   let message: string;
 
+  console.log(
+    {
+      start_date: moment(start_date).format('DD/MM/YYYY hh:mm:ss'),
+      join_pool_start: moment(join_pool_start).format('DD/MM/YYYY hh:mm:ss'),
+      join_pool_end: moment(join_pool_end).format('DD/MM/YYYY hh:mm:ss'),
+      is_active,
+      progress,
+      now,
+    },
+    '123',
+  );
+
   if (!is_active) {
     // DRAFT
     type = PoolStatusType.UPCOMING;
