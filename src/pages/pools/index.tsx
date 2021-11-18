@@ -77,7 +77,7 @@ const Pools: React.FC<Props> = () => {
   return (
     <Layout title={PageTitle.PoolsPage}>
       <LoadingScreen loading={loading} />
-      <div className="mx-auto layout-container">
+      <div className="mx-auto layout-container min-h-screen">
         <div className="pb-8">
           {/* UPCOMING POOL */}
           {upcomingPools.length > 0 || loading ? (
