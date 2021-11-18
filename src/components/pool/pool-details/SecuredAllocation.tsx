@@ -257,7 +257,7 @@ const SecuredAllocation: React.FC<Props> = ({
       </div>
 
       <div className="mt-8">
-        {userAllocation && userAllocation > 0 ? (
+        {!connected || (userAllocation && userAllocation > 0) ? (
           <button
             onClick={handleClaim}
             className={clsx(
