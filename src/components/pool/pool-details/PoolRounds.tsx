@@ -29,7 +29,10 @@ const PoolRounds: React.FC<Props> = ({
   const { getPoolTimelines } = usePool();
   const { now } = useGlobal();
   const { connected } = useWallet();
-  const timelines = getPoolTimelines(pool);
+  const timelines = useMemo(() => {
+    return getPoolTimelines(pool);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pool]);
 
   const activeKey = useMemo(() => {
     if (!pool.is_active) {
@@ -105,6 +108,12 @@ const PoolRounds: React.FC<Props> = ({
     }
     const countDownDate = activeTimeline?.endAt;
 
+    console.log({
+      countDownDate: moment(countDownDate).format('DD/MM/YYYY hh:mm:ss'),
+      activeKey,
+      activeTimeline,
+    });
+
     return (
       <>
         {loading ? (
@@ -167,7 +176,7 @@ const PoolRounds: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     activeKey,
-    activeTimeline?.endAt,
+    activeTimeline,
     allowContribute,
     alreadyContribute,
     connected,
