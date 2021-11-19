@@ -2,6 +2,7 @@ import Decimal from 'decimal.js';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import NumberFormat from 'react-number-format';
+import ShowMoreText from 'react-show-more-text';
 import { usePool } from '../../../hooks/usePool';
 import { IPool } from '../../../sdk/pool/interface';
 import { TOKEN_TO_DECIMALS } from '../../../utils/constants';
@@ -82,7 +83,22 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
         {/* left */}
         <div className="col-span-2 lg:col-span-1">
           <div className="flex flex-col text-white">
-            {pool.description && <div className="mb-5 text-sm">{pool.description}</div>}
+            {pool.description && (
+              <div className="mb-5 text-sm">
+                <ShowMoreText
+                  lines={3}
+                  more="see more"
+                  less="see less"
+                  // className="content-css"
+                  anchorClass="text-pool_focus_1"
+                  expanded={false}
+                  // width={280}
+                  truncatedEndingComponent={'... '}
+                >
+                  {pool.description}
+                </ShowMoreText>
+              </div>
+            )}
             <div className="flex items-center mt-4 text-sm">
               <div className="w-1/3 opacity-30">Token Swap Time</div>
               <div className="w-2/3">{tokenSwapTime}</div>
