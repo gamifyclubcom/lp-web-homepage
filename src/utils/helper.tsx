@@ -184,13 +184,13 @@ export const getPoolAccess = (pool: IPool): string => {
     result.push('Whitelist');
   }
   if (pool.campaign.exclusive_phase?.is_active) {
-    result.push('Exclusive');
+    result.push('Tokens stakers');
   }
   if (pool.campaign.fcfs_stake_phase?.is_active) {
-    result.push('FCFS staker');
+    result.push('Stakers second round');
   }
   if (pool.campaign.public_phase.is_active) {
-    result.push('FCFS');
+    result.push('Public round');
   }
 
   return result.join('/');
