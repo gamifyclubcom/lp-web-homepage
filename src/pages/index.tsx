@@ -54,7 +54,7 @@ const Home: React.FC<Props> = ({ paginatedPools }) => {
       <div className="bg-1C0045">
         <Banner />
         {pools && pools.length > 0 ? <FeaturePool pools={pools} loading={loading} /> : null}
-        <HomeStakePool />
+        {/* <HomeStakePool /> */}
         <div className="pt-40 text-center">
           <Image
             width={548}

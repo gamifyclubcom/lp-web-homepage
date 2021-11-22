@@ -29,7 +29,7 @@ const Footer: React.FC<Props> = () => {
   return (
     <footer className="flex flex-col">
       <div className="flex flex-col w-full bg-primary-900">
-        {isInHomePage && (
+        {/* {isInHomePage && (
           <div className="w-full mx-auto layout-container">
             <div className="flex flex-col items-start justify-between pt-6 pb-6 border-b md:pb-10 border-primary-300 md:flex-row">
               <Logo />
@@ -71,23 +71,23 @@ const Footer: React.FC<Props> = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
-        {!isInHomePage && (
-          <div className="w-full mx-auto layout-container">
-            <div className="flex flex-col items-end pt-6">
-              <BuyGMFCTokenButton />
-            </div>
-            <div className="flex flex-col items-center justify-between pb-3 border-b border-primary-300">
-              <Logo />
-            </div>
-            <div className="flex flex-col items-center my-4">
-              <span className="my-4 text-sm text-white opacity-70">
-                Launch hand-picked game and help them shine.
-              </span>
-            </div>
+        {/* {!isInHomePage && ( */}
+        <div className="w-full mx-auto layout-container">
+          <div className="flex flex-col items-end pt-6">
+            <BuyGMFCTokenButton />
           </div>
-        )}
+          <div className="flex flex-col items-center justify-between pb-3 border-b border-primary-300">
+            <Logo />
+          </div>
+          <div className="flex flex-col items-center my-4">
+            <span className="my-4 text-sm text-white opacity-70">
+              Launch hand-picked game and help them shine.
+            </span>
+          </div>
+        </div>
+        {/* )} */}
 
         {/* <div className="hidden w-full py-2 md:block">
           <ul className="flex items-center justify-center">
