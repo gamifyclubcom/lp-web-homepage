@@ -41,11 +41,11 @@ module.exports = {
         fuchsia: {
           800: '#35184D',
         },
-        stake_level_1: '#BE0369',
-        stake_level_2: '#7B11A4',
-        stake_level_3: '#421BD6',
-        stake_level_4: '#266CDD',
-        stake_level_5: '#01D8E4',
+        stake_level_1: '#C0B290',
+        stake_level_2: '#789173',
+        stake_level_3: '#73AA8B',
+        stake_level_4: '#6DC2A3',
+        stake_level_5: '#62F3D4',
         modal_header_color1: '#FF97CF',
         modal_header_color2: '#7E0F1A',
         modal_stake_maturity_time: '#3FA54A',
@@ -108,10 +108,12 @@ module.exports = {
         'xss': ['0.625rem', '0.875rem'],
       },
       minWidth: {
+        '280px': '280px',
         '300px': '300px'
       },
       maxWidth: {
-        '658px': '41.125rem'
+        '658px': '41.125rem',
+        '369px': '369px'
       },
       animation: {
         'hk_wiggle': 'hk_wiggle 10s linear infinite',
