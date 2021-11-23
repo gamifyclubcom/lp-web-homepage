@@ -152,14 +152,14 @@ const PoolUserWhitelist: React.FC<Props> = ({
       <>
         {(isShowWhitelistStatus || isShowGuaranteedAllocationExclusiveRound) && (
           <div className="w-full h-full p-4 overflow-hidden text-sm text-white rounded-lg bg-303035">
-            <div className="flex flex-col">
+            <div className="flex flex-col h-full justify-center">
               {!connected ? (
                 <span>Please connect wallet to continue</span>
               ) : loading ? (
                 <span className="w-32 h-3 bg-gray-500 rounded-full animate-pulse"> </span>
               ) : (
                 <>
-                  {isShowWhitelistStatus && <span>{whitelistStatus}</span>}
+                  {isShowWhitelistStatus && <span className="text-base">{whitelistStatus}</span>}
                   {isShowGuaranteedAllocationExclusiveRound && (
                     <span className="mt-6">
                       Your guaranteed allocation for exclusive round:{' '}
