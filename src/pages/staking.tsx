@@ -367,7 +367,7 @@ const Staking: React.FC = () => {
       setSpinning(false);
     }
   };
-
+  console.log(allocationLevels);
   return (
     <Layout title={PageTitle.StakingPage}>
       <LoadingScreen loading={loading || spinning} />
@@ -412,12 +412,12 @@ const Staking: React.FC = () => {
               )}
 
               {(!totalStaked || totalStaked <= 0) && (
-                <div className="p-6 text-center border border-white rounded-xl">
+                <div className="p-6 text-center text-base border border-white rounded-xl">
                   You have <b>NOT</b> staked any GMFC yet
                 </div>
               )}
 
-              <div className="grid grid-cols-1 gap-4 mb-6 lg:grid-cols-2">
+              <div className="mb-6">
                 {/* HAS STAKED ISOLA STATE */}
                 {/* %%%%%%%%%%%%%%%% SIDE NOTE: the bg of the header and unstake buttons must match the level of staking color. %%%%%%%%%%%%%%%%% */}
                 {/* %%%%%%%%%%%%%%%% level 1: BE0369    level2: 7B11A4   level3: 421BD6   level4:266CDD   level5: 01D8E4 %%%%%%%%%%%%%%%%% */}
@@ -445,7 +445,7 @@ const Staking: React.FC = () => {
                         />
                       </div>
                     </div>
-                    <div>
+                    <div className="md:min-w-280px text-center">
                       <div className="px-10 py-2 border border-white rounded-lg">
                         Level {currentLevel}
                       </div>
@@ -454,7 +454,7 @@ const Staking: React.FC = () => {
                   <div className="flex flex-col items-center p-3 bg-gray-900 rounded-b-lg">
                     <div className="relative w-full">
                       <button
-                        className="absolute px-2 py-1 text-xs font-semibold text-white uppercase transform -translate-y-1/2 rounded-md shadow-lg top-1/2 bg-fuchsia-800 left-2"
+                        className="absolute px-2 py-1 text-xs font-semibold text-white uppercase transform -translate-y-1/2 rounded-md shadow-lg top-1/2 bg-stake_level_1 left-2"
                         onClick={getMaxValueUnStake}
                       >
                         max
@@ -510,7 +510,7 @@ const Staking: React.FC = () => {
                 {/* END HAS STAKED ISOLA STATE */}
 
                 {/* STAKED ISOLA BOX */}
-                <div>
+                <div className="mt-6">
                   <div className="flex flex-col p-3 bg-gray-900 rounded-lg">
                     <div className="pb-4 text-xl uppercase">Stake your GMFC</div>
                     <div className="flex flex-col justify-between p-2 bg-black rounded-lg opacity-75">
@@ -519,16 +519,14 @@ const Staking: React.FC = () => {
                           <div className="flex items-start">
                             <div className="flex items-center overflow-hidden justify-items-center bg-1e1945">
                               <Image
-                                width={32}
+                                width={65}
                                 height={32}
                                 src="/images/gamify_logo.svg"
                                 alt="gamify logo"
                               />
                             </div>
                             <div className="flex flex-col pl-2">
-                              <span className="text-xs text-white opacity-75">
-                                Unstaked Balance
-                              </span>
+                              <span className="text-xs text-white">Unstaked Balance</span>
                               <span className="text-sm text-white">
                                 <NumberFormat
                                   value={unStakeBalance}
@@ -543,7 +541,7 @@ const Staking: React.FC = () => {
 
                         <div className="relative w-full">
                           <button
-                            className="absolute px-2 py-1 text-xs font-semibold text-white uppercase transform -translate-y-1/2 rounded-md shadow-lg top-1/2 bg-fuchsia-800 left-2"
+                            className="absolute px-2 py-1 text-xs font-semibold text-white uppercase transform -translate-y-1/2 rounded-md shadow-lg top-1/2 bg-stake_level_1 left-2"
                             onClick={getMaxValueStake}
                           >
                             max
@@ -607,7 +605,7 @@ const Staking: React.FC = () => {
                       </div>
                     </div>
                     <button
-                      className="flex items-center justify-center w-full h-12 px-2 py-1 mt-3 text-lg text-center text-white rounded-full bg-staking hover:bg-opacity-60"
+                      className="flex items-center justify-center w-full h-12 px-2 py-1 mt-3 text-lg text-center text-white rounded-full bg-stake_level_1 hover:bg-opacity-60 md:max-w-369px md:ml-auto"
                       onClick={confirmStake}
                     >
                       Stake

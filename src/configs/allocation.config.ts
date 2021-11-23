@@ -7,7 +7,7 @@ export const allocationLevels: IAllocationLevel[] = [
     rank: 'Stone',
     minAllocation: 400,
     allocationRatio: 1,
-    color: '#BE0369',
+    color: '#C0B290',
     textColor: '#fff',
   },
   {
@@ -16,7 +16,7 @@ export const allocationLevels: IAllocationLevel[] = [
     rank: 'Bronze',
     minAllocation: 8000,
     allocationRatio: 10,
-    color: '#7B11A4',
+    color: '#789173',
     textColor: '#fff',
   },
   {
@@ -25,7 +25,7 @@ export const allocationLevels: IAllocationLevel[] = [
     rank: 'Silver',
     minAllocation: 24000,
     allocationRatio: 50,
-    color: '#421BD6',
+    color: '#73AA8B',
     textColor: '#fff',
   },
   {
@@ -34,7 +34,7 @@ export const allocationLevels: IAllocationLevel[] = [
     rank: 'Gold',
     minAllocation: 40000,
     allocationRatio: 110,
-    color: '#266CDD',
+    color: '#6DC2A3',
     textColor: '#fff',
   },
   {
@@ -43,7 +43,7 @@ export const allocationLevels: IAllocationLevel[] = [
     rank: 'Plantinum',
     minAllocation: 80000,
     allocationRatio: 250,
-    color: '#01D8E4',
+    color: '#62F3D4',
     textColor: '#fff',
   },
 ];
