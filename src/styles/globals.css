@@ -68,6 +68,7 @@ body {
 }
 
 @media (max-width: 640px) {
+
   .layout-container,
   .layout-container-full {
     padding-left: 20px;
@@ -76,6 +77,7 @@ body {
 }
 
 @media (min-width: 640px) {
+
   .layout-container,
   .layout-container-full {
     max-width: 620px;
@@ -83,6 +85,7 @@ body {
 }
 
 @media (min-width: 768px) {
+
   .layout-container,
   .layout-container-full {
     max-width: 750px;
@@ -90,6 +93,7 @@ body {
 }
 
 @media (min-width: 1024px) {
+
   .layout-container,
   .layout-container-full {
     max-width: 1000px;
@@ -97,6 +101,7 @@ body {
 }
 
 @media (min-width: 1280px) {
+
   .layout-container,
   .layout-container-full {
     max-width: 1200px;
@@ -157,11 +162,11 @@ a {
   height: 13px;
   border-radius: 10px;
   background: linear-gradient(90deg,
-      #be0269 0%,
-      #7b11a4 4%,
-      #421bd6 20%,
-      #266cdd 40%,
-      #00d8e4 100%);
+      #C0B290 0%,
+      #789173 4%,
+      #73AA8B 20%,
+      #6DC2A3 40%,
+      #62F3D4 100%);
 }
 
 .lvl-bar {
@@ -208,11 +213,11 @@ a {
 }
 
 .lv5-onbar .lvl-dot {
-  background-color: #01d8e4;
+  background-color: #62F3D4;
 }
 
 .lv5-onbar .lvl-dot svg {
-  fill: #01d8e4;
+  fill: #62F3D4;
 }
 
 .lv4-onbar:before {
@@ -229,11 +234,11 @@ a {
 }
 
 .lv4-onbar .lvl-dot {
-  background-color: #266cdd;
+  background-color: #6DC2A3;
 }
 
 .lv4-onbar .lvl-dot svg {
-  fill: #266cdd;
+  fill: #6DC2A3;
 }
 
 .lv3-onbar:before {
@@ -250,11 +255,11 @@ a {
 }
 
 .lv3-onbar .lvl-dot {
-  background-color: #421bd6;
+  background-color: #73AA8B;
 }
 
 .lv3-onbar .lvl-dot svg {
-  fill: #421bd6;
+  fill: #73AA8B;
 }
 
 .lv2-onbar:before {
@@ -271,11 +276,11 @@ a {
 }
 
 .lv2-onbar .lvl-dot {
-  background-color: #7b11a4;
+  background-color: #789173;
 }
 
 .lv2-onbar .lvl-dot svg {
-  fill: #7b11a4;
+  fill: #789173;
 }
 
 .lv1-onbar:before {
@@ -292,9 +297,9 @@ a {
 }
 
 .lv1-onbar .lvl-dot {
-  background-color: #be0369;
+  background-color: #C0B290;
 }
 
 .lv1-onbar .lvl-dot svg {
-  fill: #be0369;
+  fill: #C0B290;
 }

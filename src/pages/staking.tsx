@@ -367,7 +367,7 @@ const Staking: React.FC = () => {
       setSpinning(false);
     }
   };
-  console.log(allocationLevels);
+  console.log(currentLevel);
   return (
     <Layout title={PageTitle.StakingPage}>
       <LoadingScreen loading={loading || spinning} />

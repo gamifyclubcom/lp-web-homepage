@@ -318,7 +318,9 @@ const PoolSwapAction: React.FC<Props> = ({
               />
             </div>
             <div className="flex items-center my-2">
-              <span className="w-40 text-sm font-semibold text-white opacity-30">Remaining</span>
+              <span className="w-40 text-sm font-semibold text-white opacity-30">
+                Remaining in the pool
+              </span>
               <BalanceBadge
                 variant="basic"
                 price={tokenLeft}
