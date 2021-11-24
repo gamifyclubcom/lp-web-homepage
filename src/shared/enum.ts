@@ -20,6 +20,7 @@ export enum PoolsSectionFilter {
   JOINED = 'joined',
   CREATED = 'created',
   PAST = 'past',
+  UPCOMING_FEATURED = 'upcoming_featured'
 }
 
 export enum PoolsVotingFilter {
