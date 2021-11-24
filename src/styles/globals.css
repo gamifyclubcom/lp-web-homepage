@@ -183,6 +183,13 @@ a {
   height: 20px;
 }
 
+.lvl-dot svg.video-game-icon {
+  top: -44px;
+  left: 30px;
+  width: 40px;
+  height: 40px;
+}
+
 .lvl-dot {
   position: absolute;
   right: -48px;
@@ -203,8 +210,8 @@ a {
   position: absolute;
   content: 'Level 5';
   transform: rotate(-90deg);
-  right: -25px;
-  top: -50px;
+  right: -28px;
+  top: -53px;
   width: 60px;
 }
 
@@ -224,8 +231,8 @@ a {
   position: absolute;
   content: 'Level 4';
   transform: rotate(-90deg);
-  right: -25px;
-  top: -50px;
+  right: -28px;
+  top: -53px;
   width: 60px;
 }
 
@@ -245,8 +252,8 @@ a {
   position: absolute;
   content: 'Level 3';
   transform: rotate(-90deg);
-  right: -25px;
-  top: -50px;
+  right: -28px;
+  top: -53px;
   width: 60px;
 }
 
@@ -266,8 +273,8 @@ a {
   position: absolute;
   content: 'Level 2';
   transform: rotate(-90deg);
-  right: -25px;
-  top: -50px;
+  right: -28px;
+  top: -53px;
   width: 60px;
 }
 
@@ -287,8 +294,8 @@ a {
   position: absolute;
   content: 'Level 1';
   transform: rotate(-90deg);
-  right: -25px;
-  top: -50px;
+  right: -28px;
+  top: -53px;
   width: 60px;
 }
 
