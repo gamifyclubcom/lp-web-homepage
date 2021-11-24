@@ -23,6 +23,7 @@ import { useGlobal } from '../hooks/useGlobal';
 import { poolAPI } from '../sdk/pool';
 import { IAllocationLevel } from '../shared/interface';
 import { getUserAllocationLevel, isEmpty } from '../utils/helper';
+import VideoGameIcon from '../components/shared/VideoGameIcon';
 
 const { ISOLA_TOKEN_ADDRESS, ISOLA_TOKEN_NAME } = envConfig;
 
@@ -367,7 +368,7 @@ const Staking: React.FC = () => {
       setSpinning(false);
     }
   };
-  console.log(currentLevel);
+
   return (
     <Layout title={PageTitle.StakingPage}>
       <LoadingScreen loading={loading || spinning} />
@@ -401,6 +402,7 @@ const Staking: React.FC = () => {
                   <div className="relative staked-bars">
                     <div className={`lv${currentLevel}-onbar lvl-bar`}>
                       <div className="lvl-dot">
+                        <VideoGameIcon />
                         <svg xmlns="http://www.w3.org/2000/svg">
                           <path data-name="Polygon 4" d="M9.5 0L19 16H0z" />
                         </svg>

@@ -72,7 +72,7 @@ const Home: React.FC<Props> = ({ paginatedPools }) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const paginatedPools = await poolAPI.getPools({
-    section: PoolsSectionFilter.FEATURED,
+    section: PoolsSectionFilter.UPCOMING_FEATURED,
   });
 
   return {
