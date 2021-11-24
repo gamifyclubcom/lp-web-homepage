@@ -192,7 +192,7 @@ const PoolRounds: React.FC<Props> = ({
       <PoolTimelines timelines={timelines} activeKey={activeKey} />
 
       {Boolean(activeKey) && Boolean(activeTimeline) && (
-        <div className="flex flex-col items-center justify-center mt-10">{countdownMarkup}</div>
+        <div className="flex flex-col items-center justify-center mt-12">{countdownMarkup}</div>
       )}
     </div>
   );

@@ -171,6 +171,7 @@ const PoolSwapAction: React.FC<Props> = ({
               loading={spinning}
               tokenDecimals={pool.token_decimals}
               claimable_percentage={pool.claimable_percentage}
+              logo={pool.logo}
             />
           );
         },

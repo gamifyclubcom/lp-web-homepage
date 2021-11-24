@@ -1,8 +1,5 @@
 import Decimal from 'decimal.js';
-import {
-  getClaimableField,
-  renderTokenBalance,
-} from '../../../../utils/helper';
+import { getClaimableField, renderTokenBalance } from '../../../../utils/helper';
 import BalanceBadge from '../../../shared/BalanceBadge';
 import BaseModal from './BaseModal';
 
@@ -31,7 +28,7 @@ const ConfirmClaimTokenModal: React.FC<Props> = ({
 }) => {
   const tokenBalanceMarkup = renderTokenBalance(
     new Decimal(allocation).times(claimable_percentage).dividedBy(100),
-    tokenDecimals
+    tokenDecimals,
   );
 
   const handleConfirm = () => {
@@ -42,39 +39,28 @@ const ConfirmClaimTokenModal: React.FC<Props> = ({
   return (
     <BaseModal
       loading={loading}
-      variant='confirm'
-      modalName='Confirmation'
-      title='Please confirm'
+      variant="confirm"
+      modalName="Confirmation"
+      title="Please confirm"
       headContent={
         <BalanceBadge
-          variant='basic'
+          variant="basic"
           price={tokenBalanceMarkup}
           mint={mintTo}
-          className='text-2xl'
+          className="text-2xl"
         />
       }
       bodyContents={[
         {
           left: <span>Ratio</span>,
           right: (
-            <BalanceBadge
-              variant='with-ratio'
-              mintFrom={mintFrom}
-              mintTo={mintTo}
-              price={ratio}
-            />
+            <BalanceBadge variant="with-ratio" mintFrom={mintFrom} mintTo={mintTo} price={ratio} />
           ),
         },
         ...getClaimableField(claimable_percentage),
         {
           left: <span>Your will receive</span>,
-          right: (
-            <BalanceBadge
-              variant='basic'
-              mint={mintTo}
-              price={tokenBalanceMarkup}
-            />
-          ),
+          right: <BalanceBadge variant="basic" mint={mintTo} price={tokenBalanceMarkup} />,
         },
       ]}
       onClose={onClose}

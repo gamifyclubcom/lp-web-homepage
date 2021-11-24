@@ -310,3 +310,44 @@ a {
 .lv1-onbar .lvl-dot svg {
   fill: #C0B290;
 }
+
+.gamify-loader {
+  border: 8px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 8px solid rgb(255, 255, 255);
+  width: 50px;
+  height: 50px;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+  position: relative;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.gamify-loader svg {
+  position: absolute;
+  top: -17px;
+  right: -2px;
+  width: 26px;
+  height: 26px;
+  transform: rotate(79deg);
+}

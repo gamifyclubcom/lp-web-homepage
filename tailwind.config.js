@@ -79,7 +79,11 @@ module.exports = {
         222228: '#222228',
         '1e1945': '#1e1945',
         '303035': '#303035',
-        pool_focus_1: '#6398FF'
+        pool_focus_1: '#6398FF',
+        'B91D1D': '#B91D1D'
+      },
+      borderColor: {
+        '20459B': '#20459B'
       },
       padding: {
         325: '325px',

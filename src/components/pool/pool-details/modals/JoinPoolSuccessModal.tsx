@@ -9,7 +9,8 @@ import {
   renderTokenBalance,
 } from '../../../../utils/helper';
 import BalanceBadge from '../../../shared/BalanceBadge';
-import BaseModal from './BaseModal';
+import EvaCloseOutlineIcon from '../../../shared/icons/EvaCloseOutlineIcon';
+import BaseModalV2 from './BaseModalV2';
 
 interface Props {
   connection: Connection;
@@ -61,43 +62,25 @@ const JoinPoolSuccessModal: React.FC<Props> = ({
   }, [txId, connection]);
 
   return (
-    <BaseModal
+    <BaseModalV2
       loading={loading}
       variant="success"
-      modalName="Secured Allocation"
-      title="Congratulations"
+      modalName=" "
+      title="Congratulation! You have swapped successfully:"
+      backText="Cancel"
+      // subTitle="Congratulation! You have swapped successfully:"
+      titleSize="medium"
+      subTitle=""
       headContent={
-        <BalanceBadge
-          variant="basic"
-          price={tokenBalanceMarkup}
-          mint={mintTo}
-          className="text-2xl"
-        />
-      }
-      bodyContents={[
-        {
-          left: <span>Ratio</span>,
-          right: (
-            <BalanceBadge variant="with-ratio" price={ratio} mintFrom={mintFrom} mintTo={mintTo} />
-          ),
-        },
-        {
-          left: <span>Amount</span>,
-          right: <BalanceBadge variant="basic" price={amountSwap} mint={mintFrom} />,
-        },
-        ...getClaimableField(claimable_percentage),
-        {
-          left: <span>Total</span>,
-          right: <BalanceBadge variant="basic" price={tokenBalanceMarkup} mint={mintTo} />,
-        },
-        {
-          left: <span>Date</span>,
-          right: <span>{date}</span>,
-        },
-        {
-          left: <span>Tx</span>,
-
-          right: (
+        <div className="text-center">
+          <BalanceBadge
+            variant="basic"
+            price={tokenBalanceMarkup}
+            mint={mintTo}
+            className="text-5xl"
+          />
+          <div className="text-sm">{`on ${date}`}</div>
+          <div className="text-sm">
             <a
               href={transactionUrl}
               target="_blank"
@@ -106,8 +89,41 @@ const JoinPoolSuccessModal: React.FC<Props> = ({
             >
               Transaction details
             </a>
+          </div>
+        </div>
+      }
+      modalIcon={
+        <div onClick={onClose}>
+          <EvaCloseOutlineIcon />
+        </div>
+      }
+      bodyContents={[
+        {
+          left: (
+            <div className="flex flex-col gap-y-2 text-base">
+              <span>Price</span>
+              <span>Inverse Price</span>
+            </div>
+          ),
+          right: (
+            <div className="flex flex-col gap-y-2 text-base">
+              <BalanceBadge
+                variant="with-ratio"
+                mintFrom={mintFrom}
+                mintTo={mintTo}
+                price={amountSwap}
+              />
+              <BalanceBadge
+                variant="with-ratio"
+                mintFrom={mintTo}
+                mintTo={mintFrom}
+                price={amountSwap}
+                reverse={true}
+              />
+            </div>
           ),
         },
+        ...getClaimableField(claimable_percentage),
       ]}
       onClose={onClose}
     />

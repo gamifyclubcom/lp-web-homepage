@@ -1,5 +1,6 @@
 import { HTMLAttributes, SVGAttributes } from 'react';
 import { CgSpinner, CgSpinnerTwoAlt } from 'react-icons/cg';
+import CustomLoader from './CustomLoader';
 
 interface Props {
   size: 'small' | 'medium' | 'large';
@@ -12,11 +13,7 @@ const Spinner: React.FC<Props> = ({ size, variant = 'basic', wrappedClassName, i
   return (
     <div className={wrappedClassName}>
       {variant === 'basic' ? (
-        <CgSpinner
-          className={`${
-            size === 'small' ? 'text-2xl' : size === 'medium' ? 'text-4xl' : 'text-6xl'
-          } text-white animate-spin ${iconClassName}`}
-        />
+        <CustomLoader />
       ) : (
         <CgSpinnerTwoAlt
           className={`${
