@@ -23,7 +23,7 @@ import { useGlobal } from '../hooks/useGlobal';
 import { poolAPI } from '../sdk/pool';
 import { IAllocationLevel } from '../shared/interface';
 import { getUserAllocationLevel, isEmpty } from '../utils/helper';
-import VideoGameIcon from '../components/shared/VideoGameIcon';
+import VideoGameIcon from '../components/shared/icons/VideoGameIcon';
 
 const { ISOLA_TOKEN_ADDRESS, ISOLA_TOKEN_NAME } = envConfig;
 
@@ -456,7 +456,7 @@ const Staking: React.FC = () => {
                   <div className="flex flex-col items-center p-3 bg-gray-900 rounded-b-lg">
                     <div className="relative w-full">
                       <button
-                        className="absolute px-2 py-1 text-xs font-semibold text-white uppercase transform -translate-y-1/2 rounded-md shadow-lg top-1/2 bg-stake_level_1 left-2"
+                        className="absolute px-2 py-1 text-xs font-semibold text-white uppercase transform -translate-y-1/2 rounded-md shadow-lg top-1/2 bg-secondary-500 left-2"
                         onClick={getMaxValueUnStake}
                       >
                         max
@@ -486,14 +486,7 @@ const Staking: React.FC = () => {
                       <>
                         <button
                           className={clsx(
-                            'mt-3 flex items-center justify-center text-center text-lg h-12 px-2 py-1 text-white rounded-full w-full hover:bg-opacity-60 bg-stake_level_1',
-                            {
-                              'bg-stake_level_1': currentLevel === 1,
-                              'bg-stake_level_2': currentLevel === 2,
-                              'bg-stake_level_3': currentLevel === 3,
-                              'bg-stake_level_4': currentLevel === 4,
-                              'bg-stake_level_5': currentLevel === 5,
-                            },
+                            'mt-3 flex items-center justify-center text-center text-lg h-12 px-2 py-1 text-white rounded-full w-full hover:bg-opacity-60 bg-secondary-500',
                           )}
                           onClick={confirmUnStake}
                         >
@@ -543,7 +536,7 @@ const Staking: React.FC = () => {
 
                         <div className="relative w-full">
                           <button
-                            className="absolute px-2 py-1 text-xs font-semibold text-white uppercase transform -translate-y-1/2 rounded-md shadow-lg top-1/2 bg-stake_level_1 left-2"
+                            className="absolute px-2 py-1 text-xs font-semibold text-white uppercase transform -translate-y-1/2 rounded-md shadow-lg top-1/2 bg-secondary-500 left-2"
                             onClick={getMaxValueStake}
                           >
                             max
@@ -607,7 +600,7 @@ const Staking: React.FC = () => {
                       </div>
                     </div>
                     <button
-                      className="flex items-center justify-center w-full h-12 px-2 py-1 mt-3 text-lg text-center text-white rounded-full bg-stake_level_1 hover:bg-opacity-60 md:max-w-369px md:ml-auto"
+                      className="flex items-center justify-center w-full h-12 px-2 py-1 mt-3 text-lg text-center text-white rounded-full bg-secondary-500 hover:bg-opacity-60 md:max-w-369px md:ml-auto"
                       onClick={confirmStake}
                     >
                       Stake

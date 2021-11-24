@@ -237,7 +237,7 @@ export function usePool() {
       result.push({
         key: 'exclusive',
         index,
-        name: 'Exclusive',
+        name: 'Tokens stakers',
         startAt: exclusive_join_start,
         endAt: exclusive_join_end,
       });
@@ -247,7 +247,7 @@ export function usePool() {
       result.push({
         key: 'fcfs-staker',
         index,
-        name: 'FCFS Staker',
+        name: 'Stakers second round',
         startAt: fcfs_staker_join_start,
         endAt: fcfs_staker_join_end,
       });
@@ -257,7 +257,7 @@ export function usePool() {
       result.push({
         key: 'fcfs',
         index,
-        name: 'FCFS',
+        name: 'Public round',
         startAt: public_join_start,
         endAt: public_join_end,
       });

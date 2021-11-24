@@ -162,7 +162,7 @@ const PoolUserWhitelist: React.FC<Props> = ({
                   {isShowWhitelistStatus && <span className="text-base">{whitelistStatus}</span>}
                   {isShowGuaranteedAllocationExclusiveRound && (
                     <span className="mt-6">
-                      Your guaranteed allocation for exclusive round:{' '}
+                      Your guaranteed allocation for tokens stakers round:{' '}
                       {`${guaranteed} ${pool.token_to}`}
                     </span>
                   )}
