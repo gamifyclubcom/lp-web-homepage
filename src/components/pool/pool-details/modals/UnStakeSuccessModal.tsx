@@ -62,7 +62,7 @@ const UnStakeSuccessModal: React.FC<Props> = ({
             <a
               href={transactionUrl}
               target="_blank"
-              className="underline text-primary-500"
+              className="underline text-secondary-400"
               rel="noreferrer"
             >
               Transaction details

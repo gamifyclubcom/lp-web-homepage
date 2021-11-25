@@ -36,7 +36,7 @@ const StakeSuccessModal: React.FC<Props> = ({ amount, mintTo, txId, tokenDecimal
             <a
               href={transactionUrl}
               target="_blank"
-              className="underline text-primary-500"
+              className="underline text-secondary-500"
               rel="noreferrer"
             >
               Transaction details
