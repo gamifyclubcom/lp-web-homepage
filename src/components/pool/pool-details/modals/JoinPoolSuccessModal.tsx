@@ -1,4 +1,4 @@
-import { useConnection } from '@solana/wallet-adapter-react';
+// import { useConnection } from '@solana/wallet-adapter-react';
 import { Connection } from '@solana/web3.js';
 import Decimal from 'decimal.js';
 import { useEffect, useState } from 'react';
@@ -9,8 +9,8 @@ import {
   renderTokenBalance,
 } from '../../../../utils/helper';
 import BalanceBadge from '../../../shared/BalanceBadge';
-import EvaCloseOutlineIcon from '../../../shared/icons/EvaCloseOutlineIcon';
-import BaseModalV2 from './BaseModalV2';
+// import EvaCloseOutlineIcon from '../../../shared/icons/EvaCloseOutlineIcon';
+import BaseModal from './BaseModal';
 
 interface Props {
   connection: Connection;
@@ -62,25 +62,42 @@ const JoinPoolSuccessModal: React.FC<Props> = ({
   }, [txId, connection]);
 
   return (
-    <BaseModalV2
+    <BaseModal
       loading={loading}
       variant="success"
-      modalName=" "
-      title="Congratulation! You have swapped successfully:"
-      backText="Cancel"
-      // subTitle="Congratulation! You have swapped successfully:"
-      titleSize="medium"
-      subTitle=""
+      modalName="Secured Allocation"
+      title="Congratulations"
       headContent={
-        <div className="text-center">
-          <BalanceBadge
-            variant="basic"
-            price={tokenBalanceMarkup}
-            mint={mintTo}
-            className="text-5xl"
-          />
-          <div className="text-sm">{`on ${date}`}</div>
-          <div className="text-sm">
+        <BalanceBadge
+          variant="basic"
+          price={tokenBalanceMarkup}
+          mint={mintTo}
+          className="text-2xl"
+        />
+      }
+      bodyContents={[
+        {
+          left: <span>Ratio</span>,
+          right: (
+            <BalanceBadge variant="with-ratio" price={ratio} mintFrom={mintFrom} mintTo={mintTo} />
+          ),
+        },
+        {
+          left: <span>Amount</span>,
+          right: <BalanceBadge variant="basic" price={amountSwap} mint={mintFrom} />,
+        },
+        ...getClaimableField(claimable_percentage),
+        {
+          left: <span>Total</span>,
+          right: <BalanceBadge variant="basic" price={tokenBalanceMarkup} mint={mintTo} />,
+        },
+        {
+          left: <span>Date</span>,
+          right: <span>{date}</span>,
+        },
+        {
+          left: <span>Tx</span>,
+          right: (
             <a
               href={transactionUrl}
               target="_blank"
@@ -89,42 +106,10 @@ const JoinPoolSuccessModal: React.FC<Props> = ({
             >
               Transaction details
             </a>
-          </div>
-        </div>
-      }
-      modalIcon={
-        <div onClick={onClose}>
-          <EvaCloseOutlineIcon />
-        </div>
-      }
-      bodyContents={[
-        {
-          left: (
-            <div className="flex flex-col gap-y-2 text-base">
-              <span>Price</span>
-              <span>Inverse Price</span>
-            </div>
-          ),
-          right: (
-            <div className="flex flex-col gap-y-2 text-base">
-              <BalanceBadge
-                variant="with-ratio"
-                mintFrom={mintFrom}
-                mintTo={mintTo}
-                price={amountSwap}
-              />
-              <BalanceBadge
-                variant="with-ratio"
-                mintFrom={mintTo}
-                mintTo={mintFrom}
-                price={amountSwap}
-                reverse={true}
-              />
-            </div>
           ),
         },
-        ...getClaimableField(claimable_percentage),
       ]}
+      backText="Close"
       onClose={onClose}
     />
   );
