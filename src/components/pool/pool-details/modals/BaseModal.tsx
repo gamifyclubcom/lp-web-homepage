@@ -55,11 +55,11 @@ const BaseModal: React.FC<Props> = ({
         </div>
       )}
 
-      <div className="flex items-center w-full p-4 font-medium text-white bg-gray-600">
+      <div className="flex items-center w-full p-4 font-medium text-white bg-1C0045 border-b border-20459B">
         {modalIcon && <div className="mr-2">{modalIcon}</div>}
         {modalName}
       </div>
-      <div className="w-full px-8 py-2 bg-gray-800">
+      <div className="w-full px-8 py-2 bg-1C0045">
         {customTitle ? (
           customTitle
         ) : variant === 'confirm' ? (
@@ -123,13 +123,13 @@ const BaseModal: React.FC<Props> = ({
           {variant === 'confirm' ? (
             <>
               <button
-                className="w-32 h-12 px-4 py-2 text-white uppercase bg-gray-500 rounded-full hover:bg-gray-600"
+                className="w-32 h-9 px-4 py-2 text-white uppercase bg-B91D1D rounded-lg hover:bg-gray-600"
                 onClick={onClose}
               >
                 {cancelText}
               </button>
               <button
-                className="w-32 h-12 px-4 py-2 text-white uppercase rounded-full bg-secondary-500 hover:bg-opacity-60"
+                className="w-32 h-9 px-4 py-2 text-white uppercase rounded-lg bg-secondary-500 hover:bg-opacity-60"
                 onClick={handleConfirm}
               >
                 {confirmText}
@@ -138,7 +138,7 @@ const BaseModal: React.FC<Props> = ({
           ) : (
             <div className="flex items-center justify-center w-full mb-4">
               <button
-                className="h-12 px-4 py-2 text-white uppercase rounded-full w-52 bg-secondary-500 hover:bg-opacity-60"
+                className="h-9 px-4 py-2 text-white uppercase rounded-lg w-52 bg-secondary-500 hover:bg-opacity-60"
                 onClick={onClose}
               >
                 {backText}
