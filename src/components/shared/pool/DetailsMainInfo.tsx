@@ -128,17 +128,25 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
                 <ul className="pl-6 text-sm">
                   <li className="flex items-center justify-between py-2">
                     <span className="opacity-30">Stakers Round 1</span>
-                    <span>{`${tokenToSOL(
-                      pool.campaign.exclusive_phase.max_total_alloc,
-                      pool.token_ratio,
-                    )} ${pool.token_to}`}</span>
+                    <span>
+                      {pool.campaign?.exclusive_phase?.max_total_alloc
+                        ? `${tokenToSOL(
+                            pool.campaign.exclusive_phase.max_total_alloc,
+                            pool.token_ratio,
+                          )} ${pool.token_to}`
+                        : ''}
+                    </span>
                   </li>
                   <li className="flex items-center justify-between py-2">
                     <span className="opacity-30">Stakers Round 2</span>
-                    <span>{`${tokenToSOL(
-                      pool.campaign.fcfs_stake_phase.max_total_alloc,
-                      pool.token_ratio,
-                    )} ${pool.token_to}`}</span>
+                    <span>
+                      {pool.campaign?.fcfs_stake_phase?.max_total_alloc
+                        ? `${tokenToSOL(
+                            pool.campaign.fcfs_stake_phase.max_total_alloc,
+                            pool.token_ratio,
+                          )} ${pool.token_to}`
+                        : ''}
+                    </span>
                   </li>
                   <li className="flex items-center justify-between py-2">
                     <span className="opacity-30">Public Round</span>
