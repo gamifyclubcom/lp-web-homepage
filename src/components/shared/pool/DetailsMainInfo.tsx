@@ -72,7 +72,7 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
     initTokenInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool.token_address]);
-  console.log(pool);
+
   return (
     <div className="p-8">
       <div className="mb-4">
