@@ -72,7 +72,7 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
     initTokenInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool.token_address]);
-
+  console.log(pool);
   return (
     <div className="p-8">
       <div className="mb-4">
@@ -124,10 +124,24 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
               <div className="w-2/3">{pool.token_symbol}</div>
             </div>
             <div className="flex items-center mt-1 text-sm">
-              <Accordion title={<div className="opacity-30">FCFS round</div>}>
+              <Accordion title={<div className="opacity-30">Personal Allocations</div>}>
                 <ul className="pl-6 text-sm">
                   <li className="flex items-center justify-between py-2">
-                    <span className="opacity-30">Max contribution size</span>
+                    <span className="opacity-30">Stakers Round 1</span>
+                    <span>{`${tokenToSOL(
+                      pool.campaign.exclusive_phase.max_total_alloc,
+                      pool.token_ratio,
+                    )} ${pool.token_to}`}</span>
+                  </li>
+                  <li className="flex items-center justify-between py-2">
+                    <span className="opacity-30">Stakers Round 2</span>
+                    <span>{`${tokenToSOL(
+                      pool.campaign.fcfs_stake_phase.max_total_alloc,
+                      pool.token_ratio,
+                    )} ${pool.token_to}`}</span>
+                  </li>
+                  <li className="flex items-center justify-between py-2">
+                    <span className="opacity-30">Public Round</span>
                     <span>{`${tokenToSOL(
                       pool.campaign.public_phase.max_individual_alloc,
                       pool.token_ratio,
