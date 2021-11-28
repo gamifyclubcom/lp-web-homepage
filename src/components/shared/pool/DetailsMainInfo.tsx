@@ -17,7 +17,7 @@ import BalanceBadge from '../BalanceBadge';
 
 interface Props {
   pool: IPool;
-  allocationLevel: number;
+  allocationLevel?: number;
 }
 
 const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel }) => {
