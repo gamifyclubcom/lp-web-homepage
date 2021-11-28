@@ -388,7 +388,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
             <div className="col-span-2 mb-8">
               <div className="w-full h-full overflow-hidden rounded-lg bg-303035">
-                <DetailsMainInfo pool={pool} />
+                <DetailsMainInfo pool={pool} allocationLevel={allocationLevel} />
               </div>
             </div>
           </div>
