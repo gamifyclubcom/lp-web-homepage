@@ -17,9 +17,10 @@ import BalanceBadge from '../BalanceBadge';
 
 interface Props {
   pool: IPool;
+  allocationLevel: number;
 }
 
-const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
+const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel }) => {
   const { getTokenInfo } = usePool();
   const poolAccess = getPoolAccess(pool);
   const totalRaise = useMemo(() => {
@@ -72,6 +73,30 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
     initTokenInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool.token_address]);
+
+  const getExclusiveLevel = () => {
+    let result = 0;
+    if (pool.campaign?.exclusive_phase) {
+      switch (allocationLevel) {
+        case 1:
+          result = pool.campaign.exclusive_phase.level1.max_individual_amount;
+          break;
+        case 2:
+          result = pool.campaign.exclusive_phase.level2.max_individual_amount;
+          break;
+        case 3:
+          result = pool.campaign.exclusive_phase.level3.max_individual_amount;
+          break;
+        case 4:
+          result = pool.campaign.exclusive_phase.level4.max_individual_amount;
+          break;
+        case 5:
+          result = pool.campaign.exclusive_phase.level5.max_individual_amount;
+          break;
+      }
+    }
+    return result;
+  };
 
   return (
     <div className="p-8">
@@ -129,11 +154,8 @@ const DetailsMainInfo: React.FC<Props> = ({ pool }) => {
                   <li className="flex items-center justify-between py-2">
                     <span className="opacity-30">Stakers Round 1</span>
                     <span>
-                      {pool.campaign?.exclusive_phase?.max_total_alloc
-                        ? `${tokenToSOL(
-                            pool.campaign.exclusive_phase.max_total_alloc,
-                            pool.token_ratio,
-                          )} ${pool.token_to}`
+                      {pool.campaign?.exclusive_phase
+                        ? `${tokenToSOL(getExclusiveLevel(), pool.token_ratio)} ${pool.token_to}`
                         : ''}
                     </span>
                   </li>
