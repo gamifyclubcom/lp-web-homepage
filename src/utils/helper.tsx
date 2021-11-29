@@ -1,17 +1,22 @@
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-import moment from 'moment';
-import Decimal from 'decimal.js';
-import { envConfig } from '../configs';
-import { IPool, IPoolStatus, IPoolVoting } from '../sdk/pool/interface';
-import { PoolStatusType, PoolVotingStatusType } from '../shared/enum';
-import { MIN_PROGRESS_PASS_FULL, SOL_DECIMALS } from './constants';
 import {
   IExtractPoolData,
   IExtractPoolV2Data,
   IPoolV3ContractData,
   IPoolV4ContractData,
-} from '@intersola/onchain-program-sdk';
+} from '@gamify/onchain-program-sdk';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import Decimal from 'decimal.js';
+import moment from 'moment';
+import { envConfig } from '../configs';
+import { IPool, IPoolStatus, IPoolVoting } from '../sdk/pool/interface';
+import {
+  PoolCountdownType,
+  PoolRoundType,
+  PoolStatusType,
+  PoolVotingStatusType,
+} from '../shared/enum';
 import { IAllocationLevel } from '../shared/interface';
+import { MIN_PROGRESS_PASS_FULL, SOL_DECIMALS } from './constants';
 
 const { SOLLET_ENV, SOLANA_EXPLORER_URL } = envConfig;
 
@@ -22,9 +27,16 @@ export const isEmpty = (str?: string | null): boolean => {
   return str.trim() === '';
 };
 
-export const getPoolLogo = (pool: IPool): string => {
-  const logo = !isEmpty(pool.logo) ? pool.logo! : '/img/placeholder_circle.svg';
-  return logo;
+export const getPoolLogo = (logo?: string): string => {
+  const image = !isEmpty(logo) ? logo! : '/images/placeholder_circle.svg';
+
+  return image;
+};
+
+export const getPoolThumbnail = (thumbnail?: string): string => {
+  const image = !isEmpty(thumbnail) ? thumbnail! : '/images/placeholder_thumbnail.png';
+
+  return image;
 };
 
 export const getPercent = (curr: number, total: number): number => {
@@ -35,7 +47,7 @@ export const getPercent = (curr: number, total: number): number => {
 // open: start_date --> current_date --> end_date
 // closed: start_date --> end_date --> current_date
 // timeline: start_date -> join_pool_start -> join_pool_end
-const getDiffWithCurrent = (futureDate: Date, passDate: Date): string => {
+export const getDiffWithCurrent = (futureDate: Date, passDate: Date): string => {
   let diff: number;
 
   if (moment(futureDate).diff(passDate, 'days') > 0) {
@@ -74,6 +86,18 @@ export const getPoolStatus = ({
   let type: PoolStatusType;
   let diff: string;
   let message: string;
+
+  /* console.log(
+    {
+      start_date: moment(start_date).format('DD/MM/YYYY hh:mm:ss'),
+      join_pool_start: moment(join_pool_start).format('DD/MM/YYYY hh:mm:ss'),
+      join_pool_end: moment(join_pool_end).format('DD/MM/YYYY hh:mm:ss'),
+      is_active,
+      progress,
+      now,
+    },
+    '123',
+  ); */
 
   if (!is_active) {
     // DRAFT
@@ -160,13 +184,13 @@ export const getPoolAccess = (pool: IPool): string => {
     result.push('Whitelist');
   }
   if (pool.campaign.exclusive_phase?.is_active) {
-    result.push('Exclusive');
+    result.push('Stakers Round 1');
   }
   if (pool.campaign.fcfs_stake_phase?.is_active) {
-    result.push('FCFS staker');
+    result.push('Stakers Round 2');
   }
   if (pool.campaign.public_phase.is_active) {
-    result.push('FCFS');
+    result.push('Public Round');
   }
 
   return result.join('/');
@@ -174,18 +198,6 @@ export const getPoolAccess = (pool: IPool): string => {
 
 export const tokenToSOL = (value: number, rate: number): number => {
   return parseFloat((value / rate).toFixed(SOL_DECIMALS));
-};
-
-export const getListPageFromTotalPage = (totalPage: number): number[] => {
-  let listPage: number[] = [];
-  let count = 1;
-
-  while (count <= totalPage) {
-    listPage.push(count);
-    count++;
-  }
-
-  return listPage;
 };
 
 export const convertUnixTimestampToDate = (timestamp: number, format?: string): string => {
@@ -312,6 +324,19 @@ export const roundNumberByDecimal = (
   ).dividedBy(Decimal.pow(10, decimal));
 };
 
+export const isInWhitelistRound = (pool: IPool, now: number): boolean => {
+  return (
+    Boolean(pool?.campaign?.early_join_phase?.is_active) &&
+    Boolean(
+      moment
+        .unix(now)
+        .isBetween(
+          pool.campaign?.early_join_phase?.start_at,
+          pool.campaign?.early_join_phase?.end_at,
+        ),
+    )
+  );
+};
 export const isInExclusiveRound = (pool: IPool, now: number): boolean => {
   return (
     Boolean(pool.campaign?.exclusive_phase?.is_active) &&
@@ -370,4 +395,75 @@ export const transformUnit = (
 
   return new Decimal(value).times(Decimal.pow(10, decimals)).toNumber();
   // return value * Math.pow(10, decimals);
+};
+
+export const isRoundActive = (params: {
+  poolActive: boolean;
+  poolProgress: number;
+  start: Date;
+  end: Date;
+  now: number;
+}): boolean => {
+  const { poolActive, poolProgress, now, start, end } = params;
+  return poolActive && moment.unix(now).isBetween(start, end) && poolProgress < 100;
+};
+
+export const isBeforeCountdownDate = (now: number, countdownDate: Date): boolean => {
+  return moment.unix(now).isBefore(countdownDate);
+};
+
+export const getPoolRoundCountdownDate = (now: number, start: Date, end: Date): Date => {
+  if (isBeforeCountdownDate(now, start)) {
+    return start;
+  }
+
+  return end;
+};
+
+export const getPoolRoundCountdownVariant = (now: number, start: Date): PoolCountdownType => {
+  if (isBeforeCountdownDate(now, start)) {
+    return PoolCountdownType.ToOpen;
+  }
+
+  return PoolCountdownType.ToClose;
+};
+
+export const getCurrCountDown = (pool: IPool, now: number): PoolRoundType | null => {
+  if (pool.private_join_enabled) {
+    if (
+      moment.unix(now).isBefore(pool.private_join_start) ||
+      moment.unix(now).isBetween(pool.private_join_start, pool.private_join_end)
+    ) {
+      return PoolRoundType.Whitelist;
+    }
+  }
+
+  if (pool.exclusive_join_enable) {
+    if (
+      moment.unix(now).isBefore(pool.exclusive_join_start) ||
+      moment.unix(now).isBetween(pool.exclusive_join_start, pool.exclusive_join_end)
+    ) {
+      return PoolRoundType.Exclusive;
+    }
+  }
+
+  if (pool.fcfs_join_for_staker_enabled) {
+    if (
+      moment.unix(now).isBefore(pool.fcfs_join_for_staker_start) ||
+      moment.unix(now).isBetween(pool.fcfs_join_for_staker_start, pool.fcfs_join_for_staker_end)
+    ) {
+      return PoolRoundType.FcfsStaker;
+    }
+  }
+
+  if (pool.public_join_enabled) {
+    if (
+      moment.unix(now).isBefore(pool.public_join_start) ||
+      moment.unix(now).isBetween(pool.public_join_start, pool.public_join_end)
+    ) {
+      return PoolRoundType.Fcfs;
+    }
+  }
+
+  return null;
 };

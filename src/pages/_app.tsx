@@ -1,13 +1,16 @@
-import React, { useEffect, useMemo } from 'react';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import type { AppProps } from 'next/app';
-import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useEffect } from 'react';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer, Zoom } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { GlobalProvider } from '../contexts/global';
+import { PoolProvider } from '../contexts/pool';
 import '../styles/globals.css';
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -16,12 +19,10 @@ NProgress.configure({ showSpinner: false });
 
 const WalletConnectionProvider = dynamic<{ children: React.ReactNode }>(
   () =>
-    import('../contexts/wallet').then(
-      ({ WalletConnectionProvider }) => WalletConnectionProvider
-    ),
+    import('../contexts/wallet').then(({ WalletConnectionProvider }) => WalletConnectionProvider),
   {
     ssr: false,
-  }
+  },
 );
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -47,19 +48,23 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <WalletConnectionProvider>
-        <WalletModalProvider logo='/icons/apple-touch-icon.png'>
-          <Component {...pageProps} />
+        <WalletModalProvider logo="/icons/apple-touch-icon.png">
+          <GlobalProvider>
+            <PoolProvider>
+              <Component {...pageProps} />
+              <ToastContainer
+                hideProgressBar
+                position="bottom-left"
+                limit={2}
+                newestOnTop
+                closeButton={false}
+                autoClose={2000}
+                transition={Zoom}
+              />
+            </PoolProvider>
+          </GlobalProvider>
         </WalletModalProvider>
       </WalletConnectionProvider>
-      <ToastContainer
-        hideProgressBar
-        position='bottom-left'
-        limit={2}
-        newestOnTop
-        closeButton={false}
-        autoClose={2000}
-        transition={Zoom}
-      />
     </>
   );
 }

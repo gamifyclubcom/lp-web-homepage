@@ -1,5 +1,7 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  purge: ['./src/pages/**/*.{js,ts,jsx,tsx}', './src/components/**/*.{js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
@@ -11,6 +13,9 @@ module.exports = {
         '2xl': '1536px',
       },
       colors: {
+        interpurp: {
+          DEFAULT: '#BE0269',
+        },
         primary: {
           100: '#E0C4F5',
           200: '#BF8DEC',
@@ -33,17 +38,100 @@ module.exports = {
           800: '#0F0F7F',
           900: '#090969',
         },
+        fuchsia: {
+          800: '#35184D',
+        },
+        stake_level_1: '#C0B290',
+        stake_level_2: '#789173',
+        stake_level_3: '#73AA8B',
+        stake_level_4: '#6DC2A3',
+        stake_level_5: '#62F3D4',
+        modal_header_color1: '#FF97CF',
+        modal_header_color2: '#7E0F1A',
+        modal_stake_maturity_time: '#3FA54A',
+        modal_unstake_header: '#872020',
+        pool_title: '#733434',
+        staking: '#022BBE',
+        gcpurp: {
+          200: 'rgba(217,191,245,1)'
+        },
+        pool_focus_1: '#6398FF'
+      },
+      backgroundImage: {
+        'pools-voting-list': "url('/images/gamify_bg_orb.jpeg')",
+        'pools-dashboard': "url('/images/gamify_bg_orb.jpeg')",
+      },
+      backgroundImage: {
+        'hero-pattern': "url('/images/gamify_bg_orb.jpeg')",
+      },
+      backgroundSize: {
+        '100%': '100%',
+        '190%': '190%',
+      },
+      backgroundPosition: {
+        'center-50%': 'center 50%',
+      },
+      backgroundColor: {
+        D01F36: '#D01F36',
+        '1C0045': '#1C0045',
+        '3232DC': '#3232DC',
+        '38383D': '#38383D',
+        222228: '#222228',
+        '1e1945': '#1e1945',
+        '303035': '#303035',
+        pool_focus_1: '#6398FF',
+        'B91D1D': '#B91D1D'
+      },
+      borderColor: {
+        '20459B': '#20459B'
+      },
+      padding: {
+        325: '325px',
+      },
+      height: {
+        '10v': '10vh',
+        '20v': '20vh',
+        '30v': '30vh',
+        '40v': '40vh',
+        '50v': '50vh',
+        '60v': '60vh',
+        '70v': '70vh',
+        '80v': '80vh',
+        '90v': '90vh',
+        '100v': '100vh',
+      },
+      width: {
+        '300p': '300px'
+      },
+      fontSize: {
+        '4.25xl': ['4.25rem', '5rem'],
+        '1.5xl': ['1.5rem', '1.5rem'],
+        '1.5xl2': ['1.25rem', '1.5rem'],
+        '1.125lg': ['1.125rem', '1.625rem'],
+        '15px': '15px',
+        'xss': ['0.625rem', '0.875rem'],
+      },
+      minWidth: {
+        '280px': '280px',
+        '300px': '300px'
+      },
+      maxWidth: {
+        '658px': '41.125rem',
+        '369px': '369px'
+      },
+      animation: {
+        'hk_wiggle': 'hk_wiggle 10s linear infinite',
+      },
+      keyframes: {
+        hk_wiggle: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-924px)' },
+        }
       },
     },
     fontFamily: {
       sans: ['Gilroy', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-      serif: [
-        'ui-serif',
-        'Georgia',
-        'Cambria',
-        'Times New Roman',
-        'Times, serif',
-      ],
+      serif: ['ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times, serif'],
       mono: [
         'ui-monospace',
         'Menlo',
@@ -53,6 +141,10 @@ module.exports = {
         'Courier New',
         'monospace',
       ],
+    },
+    screens: {
+      xs: '475px',
+      ...defaultTheme.screens,
     },
   },
   variants: {

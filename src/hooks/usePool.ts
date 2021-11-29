@@ -1,4 +1,4 @@
-import { Actions } from '@intersola/onchain-program-sdk';
+import { Actions } from '@gamify/onchain-program-sdk';
 import { MintLayout, u64 } from '@solana/spl-token';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
@@ -7,20 +7,57 @@ import BN from 'bn.js';
 import Decimal from 'decimal.js';
 import moment from 'moment';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import PoolContext from '../contexts/pool';
 import fetchWrapper from '../sdk/fetch-wrapper';
 import { IPool, IPoolVoting } from '../sdk/pool/interface';
-import { isInFCFSForStakerRound } from '../utils/helper';
+import { IPoolTimes, ITimeline } from '../shared/interface';
+import { isInExclusiveRound, isInFCFSForStakerRound } from '../utils/helper';
 import { mappingPoolOnChainResponse, mappingPoolVotingOnChainResponse } from './../sdk/pool/index';
 import { useGlobal } from './useGlobal';
 
 export function usePool() {
   const router = useRouter();
+
+  const [hasNext, setHasNext] = useState(false);
+  const [hasPrevious, setHasPrevious] = useState(false);
+  const [poolVotingHasNext, setPoolVotingHasNext] = useState(false);
+  const [poolVotingHasPrevious, setPoolVotingHasPrevious] = useState(false);
+  const {
+    paginatedPool,
+    paginatedPoolVoting,
+    loading,
+    setLoading,
+    dispatchPaginatedPool,
+    dispatchPaginatedPoolVoting,
+  } = useContext(PoolContext);
   const { connection } = useConnection();
-  const { activePoolMenu, now } = useGlobal();
+  const { now } = useGlobal();
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(false);
   const CACHE_PRICE_DURATION = 10;
+
+  useEffect(() => {
+    if (paginatedPool) {
+      setHasNext(() => {
+        return paginatedPool.page < paginatedPool.totalPages - 1;
+      });
+      setHasPrevious(() => {
+        return paginatedPool.page >= 1;
+      });
+    }
+  }, [paginatedPool]);
+
+  useEffect(() => {
+    if (paginatedPoolVoting) {
+      setPoolVotingHasNext(() => {
+        return paginatedPoolVoting.page < paginatedPoolVoting.totalPages - 1;
+      });
+
+      setPoolVotingHasPrevious(() => {
+        return paginatedPoolVoting.page >= 1;
+      });
+    }
+  }, [paginatedPoolVoting]);
 
   const getTokenPrice = async (ratio: number): Promise<any> => {
     const priceCacheAt = localStorage.getItem('solana-price-at');
@@ -103,63 +140,158 @@ export function usePool() {
     }
   };
 
-  const getMaxIndividualAllocationFCFSForStaker = (
+  const getMaxIndividualAllocationForStaker = (
     pool: IPool,
     currentUserLevel: number,
-  ): number => {
-    if (isInFCFSForStakerRound(pool, now)) {
-      let maxIndividualAlloc: number = 0;
-      let multiplicationRate: number = 1;
+    shouldIncludeTime?: boolean,
+  ): { totalStaker: number; individualStaker: number } => {
+    let maxIndividualAlloc: number = 0;
+    let multiplicationRate: number = 1;
 
-      switch (currentUserLevel) {
-        case 1:
-          maxIndividualAlloc = pool.campaign.exclusive_phase
-            ? pool.campaign.exclusive_phase.level1.max_individual_amount
-            : 0;
-          break;
-        case 2:
-          maxIndividualAlloc = pool.campaign.exclusive_phase
-            ? pool.campaign.exclusive_phase.level2.max_individual_amount
-            : 0;
-          break;
-        case 3:
-          maxIndividualAlloc = pool.campaign.exclusive_phase
-            ? pool.campaign.exclusive_phase.level3.max_individual_amount
-            : 0;
-          break;
-        case 4:
-          maxIndividualAlloc = pool.campaign.exclusive_phase
-            ? pool.campaign.exclusive_phase.level4.max_individual_amount
-            : 0;
-          break;
-        case 5:
-          maxIndividualAlloc = pool.campaign.exclusive_phase
-            ? pool.campaign.exclusive_phase.level5.max_individual_amount
-            : 0;
-          break;
-        default:
-          maxIndividualAlloc = 0;
-          break;
-      }
-      if (pool.campaign.fcfs_stake_phase) {
-        multiplicationRate = pool.campaign.fcfs_stake_phase.multiplication_rate;
-      }
-
-      return new Decimal(maxIndividualAlloc).times(multiplicationRate).toNumber();
+    switch (currentUserLevel) {
+      case 1:
+        maxIndividualAlloc = pool.campaign.exclusive_phase
+          ? pool.campaign.exclusive_phase.level1.max_individual_amount
+          : 0;
+        break;
+      case 2:
+        maxIndividualAlloc = pool.campaign.exclusive_phase
+          ? pool.campaign.exclusive_phase.level2.max_individual_amount
+          : 0;
+        break;
+      case 3:
+        maxIndividualAlloc = pool.campaign.exclusive_phase
+          ? pool.campaign.exclusive_phase.level3.max_individual_amount
+          : 0;
+        break;
+      case 4:
+        maxIndividualAlloc = pool.campaign.exclusive_phase
+          ? pool.campaign.exclusive_phase.level4.max_individual_amount
+          : 0;
+        break;
+      case 5:
+        maxIndividualAlloc = pool.campaign.exclusive_phase
+          ? pool.campaign.exclusive_phase.level5.max_individual_amount
+          : 0;
+        break;
+      default:
+        maxIndividualAlloc = 0;
+        break;
+    }
+    if (pool.campaign.fcfs_stake_phase) {
+      multiplicationRate = pool.campaign.fcfs_stake_phase.multiplication_rate;
     }
 
-    return 0;
+    if (
+      !shouldIncludeTime ||
+      (shouldIncludeTime && (isInExclusiveRound(pool, now) || isInFCFSForStakerRound(pool, now)))
+    ) {
+      return {
+        totalStaker: new Decimal(maxIndividualAlloc).times(multiplicationRate).toNumber(),
+        individualStaker: maxIndividualAlloc,
+      };
+    }
+
+    return {
+      totalStaker: 0,
+      individualStaker: 0,
+    };
+  };
+
+  const getPoolTimelines = (params: IPoolTimes): ITimeline[] => {
+    const {
+      join_pool_start,
+      private_join_enabled,
+      private_join_start,
+      private_join_end,
+      exclusive_join_enabled,
+      exclusive_join_start,
+      exclusive_join_end,
+      fcfs_staker_join_enabled,
+      fcfs_staker_join_start,
+      fcfs_staker_join_end,
+      public_join_enabled,
+      public_join_start,
+      public_join_end,
+      join_pool_end,
+      claim_at,
+    } = params;
+    let index = 2;
+    let result: ITimeline[] = [
+      {
+        key: 'upcoming',
+        index: 1,
+        name: 'Upcoming',
+        endAt: join_pool_start,
+      },
+    ];
+    if (private_join_enabled) {
+      result.push({
+        key: 'whitelist',
+        index,
+        name: 'Whitelist',
+        startAt: private_join_start,
+        endAt: private_join_end,
+      });
+      index += 1;
+    }
+    if (exclusive_join_enabled) {
+      result.push({
+        key: 'exclusive',
+        index,
+        name: 'Stakers Round 1',
+        startAt: exclusive_join_start,
+        endAt: exclusive_join_end,
+      });
+      index += 1;
+    }
+    if (fcfs_staker_join_enabled) {
+      result.push({
+        key: 'fcfs-staker',
+        index,
+        name: 'Stakers Round 2',
+        startAt: fcfs_staker_join_start,
+        endAt: fcfs_staker_join_end,
+      });
+      index += 1;
+    }
+    if (public_join_enabled) {
+      result.push({
+        key: 'fcfs',
+        index,
+        name: 'Public Round',
+        startAt: public_join_start,
+        endAt: public_join_end,
+      });
+      index += 1;
+    }
+    result.push({
+      key: 'claimable',
+      index,
+      name: 'Claimable',
+      startAt: claim_at,
+    });
+
+    return result;
   };
 
   return {
+    paginatedPool,
+    paginatedPoolVoting,
+    hasNext,
+    hasPrevious,
+    poolVotingHasNext,
+    poolVotingHasPrevious,
     loading,
     refreshing,
+    dispatchPaginatedPool,
     handleGoToPoolDetails,
     handleGoToPoolVotingDetails,
     getTokenInfo,
     getTokenPrice,
     getPoolFullInfo,
     getPoolVotingFullInfo,
-    getMaxIndividualAllocationFCFSForStaker,
+    getMaxIndividualAllocationForStaker,
+    getPoolTimelines,
   };
 }

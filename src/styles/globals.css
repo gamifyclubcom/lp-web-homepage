@@ -10,6 +10,7 @@
     font-weight: 100;
     font-display: swap;
   }
+
   @font-face {
     font-family: 'Gilroy';
     src: url('/fonts/Gilroy/Gilroy-Regular.otf');
@@ -17,6 +18,7 @@
     font-weight: 300;
     font-display: swap;
   }
+
   @font-face {
     font-family: 'Gilroy';
     src: url('/fonts/Gilroy/Gilroy-Medium.otf');
@@ -24,6 +26,7 @@
     font-weight: 400;
     font-display: swap;
   }
+
   @font-face {
     font-family: 'Gilroy';
     src: url('/fonts/Gilroy/Gilroy-SemiBold.otf');
@@ -31,6 +34,7 @@
     font-weight: 600;
     font-display: swap;
   }
+
   @font-face {
     font-family: 'Gilroy';
     src: url('/fonts/Gilroy/Gilroy-Bold.otf');
@@ -42,6 +46,7 @@
   strong {
     @apply font-semibold;
   }
+
   b {
     @apply font-bold;
   }
@@ -55,6 +60,71 @@ body {
   margin: 0;
 }
 
+.layout-container,
+.layout-container-full {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 640px) {
+
+  .layout-container,
+  .layout-container-full {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (min-width: 640px) {
+
+  .layout-container,
+  .layout-container-full {
+    max-width: 620px;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .layout-container,
+  .layout-container-full {
+    max-width: 750px;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .layout-container,
+  .layout-container-full {
+    max-width: 1000px;
+  }
+}
+
+@media (min-width: 1280px) {
+
+  .layout-container,
+  .layout-container-full {
+    max-width: 1200px;
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  .layout-container-full {
+    max-width: 1890px;
+  }
+}
+
+@media screen and (min-width: 3840px) {
+  .layout-container-full {
+    max-width: 3810px;
+  }
+}
+
+/* Custom react-confirm-alert */
+.react-confirm-alert-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -62,4 +132,222 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+.hidden-overlay-2side::before {
+  top: 0;
+  left: -2px;
+  width: 100px;
+  bottom: 0;
+  content: '';
+  z-index: 2;
+  position: absolute;
+  background: linear-gradient(270deg, rgba(2, 6, 24, 0) 0%, #1c0045 100%);
+}
+
+.hidden-overlay-2side::after {
+  top: 0;
+  right: -2px;
+  width: 100px;
+  bottom: 0;
+  content: '';
+  z-index: 2;
+  position: absolute;
+  background: linear-gradient(270deg, #1C0045 0%, rgba(2, 6, 24, 0) 100%);
+}
+
+.staked-bars {
+  width: 90%;
+  display: flex;
+  height: 13px;
+  border-radius: 10px;
+  background: linear-gradient(90deg,
+      #C0B290 0%,
+      #789173 4%,
+      #73AA8B 20%,
+      #6DC2A3 40%,
+      #62F3D4 100%);
+}
+
+.lvl-bar {
+  height: 13px;
+  border-radius: 10px;
+  position: absolute;
+}
+
+.lvl-dot svg {
+  position: absolute;
+  left: 40px;
+  top: -16px;
+  width: 20px;
+  height: 20px;
+}
+
+.lvl-dot svg.video-game-icon {
+  top: -44px;
+  left: 30px;
+  width: 40px;
+  height: 40px;
+}
+
+.lvl-dot {
+  position: absolute;
+  right: -48px;
+  bottom: -45px;
+  width: 100px;
+  height: 25px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  color: #fff;
+  font-weight: 800;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lv5-onbar:before {
+  position: absolute;
+  content: 'Level 5';
+  transform: rotate(-90deg);
+  right: -28px;
+  top: -53px;
+  width: 60px;
+}
+
+.lv5-onbar {
+  width: 100%;
+}
+
+.lv5-onbar .lvl-dot {
+  background-color: #62F3D4;
+}
+
+.lv5-onbar .lvl-dot svg {
+  fill: #62F3D4;
+}
+
+.lv4-onbar:before {
+  position: absolute;
+  content: 'Level 4';
+  transform: rotate(-90deg);
+  right: -28px;
+  top: -53px;
+  width: 60px;
+}
+
+.lv4-onbar {
+  width: 44%;
+}
+
+.lv4-onbar .lvl-dot {
+  background-color: #6DC2A3;
+}
+
+.lv4-onbar .lvl-dot svg {
+  fill: #6DC2A3;
+}
+
+.lv3-onbar:before {
+  position: absolute;
+  content: 'Level 3';
+  transform: rotate(-90deg);
+  right: -28px;
+  top: -53px;
+  width: 60px;
+}
+
+.lv3-onbar {
+  width: 20%;
+}
+
+.lv3-onbar .lvl-dot {
+  background-color: #73AA8B;
+}
+
+.lv3-onbar .lvl-dot svg {
+  fill: #73AA8B;
+}
+
+.lv2-onbar:before {
+  position: absolute;
+  content: 'Level 2';
+  transform: rotate(-90deg);
+  right: -28px;
+  top: -53px;
+  width: 60px;
+}
+
+.lv2-onbar {
+  width: 4%;
+}
+
+.lv2-onbar .lvl-dot {
+  background-color: #789173;
+}
+
+.lv2-onbar .lvl-dot svg {
+  fill: #789173;
+}
+
+.lv1-onbar:before {
+  position: absolute;
+  content: 'Level 1';
+  transform: rotate(-90deg);
+  right: -28px;
+  top: -53px;
+  width: 60px;
+}
+
+.lv1-onbar {
+  width: 1%;
+}
+
+.lv1-onbar .lvl-dot {
+  background-color: #C0B290;
+}
+
+.lv1-onbar .lvl-dot svg {
+  fill: #C0B290;
+}
+
+.gamify-loader {
+  border: 8px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 8px solid rgb(255, 255, 255);
+  width: 50px;
+  height: 50px;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+  position: relative;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.gamify-loader svg {
+  position: absolute;
+  top: -17px;
+  right: -2px;
+  width: 26px;
+  height: 26px;
+  transform: rotate(79deg);
 }

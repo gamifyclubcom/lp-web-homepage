@@ -14,11 +14,13 @@ export enum PoolVotingStatusType {
 }
 
 export enum PoolsSectionFilter {
+  ALL = 'all',
   UPCOMING = 'upcoming',
   FEATURED = 'featured',
   JOINED = 'joined',
   CREATED = 'created',
   PAST = 'past',
+  UPCOMING_FEATURED = 'upcoming_featured'
 }
 
 export enum PoolsVotingFilter {
@@ -26,4 +28,23 @@ export enum PoolsVotingFilter {
   UPCOMING = 'upcoming-voting',
   IN_VOTING = 'in-voting',
   DEACTIVATED = 'deactivated',
+}
+
+export enum PageTitle {
+  HomePage = 'Gamify Club - The All-In-One Hub for the Solana Metaverse',
+  PoolsPage = 'Gamify Club | Pools Dashboard',
+  PoolsVotingPage = 'Gamify Club | Pools Voting',
+  StakingPage = 'Gamify Club | Staking',
+}
+
+export enum PoolRoundType {
+  Whitelist = 'whitelist',
+  Fcfs = 'fcfs',
+  Exclusive = 'exclusive',
+  FcfsStaker = 'fcfs-staker',
+}
+
+export enum PoolCountdownType {
+  ToOpen = 'countdown-to-open',
+  ToClose = 'countdown-to-close',
 }
