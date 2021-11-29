@@ -140,54 +140,56 @@ export function usePool() {
     }
   };
 
-  const getMaxIndividualAllocationFCFSForStaker = (
+  const getMaxIndividualAllocationForStaker = (
     pool: IPool,
     currentUserLevel: number,
+    shouldIncludeTime?: boolean,
   ): { totalStaker: number; individualStaker: number } => {
-    if (isInFCFSForStakerRound(pool, now) || isInExclusiveRound(pool, now)) {
-      let maxIndividualAlloc: number = 0;
-      let multiplicationRate: number = 1;
+    let maxIndividualAlloc: number = 0;
+    let multiplicationRate: number = 1;
 
-      switch (currentUserLevel) {
-        case 1:
-          maxIndividualAlloc = pool.campaign.exclusive_phase
-            ? pool.campaign.exclusive_phase.level1.max_individual_amount
-            : 0;
-          break;
-        case 2:
-          maxIndividualAlloc = pool.campaign.exclusive_phase
-            ? pool.campaign.exclusive_phase.level2.max_individual_amount
-            : 0;
-          break;
-        case 3:
-          maxIndividualAlloc = pool.campaign.exclusive_phase
-            ? pool.campaign.exclusive_phase.level3.max_individual_amount
-            : 0;
-          break;
-        case 4:
-          maxIndividualAlloc = pool.campaign.exclusive_phase
-            ? pool.campaign.exclusive_phase.level4.max_individual_amount
-            : 0;
-          break;
-        case 5:
-          maxIndividualAlloc = pool.campaign.exclusive_phase
-            ? pool.campaign.exclusive_phase.level5.max_individual_amount
-            : 0;
-          break;
-        default:
-          maxIndividualAlloc = 0;
-          break;
-      }
-      if (pool.campaign.fcfs_stake_phase) {
-        multiplicationRate = pool.campaign.fcfs_stake_phase.multiplication_rate;
-      }
+    switch (currentUserLevel) {
+      case 1:
+        maxIndividualAlloc = pool.campaign.exclusive_phase
+          ? pool.campaign.exclusive_phase.level1.max_individual_amount
+          : 0;
+        break;
+      case 2:
+        maxIndividualAlloc = pool.campaign.exclusive_phase
+          ? pool.campaign.exclusive_phase.level2.max_individual_amount
+          : 0;
+        break;
+      case 3:
+        maxIndividualAlloc = pool.campaign.exclusive_phase
+          ? pool.campaign.exclusive_phase.level3.max_individual_amount
+          : 0;
+        break;
+      case 4:
+        maxIndividualAlloc = pool.campaign.exclusive_phase
+          ? pool.campaign.exclusive_phase.level4.max_individual_amount
+          : 0;
+        break;
+      case 5:
+        maxIndividualAlloc = pool.campaign.exclusive_phase
+          ? pool.campaign.exclusive_phase.level5.max_individual_amount
+          : 0;
+        break;
+      default:
+        maxIndividualAlloc = 0;
+        break;
+    }
+    if (pool.campaign.fcfs_stake_phase) {
+      multiplicationRate = pool.campaign.fcfs_stake_phase.multiplication_rate;
+    }
 
+    if (
+      !shouldIncludeTime ||
+      (shouldIncludeTime && (isInExclusiveRound(pool, now) || isInFCFSForStakerRound(pool, now)))
+    ) {
       return {
         totalStaker: new Decimal(maxIndividualAlloc).times(multiplicationRate).toNumber(),
         individualStaker: maxIndividualAlloc,
       };
-
-      // return new Decimal(maxIndividualAlloc).times(multiplicationRate).toNumber();
     }
 
     return {
@@ -289,7 +291,7 @@ export function usePool() {
     getTokenPrice,
     getPoolFullInfo,
     getPoolVotingFullInfo,
-    getMaxIndividualAllocationFCFSForStaker,
+    getMaxIndividualAllocationForStaker,
     getPoolTimelines,
   };
 }

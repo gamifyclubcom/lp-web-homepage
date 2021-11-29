@@ -21,7 +21,7 @@ interface Props {
 }
 
 const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel }) => {
-  const { getTokenInfo } = usePool();
+  const { getTokenInfo, getMaxIndividualAllocationForStaker } = usePool();
   const poolAccess = getPoolAccess(pool);
   const totalRaise = useMemo(() => {
     return renderTokenBalance(
@@ -74,29 +74,39 @@ const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool.token_address]);
 
-  const getExclusiveLevel = () => {
-    let result = 0;
-    if (pool.campaign?.exclusive_phase) {
-      switch (allocationLevel) {
-        case 1:
-          result = pool.campaign.exclusive_phase.level1.max_individual_amount;
-          break;
-        case 2:
-          result = pool.campaign.exclusive_phase.level2.max_individual_amount;
-          break;
-        case 3:
-          result = pool.campaign.exclusive_phase.level3.max_individual_amount;
-          break;
-        case 4:
-          result = pool.campaign.exclusive_phase.level4.max_individual_amount;
-          break;
-        case 5:
-          result = pool.campaign.exclusive_phase.level5.max_individual_amount;
-          break;
-      }
+  const maxIndividualAllocExclusive = useMemo(() => {
+    if (!pool.exclusive_join_enable) {
+      return 0;
     }
-    return result;
-  };
+    const { individualStaker } = getMaxIndividualAllocationForStaker(pool, allocationLevel || 0);
+    return `${parseFloat(
+      new Decimal(Decimal.min(pool.token_total_raise, individualStaker))
+        .dividedBy(pool.token_ratio)
+        .toFixed(TOKEN_TO_DECIMALS),
+    )} ${pool.token_to}`;
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pool, allocationLevel]);
+  const maxIndividualAllocFCFSStaker = useMemo(() => {
+    if (!pool.fcfs_join_for_staker_enabled) {
+      return 0;
+    }
+    const { totalStaker } = getMaxIndividualAllocationForStaker(pool, allocationLevel || 0);
+    return `${parseFloat(
+      new Decimal(Decimal.min(totalStaker, pool.token_total_raise))
+        .dividedBy(pool.token_ratio)
+        .toFixed(TOKEN_TO_DECIMALS),
+    )} ${pool.token_to}`;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pool, allocationLevel]);
+  const maxIndividualAllocFCFS = useMemo(() => {
+    return `${parseFloat(
+      new Decimal(pool.campaign.public_phase.max_individual_alloc)
+        .dividedBy(pool.token_ratio)
+        .toFixed(TOKEN_TO_DECIMALS),
+    )} ${pool.token_to}`;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pool, allocationLevel]);
 
   return (
     <div className="p-8">
@@ -151,31 +161,21 @@ const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel }) => {
             <div className="flex items-center mt-1 text-sm">
               <Accordion title={<div className="opacity-30">Personal Allocations</div>}>
                 <ul className="pl-6 text-sm">
-                  <li className="flex items-center justify-between py-2">
-                    <span className="opacity-30">Stakers Round 1</span>
-                    <span>
-                      {pool.campaign?.exclusive_phase
-                        ? `${tokenToSOL(getExclusiveLevel(), pool.token_ratio)} ${pool.token_to}`
-                        : ''}
-                    </span>
-                  </li>
-                  <li className="flex items-center justify-between py-2">
-                    <span className="opacity-30">Stakers Round 2</span>
-                    <span>
-                      {pool.campaign?.fcfs_stake_phase?.max_total_alloc
-                        ? `${tokenToSOL(
-                            pool.campaign.fcfs_stake_phase.max_total_alloc,
-                            pool.token_ratio,
-                          )} ${pool.token_to}`
-                        : ''}
-                    </span>
-                  </li>
+                  {pool.exclusive_join_enable && (
+                    <li className="flex items-center justify-between py-2">
+                      <span className="opacity-30">Stakers Round 1</span>
+                      <span>{maxIndividualAllocExclusive}</span>
+                    </li>
+                  )}
+                  {pool.fcfs_join_for_staker_enabled && (
+                    <li className="flex items-center justify-between py-2">
+                      <span className="opacity-30">Stakers Round 2</span>
+                      <span>{maxIndividualAllocFCFSStaker}</span>
+                    </li>
+                  )}
                   <li className="flex items-center justify-between py-2">
                     <span className="opacity-30">Public Round</span>
-                    <span>{`${tokenToSOL(
-                      pool.campaign.public_phase.max_individual_alloc,
-                      pool.token_ratio,
-                    )} ${pool.token_to}`}</span>
+                    <span>{maxIndividualAllocFCFS}</span>
                   </li>
                 </ul>
               </Accordion>

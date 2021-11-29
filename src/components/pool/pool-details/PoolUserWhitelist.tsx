@@ -30,7 +30,7 @@ const PoolUserWhitelist: React.FC<Props> = ({
   loading,
 }) => {
   const { now } = useGlobal();
-  const { getMaxIndividualAllocationFCFSForStaker } = usePool();
+  const { getMaxIndividualAllocationForStaker } = usePool();
 
   const whitelistStatus = useMemo((): string => {
     if (!connected) {
@@ -105,9 +105,10 @@ const PoolUserWhitelist: React.FC<Props> = ({
   ]);
 
   const childrenMarkup = useMemo(() => {
-    const { individualStaker } = getMaxIndividualAllocationFCFSForStaker(
+    const { individualStaker } = getMaxIndividualAllocationForStaker(
       pool,
       allocationLevel || 0,
+      true,
     );
     let isShowWhitelistStatus: boolean = false;
     let isShowGuaranteedAllocationExclusiveRound: boolean = false;
@@ -152,7 +153,7 @@ const PoolUserWhitelist: React.FC<Props> = ({
       <>
         {(isShowWhitelistStatus || isShowGuaranteedAllocationExclusiveRound) && (
           <div className="w-full h-full p-4 overflow-hidden text-sm text-white rounded-lg bg-303035">
-            <div className="flex flex-col h-full justify-center">
+            <div className="flex flex-col justify-center h-full">
               {!connected ? (
                 <span>Please connect wallet to continue</span>
               ) : loading ? (

@@ -37,7 +37,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
   const { connected, publicKey } = useWallet();
   const { now } = useGlobal();
   const { refreshAllocation, getUserAllocationLevel, getParticipantAddress } = useSmartContract();
-  const { getPoolFullInfo, getMaxIndividualAllocationFCFSForStaker } = usePool();
+  const { getPoolFullInfo, getMaxIndividualAllocationForStaker } = usePool();
   const [fetching, setFetching] = useState(true);
   const [spinning, setSpinning] = useState(false);
   const [isClaimed, setIsClaimed] = useState(false);
@@ -91,9 +91,10 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
   }, [progress, status.type]);
 
   const maxContribution = useMemo(() => {
-    const { totalStaker, individualStaker } = getMaxIndividualAllocationFCFSForStaker(
+    const { totalStaker, individualStaker } = getMaxIndividualAllocationForStaker(
       pool,
       allocationLevel,
+      true,
     );
     let maxContributionInTokenUnit: number = pool.campaign.public_phase.max_individual_alloc;
 
@@ -145,7 +146,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
   const guaranteedAllocationExclusiveRound = useMemo(() => {
     let result: number = 0;
     if (isInExclusiveRound(pool, now)) {
-      const { individualStaker } = getMaxIndividualAllocationFCFSForStaker(pool, allocationLevel);
+      const { individualStaker } = getMaxIndividualAllocationForStaker(pool, allocationLevel, true);
       result = individualStaker;
     }
     return result;
