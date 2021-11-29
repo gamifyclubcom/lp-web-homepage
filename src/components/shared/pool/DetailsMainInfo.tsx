@@ -107,6 +107,14 @@ const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel }) => {
     )} ${pool.token_to}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool, allocationLevel]);
+  const maxIndividualAllocWhitelist = useMemo(() => {
+    return `${parseFloat(
+      new Decimal(pool.campaign.early_join_phase.max_individual_alloc)
+        .dividedBy(pool.token_ratio)
+        .toFixed(TOKEN_TO_DECIMALS),
+    )} ${pool.token_to}`;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pool, allocationLevel]);
 
   return (
     <div className="p-8">
@@ -161,6 +169,12 @@ const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel }) => {
             <div className="flex items-center mt-1 text-sm">
               <Accordion title={<div className="opacity-30">Personal Allocations</div>}>
                 <ul className="pl-6 text-sm">
+                  {pool.private_join_enabled && (
+                    <li className="flex items-center justify-between py-2">
+                      <span className="opacity-30">Whitelist round</span>
+                      <span>{maxIndividualAllocWhitelist}</span>
+                    </li>
+                  )}
                   {pool.exclusive_join_enable && (
                     <li className="flex items-center justify-between py-2">
                       <span className="opacity-30">Stakers Round 1</span>
@@ -173,6 +187,7 @@ const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel }) => {
                       <span>{maxIndividualAllocFCFSStaker}</span>
                     </li>
                   )}
+
                   <li className="flex items-center justify-between py-2">
                     <span className="opacity-30">Public Round</span>
                     <span>{maxIndividualAllocFCFS}</span>

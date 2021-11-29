@@ -29,7 +29,7 @@ const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
       <div
         ref={contentSpace}
         style={{ maxHeight: `${height}` }}
-        className="overflow-auto duration-200 ease-in-out transition-max-height"
+        className="overflow-hidden duration-200 ease-in-out o transition-max-height"
       >
         <div>{children}</div>
       </div>
