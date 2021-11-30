@@ -22,7 +22,7 @@ const PoolTimelineItem: React.FC<Props> = ({ timeline, totalTimelines, active })
         <span className="flex items-center justify-center w-full h-full">{timeline.index}</span>
         <span
           className={clsx(
-            'absolute text-center text-gray-500 transform -translate-x-1/2 mt-2 top-full left-1/2 text-xs',
+            'absolute text-center text-gray-500 transform -translate-x-1/2 mt-2 md:whitespace-nowrap top-full left-1/2 text-xs',
             {
               'text-pool_focus_1': active,
             },
