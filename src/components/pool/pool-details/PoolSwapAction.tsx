@@ -215,12 +215,6 @@ const PoolSwapAction: React.FC<Props> = ({
         setSpinning(false);
         return;
       }
-      await poolAPI.userJoinPool(
-        publicKey!.toString(),
-        pool.contract_address,
-        amountSwap.value.toNumber(),
-        participantAddress || undefined,
-      );
 
       txId = await handleUserJoinPool(pool, amountSwap.value.toNumber());
 
@@ -238,6 +232,12 @@ const PoolSwapAction: React.FC<Props> = ({
 
       const newMaxContributeSize = await getUserMaxContributeSize(pool, allocationLevel);
       setMaxContributeSize(new Decimal(newMaxContributeSize));
+      await poolAPI.userJoinPool(
+        publicKey!.toString(),
+        pool.contract_address,
+        amountSwap.value.toNumber(),
+        participantAddress || undefined,
+      );
 
       const newUserJoinPoolHistories = await poolAPI.getUserJoinPoolHistory(
         publicKey!.toString(),
