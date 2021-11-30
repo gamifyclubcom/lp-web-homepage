@@ -6,6 +6,7 @@
     "build": "next build",
     "start": "npx next start -p 3004",
     "start-3006": "npx next start -p 3006",
+    "start-3016": "npx next start -p 3016",
     "lint": "next lint"
   },
   "dependencies": {
