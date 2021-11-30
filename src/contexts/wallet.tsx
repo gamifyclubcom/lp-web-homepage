@@ -1,30 +1,30 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import {
-  ConnectionProvider,
-  WalletProvider,
-} from '@solana/wallet-adapter-react';
-import {
-  getPhantomWallet,
-  getSolletExtensionWallet,
-} from '@solana/wallet-adapter-wallets';
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { getPhantomWallet, getSolletExtensionWallet } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
 import { FC, ReactNode, useMemo } from 'react';
+import { envConfig } from '../configs';
 import { getSolletWallet } from '../wallets-adapters/custom-providers';
 
-export const WalletConnectionProvider: FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  const network = WalletAdapterNetwork.Devnet;
+export const WalletConnectionProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  const network: WalletAdapterNetwork = useMemo(() => {
+    switch (envConfig.SOLLET_ENV) {
+      case 'devnet':
+        return WalletAdapterNetwork.Devnet;
+      case 'testnet':
+        return WalletAdapterNetwork.Testnet;
+      case 'mainnet-beta':
+        return WalletAdapterNetwork.Mainnet;
+      default:
+        return WalletAdapterNetwork.Devnet;
+    }
+  }, []);
 
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
   const wallets = useMemo(
-    () => [
-      getPhantomWallet(),
-      getSolletWallet({ network }),
-      getSolletExtensionWallet({ network }),
-    ],
-    [network]
+    () => [getPhantomWallet(), getSolletWallet({ network }), getSolletExtensionWallet({ network })],
+    [network],
   );
 
   return (

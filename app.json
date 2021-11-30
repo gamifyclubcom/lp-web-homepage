@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "name": "gamify-production-3016",
+      "script": "npm",
+      "args": "run start-3016"
+    }
+  ]
+}

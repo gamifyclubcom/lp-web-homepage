@@ -6,10 +6,11 @@
     "build": "next build",
     "start": "npx next start -p 3004",
     "start-3006": "npx next start -p 3006",
+    "start-3016": "npx next start -p 3016",
     "lint": "next lint"
   },
   "dependencies": {
-    "@gamify/onchain-program-sdk": "^0.0.3",
+    "@gamify/onchain-program-sdk": "^0.0.6",
     "@solana/wallet-adapter-base": "^0.7.0",
     "@solana/wallet-adapter-react": "^0.13.1",
     "@solana/wallet-adapter-react-ui": "^0.6.0",
