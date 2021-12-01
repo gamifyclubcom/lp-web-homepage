@@ -74,10 +74,10 @@ const Footer: React.FC<Props> = () => {
         )} */}
 
         {/* {!isInHomePage && ( */}
-        <div className="w-full mx-auto layout-container">
-          <div className="flex flex-col items-end pt-6">
+        <div className="w-full pt-6 mx-auto layout-container">
+          {/* <div className="flex flex-col items-end pt-6">
             <BuyGMFCTokenButton />
-          </div>
+          </div> */}
           <div className="flex flex-col items-center justify-between pb-3 border-b border-primary-300">
             <Logo />
           </div>

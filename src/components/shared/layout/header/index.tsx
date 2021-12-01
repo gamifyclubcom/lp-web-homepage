@@ -38,6 +38,9 @@ const Header: React.FC<Props> = () => {
 
         return false;
       }
+      if (mn.key === 'staking' || mn.key === 'buy-gmfc') {
+        return false;
+      }
 
       return true;
     });
@@ -109,9 +112,9 @@ const Header: React.FC<Props> = () => {
                       ))}
                   </ul>
 
-                  <div className="p-4">
+                  {/* <div className="p-4">
                     <BuyGMFCTokenButton />
-                  </div>
+                  </div> */}
                 </div>
               </div>
             )}
