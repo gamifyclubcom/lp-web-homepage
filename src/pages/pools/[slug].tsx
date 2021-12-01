@@ -114,7 +114,8 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
     return parseFloat(
       new Decimal(
-        fakeWithClaimablePercentage(maxContributionInTokenUnit, pool.claimable_percentage),
+        // fakeWithClaimablePercentage(maxContributionInTokenUnit, pool.claimable_percentage),
+        maxContributionInTokenUnit,
       )
         .dividedBy(pool.token_ratio)
         .toFixed(TOKEN_TO_DECIMALS),
@@ -126,8 +127,10 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
     const realContributionInSOL = parseFloat(
       new Decimal(allocation || 0).dividedBy(pool.token_ratio).toFixed(TOKEN_TO_DECIMALS),
     );
+    return realContributionInSOL;
 
-    return fakeWithClaimablePercentage(realContributionInSOL, pool.claimable_percentage);
+    // return fakeWithClaimablePercentage(realContributionInSOL, pool.claimable_percentage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allocation, pool.token_ratio, pool.claimable_percentage]);
 
   const isShowPoolSwapActionSection = useMemo(() => {

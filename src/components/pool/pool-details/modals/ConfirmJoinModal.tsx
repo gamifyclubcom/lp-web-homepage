@@ -71,10 +71,6 @@ const ConfirmJoinModal: React.FC<Props> = ({
           left: <span>Amount</span>,
           right: <BalanceBadge variant="basic" mint={mintFrom} price={amountSwap} />,
         },
-        {
-          left: <span>Amount</span>,
-          right: <BalanceBadge variant="basic" mint={mintFrom} price={amountSwap} />,
-        },
         ...getClaimableField(claimable_percentage),
         {
           left: <span>Total</span>,
