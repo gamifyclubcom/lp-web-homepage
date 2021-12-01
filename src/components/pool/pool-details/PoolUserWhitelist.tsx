@@ -112,37 +112,18 @@ const PoolUserWhitelist: React.FC<Props> = ({
     );
     let isShowWhitelistStatus: boolean = false;
     let isShowGuaranteedAllocationExclusiveRound: boolean = false;
-    let msg: string;
-    if (pool.is_active) {
-      if (
-        moment.unix(now).isBefore(pool.join_pool_start) || // pool active and is not open yet
+    if (
+      pool.is_active &&
+      (moment.unix(now).isBefore(pool.join_pool_start) || // pool active and is not open yet
         isInExclusiveRound(pool, now) || // in exclusive round
         isInFCFSForStakerRound(pool, now) || // in fcfs staker round
-        (isInWhitelistRound(pool, now) && Boolean(participantAddress)) // in private round and has participant address
-      ) {
-        isShowWhitelistStatus = true;
-        if (moment.unix(now).isBefore(pool.join_pool_start)) {
-          msg = 'You are not whitelisted';
-        } else if (
-          (isInExclusiveRound(pool, now) || isInFCFSForStakerRound(pool, now)) &&
-          allocationLevel &&
-          allocationLevel > 0
-        ) {
-          msg = 'You are whitelisted';
-        } else if (isInWhitelistRound(pool, now) && Boolean(participantAddress)) {
-          msg = 'You are whitelisted';
-        } else {
-          msg = 'You are not whitelisted';
-        }
+        isInWhitelistRound(pool, now)) // in private round and has participant address
+    ) {
+      isShowWhitelistStatus = true;
 
-        if (isInExclusiveRound(pool, now)) {
-          isShowGuaranteedAllocationExclusiveRound = true;
-        }
-      } else {
-        msg = 'You are not whitelisted';
+      if (isInExclusiveRound(pool, now)) {
+        isShowGuaranteedAllocationExclusiveRound = true;
       }
-    } else {
-      msg = 'You are not whitelisted';
     }
 
     const guaranteed = parseFloat(
