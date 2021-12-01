@@ -18,9 +18,10 @@ import BalanceBadge from '../BalanceBadge';
 interface Props {
   pool: IPool;
   allocationLevel?: number;
+  participantAddress: string | null;
 }
 
-const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel }) => {
+const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel, participantAddress }) => {
   const { getTokenInfo, getMaxIndividualAllocationForStaker } = usePool();
   const poolAccess = getPoolAccess(pool);
   const totalRaise = useMemo(() => {
@@ -108,13 +109,16 @@ const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool, allocationLevel]);
   const maxIndividualAllocWhitelist = useMemo(() => {
+    if (!Boolean(participantAddress)) {
+      return 0;
+    }
     return `${parseFloat(
       new Decimal(pool.campaign.early_join_phase.max_individual_alloc)
         .dividedBy(pool.token_ratio)
         .toFixed(TOKEN_TO_DECIMALS),
     )} ${pool.token_to}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool, allocationLevel]);
+  }, [pool, allocationLevel, participantAddress]);
 
   return (
     <div className="p-8">

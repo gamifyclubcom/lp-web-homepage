@@ -100,8 +100,12 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
     if (!connected) {
       maxContributionInTokenUnit = pool.campaign.public_phase.max_individual_alloc;
-    } else if (isInWhitelistRound(pool, now) && Boolean(participantAddress)) {
-      maxContributionInTokenUnit = pool.campaign.early_join_phase.max_individual_alloc;
+    } else if (isInWhitelistRound(pool, now)) {
+      if (Boolean(participantAddress)) {
+        maxContributionInTokenUnit = pool.campaign.early_join_phase.max_individual_alloc;
+      } else {
+        maxContributionInTokenUnit = 0;
+      }
     } else if (isInFCFSForStakerRound(pool, now)) {
       if (allocationLevel > 0) {
         maxContributionInTokenUnit = totalStaker;
@@ -392,7 +396,11 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
             <div className="col-span-2 mb-8">
               <div className="w-full h-full overflow-hidden rounded-lg bg-303035">
-                <DetailsMainInfo pool={pool} allocationLevel={allocationLevel} />
+                <DetailsMainInfo
+                  participantAddress={participantAddress}
+                  pool={pool}
+                  allocationLevel={allocationLevel}
+                />
               </div>
             </div>
           </div>
