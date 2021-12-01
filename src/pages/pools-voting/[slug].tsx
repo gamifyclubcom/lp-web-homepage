@@ -125,7 +125,7 @@ const PoolsVotingDetails: React.FC<Props> = ({ poolVotingServer }) => {
 
         <div className="pb-8 mt-4">
           <div className="w-full h-full overflow-hidden bg-gray-800 rounded-lg">
-            <DetailsMainInfo pool={poolVoting} />
+            <DetailsMainInfo pool={poolVoting} participantAddress={null} />
           </div>
         </div>
       </div>
