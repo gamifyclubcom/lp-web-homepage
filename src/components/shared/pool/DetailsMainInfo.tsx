@@ -170,34 +170,33 @@ const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel, participantAd
               <div className="w-1/3 opacity-30">Symbol</div>
               <div className="w-2/3">{pool.token_symbol}</div>
             </div>
-            <div className="flex items-center mt-1 text-sm">
-              <Accordion title={<div className="opacity-30">Personal Allocations</div>}>
-                <ul className="pl-6 text-sm">
-                  {pool.private_join_enabled && (
-                    <li className="flex items-center justify-between py-2">
-                      <span className="opacity-30">Whitelist round</span>
-                      <span>{maxIndividualAllocWhitelist}</span>
-                    </li>
-                  )}
-                  {pool.exclusive_join_enable && (
-                    <li className="flex items-center justify-between py-2">
-                      <span className="opacity-30">Stakers Round 1</span>
-                      <span>{maxIndividualAllocExclusive}</span>
-                    </li>
-                  )}
-                  {pool.fcfs_join_for_staker_enabled && (
-                    <li className="flex items-center justify-between py-2">
-                      <span className="opacity-30">Stakers Round 2</span>
-                      <span>{maxIndividualAllocFCFSStaker}</span>
-                    </li>
-                  )}
-
+            <div className="flex flex-col mt-4 text-sm">
+              <div className="opacity-30">Personal Allocations</div>
+              <ul className="pl-6 text-sm">
+                {pool.private_join_enabled && (
                   <li className="flex items-center justify-between py-2">
-                    <span className="opacity-30">Public Round</span>
-                    <span>{maxIndividualAllocFCFS}</span>
+                    <span className="opacity-30">Whitelist round</span>
+                    <span>{maxIndividualAllocWhitelist}</span>
                   </li>
-                </ul>
-              </Accordion>
+                )}
+                {pool.exclusive_join_enable && (
+                  <li className="flex items-center justify-between py-2">
+                    <span className="opacity-30">Stakers Round 1</span>
+                    <span>{maxIndividualAllocExclusive}</span>
+                  </li>
+                )}
+                {pool.fcfs_join_for_staker_enabled && (
+                  <li className="flex items-center justify-between py-2">
+                    <span className="opacity-30">Stakers Round 2</span>
+                    <span>{maxIndividualAllocFCFSStaker}</span>
+                  </li>
+                )}
+
+                <li className="flex items-center justify-between py-2">
+                  <span className="opacity-30">Public Round</span>
+                  <span>{maxIndividualAllocFCFS}</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
