@@ -184,6 +184,18 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
   }, []);
 
   useEffect(() => {
+    if (isClaimed && publicKey) {
+      poolAPI
+        .userGetClaimedTokenTime(publicKey.toString(), pool.contract_address, pool.token_address)
+        .then((data) => {
+          if (data) {
+            setUserClaimedAt(data);
+          }
+        });
+    }
+  }, [isClaimed, pool.contract_address, pool.token_address, publicKey]);
+
+  useEffect(() => {
     const init = async () => {
       if (publicKey) {
         setFetching(true);
