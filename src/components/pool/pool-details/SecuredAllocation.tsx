@@ -223,7 +223,7 @@ const SecuredAllocation: React.FC<Props> = ({
           <span className="w-40 text-sm font-semibold text-white opacity-30">You have claimed</span>
           <BalanceBadge
             variant="basic"
-            price={isClaimed ? tokenBalanceMarkup : 0}
+            price={isClaimed ? tokenBalanceClaimableMarkup : 0}
             mint={pool.token_symbol}
             className="text-sm font-semibold text-pool_focus_1"
           />
@@ -240,7 +240,7 @@ const SecuredAllocation: React.FC<Props> = ({
               <span>(</span>
               <NumberFormat
                 thousandSeparator
-                value={tokenBalanceMarkup}
+                value={tokenBalanceClaimableMarkup}
                 displayType="text"
                 className="text-sm font-light text-white"
               />
