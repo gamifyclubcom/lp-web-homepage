@@ -1,7 +1,6 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { getPhantomWallet, getSolletExtensionWallet } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl } from '@solana/web3.js';
 import { FC, ReactNode, useMemo } from 'react';
 import { envConfig } from '../configs';
 import { getSolletWallet } from '../wallets-adapters/custom-providers';
@@ -20,7 +19,7 @@ export const WalletConnectionProvider: FC<{ children: ReactNode }> = ({ children
     }
   }, []);
 
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const endpoint = useMemo(() => envConfig.API_URL_SMART_CONTRACT, []);
 
   const wallets = useMemo(
     () => [getPhantomWallet(), getSolletWallet({ network }), getSolletExtensionWallet({ network })],
