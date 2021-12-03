@@ -32,7 +32,7 @@ const ConfirmJoinModal: React.FC<Props> = ({
   logo,
 }) => {
   const tokenBalanceMarkup = renderTokenBalance(
-    new Decimal(amountSwap).times(swapRatio).times(claimable_percentage).dividedBy(100),
+    new Decimal(amountSwap).times(swapRatio),
     tokenDecimals,
   );
 

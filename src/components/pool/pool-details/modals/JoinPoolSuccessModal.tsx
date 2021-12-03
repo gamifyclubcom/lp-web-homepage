@@ -39,7 +39,7 @@ const JoinPoolSuccessModal: React.FC<Props> = ({
   const [date, setDate] = useState<string>('');
   const transactionUrl = generateOnChainUrl('tx', txId);
   const tokenBalanceMarkup = renderTokenBalance(
-    new Decimal(amountSwap).times(ratio).times(claimable_percentage).dividedBy(100),
+    new Decimal(amountSwap).times(ratio),
     tokenDecimals,
   );
 
