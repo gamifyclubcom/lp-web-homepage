@@ -31,11 +31,15 @@ const PoolRounds: React.FC<Props> = ({
 }) => {
   const { renderCountDownValue } = useCountDown();
   const { getPoolTimelines } = usePool();
-  const { now } = useGlobal();
+  const { now, isInitTimestamp } = useGlobal();
   const { connected } = useWallet();
   const timelines = getPoolTimelines(poolTimes);
 
   const activeKey = useMemo(() => {
+    if (!isInitTimestamp) {
+      return null;
+    }
+
     if (!pool.is_active) {
       return 'upcoming';
     }
@@ -55,7 +59,7 @@ const PoolRounds: React.FC<Props> = ({
     }
 
     return null;
-  }, [pool.is_active, now, poolTimes.join_pool_end, timelines]);
+  }, [isInitTimestamp, pool.is_active, now, poolTimes.join_pool_end, timelines]);
   const countdownTitle = useMemo(() => {
     switch (activeKey) {
       case null:
@@ -87,6 +91,10 @@ const PoolRounds: React.FC<Props> = ({
   }, [activeKey, pool.is_active, timelines]);
 
   const countdownMarkup = useMemo(() => {
+    if (!isInitTimestamp) {
+      return <div className="h-12 bg-gray-500 rounded-lg w-72 animate-pulse"></div>;
+    }
+
     if (!pool.is_active) {
       return <span className="text-sm font-semibold text-white uppercase">TBA</span>;
     }
@@ -171,6 +179,7 @@ const PoolRounds: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     activeKey,
+    isInitTimestamp,
     activeTimeline?.endAt,
     allowContribute,
     alreadyContribute,

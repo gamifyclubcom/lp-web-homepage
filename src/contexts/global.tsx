@@ -17,6 +17,7 @@ interface GlobalState {
   allocationLevel: number;
   loading: boolean;
   isEnabledVotingFeature: boolean;
+  isInitTimestamp: boolean;
   setTotalStaked: Dispatch<SetStateAction<number>>;
   setAllocationLevel: Dispatch<SetStateAction<number>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
@@ -34,6 +35,7 @@ const GlobalContext = createContext<GlobalState>({
   allocationLevel: 0,
   loading: false,
   isEnabledVotingFeature: false,
+  isInitTimestamp: false,
   setTotalStaked: () => {},
   setAllocationLevel: () => {},
   setLoading: () => {},
@@ -57,15 +59,21 @@ export const GlobalProvider: React.FC = ({ children }) => {
   const [totalStaked, setTotalStaked] = useState(0);
   const [allocationLevel, setAllocationLevel] = useState(0);
   const [isEnabledVotingFeature, setIsEnabledVotingFeature] = useState(false);
+  const [isInitTimestamp, setIsInitTimestamp] = useState(false);
 
   useEffect(() => {
     const fetchNow = () => {
-      connection.getAccountInfo(clockSysvarAccount).then((result) => {
-        const decoded = ClockLayout.decode(result?.data);
-        const unixTimestamp = u64.fromBuffer(decoded.unix_timestamp).toString();
+      connection
+        .getAccountInfo(clockSysvarAccount)
+        .then((result) => {
+          const decoded = ClockLayout.decode(result?.data);
+          const unixTimestamp = u64.fromBuffer(decoded.unix_timestamp).toString();
 
-        setNow(new Decimal(unixTimestamp).toNumber());
-      });
+          setNow(new Decimal(unixTimestamp).toNumber());
+        })
+        .finally(() => {
+          setIsInitTimestamp(true);
+        });
     };
 
     fetchNow();
@@ -100,6 +108,7 @@ export const GlobalProvider: React.FC = ({ children }) => {
         allocationLevel,
         loading,
         isEnabledVotingFeature,
+        isInitTimestamp,
         setTotalStaked,
         setAllocationLevel,
         setLoading,
