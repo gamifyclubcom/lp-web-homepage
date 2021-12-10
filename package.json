@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@gamify/onchain-program-sdk": "^0.0.6",
+    "@gamify/onchain-program-sdk": "0.0.9",
     "@solana/wallet-adapter-base": "^0.7.0",
     "@solana/wallet-adapter-react": "^0.13.1",
     "@solana/wallet-adapter-react-ui": "^0.6.0",
