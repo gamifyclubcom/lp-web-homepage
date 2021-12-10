@@ -38,7 +38,7 @@ const Header: React.FC<Props> = () => {
 
         return false;
       }
-      if (mn.key === 'staking' || mn.key === 'buy-gmfc') {
+      if (mn.key === 'buy-gmfc') {
         return false;
       }
 
