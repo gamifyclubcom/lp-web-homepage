@@ -831,14 +831,10 @@ const getUserJoinPoolHistory = async (
     pool_address: poolContractAddress,
   };
   const url = queryString.stringifyUrl({
-    url: `${baseBackendUrl}/join_pool/histories`,
+    url: `${envConfig.API_URL_BACKEND}/api/pool-participants/join-pool-history`,
     query: queryObject,
   });
-  const histories = await fetchWrapper.get<
-    {
-      createdAt: string;
-    }[]
-  >(url);
+  const { docs: histories } = await fetchWrapper.get<PaginateResponse<any>>(url);
 
   return histories.map((h) => h.createdAt);
 };
