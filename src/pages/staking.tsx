@@ -496,6 +496,7 @@ const Staking: React.FC = () => {
                           },
                         )}
                         onClick={confirmUnStake}
+                        disabled={unStakeDisabled}
                       >
                         Unstake
                       </button>

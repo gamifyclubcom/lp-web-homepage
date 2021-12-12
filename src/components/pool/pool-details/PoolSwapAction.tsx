@@ -183,6 +183,8 @@ const PoolSwapAction: React.FC<Props> = ({
     let txId: string;
     setSpinning(true);
 
+    let userJoinPoolDoc: any;
+
     try {
       let walletBalance = await refreshWalletBalance();
       if (amountSwap.value.toNumber() >= walletBalance!) {
@@ -216,7 +218,7 @@ const PoolSwapAction: React.FC<Props> = ({
         return;
       }
 
-      await poolAPI.userJoinPool(
+      userJoinPoolDoc = await poolAPI.userJoinPool(
         publicKey!.toString(),
         pool.contract_address,
         amountSwap.value.toNumber(),
@@ -273,6 +275,8 @@ const PoolSwapAction: React.FC<Props> = ({
     } catch (err) {
       console.log({ err });
       setSpinning(false);
+      const result = await poolAPI.userJoinPoolFail(userJoinPoolDoc._id);
+      console.log({ result });
       if ((err as any).name !== 'WalletSignTransactionError') {
         setAmountSwap({
           value: new Decimal(0),
@@ -280,7 +284,6 @@ const PoolSwapAction: React.FC<Props> = ({
         });
         alertError((err as any).message);
       }
-      await poolAPI.userJoinPoolFail(pool.id);
     }
   };
 
