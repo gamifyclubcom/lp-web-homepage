@@ -12,6 +12,7 @@ import Decimal from 'decimal.js';
 import moment from 'moment';
 import queryString from 'query-string';
 import { envConfig } from '../../configs';
+import { JoinPoolStatusEnum } from '../../shared/enum';
 import { getPercent, isPoolV2Version, isPoolV3Version, isPoolV4Version } from '../../utils/helper';
 import fetchWrapper from '../fetch-wrapper';
 import {
@@ -697,6 +698,7 @@ export const userJoinPool = async (
   amount: number,
   participantAddress?: string,
 ): Promise<boolean> => {
+  const url = `${envConfig.API_URL_BACKEND}/api/pool-participants/join-pool-history`;
   const result = await fetchWrapper.post<
     {
       user_address: string;
@@ -705,7 +707,7 @@ export const userJoinPool = async (
       participant_address?: string;
     },
     boolean
-  >(`${baseBackendUrl}/join_pool`, {
+  >(url, {
     user_address: userAddress,
     pool_address: poolAddress,
     amount,
@@ -713,6 +715,24 @@ export const userJoinPool = async (
   });
 
   return result;
+};
+
+const userJoinPoolSuccess = async (poolId: string): Promise<boolean> => {
+  return updateJoinPoolHistoryStatus(poolId, JoinPoolStatusEnum.Succeeded);
+};
+
+const userJoinPoolFail = async (poolId: string): Promise<boolean> => {
+  return updateJoinPoolHistoryStatus(poolId, JoinPoolStatusEnum.Failed);
+};
+
+const updateJoinPoolHistoryStatus = async (
+  poolId: string,
+  status: JoinPoolStatusEnum,
+): Promise<boolean> => {
+  const url = `${envConfig.API_URL_BACKEND}/api/pool-participants/join-pool-history/${poolId}`;
+  return fetchWrapper.put<{ status: JoinPoolStatusEnum }, boolean>(url, {
+    status,
+  });
 };
 
 const userClaimToken = async (
@@ -834,4 +854,6 @@ export const poolAPI = {
   createUserStakeHistory,
   userVote,
   getUserJoinPoolHistory,
+  userJoinPoolSuccess,
+  userJoinPoolFail,
 };
