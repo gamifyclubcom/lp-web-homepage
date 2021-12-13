@@ -561,9 +561,14 @@ const Staking: React.FC = () => {
                             onValueChange={(values) => {
                               const { formattedValue, value } = values;
                               if (!isEmpty(value)) {
+                                const greatestValue =
+                                  new Decimal(unStakeBalance).toNumber() >
+                                  new Decimal(totalStaked).toNumber()
+                                    ? unStakeBalance
+                                    : totalStaked;
                                 if (
                                   new Decimal(value).toNumber() <=
-                                  new Decimal(unStakeBalance).toNumber()
+                                  new Decimal(greatestValue).toNumber()
                                 ) {
                                   /* setSliderValue(() => {
                               return new Decimal(value)
@@ -577,7 +582,7 @@ const Staking: React.FC = () => {
                                   });
                                 } else {
                                   setAmountStake({
-                                    value: new Decimal(unStakeBalance),
+                                    value: new Decimal(greatestValue),
                                     formatted: formattedValue,
                                   });
                                 }
