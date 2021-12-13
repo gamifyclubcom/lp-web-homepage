@@ -380,8 +380,8 @@ const Staking: React.FC = () => {
       const foundRank = levels.find((level) => level.level === currentLevel);
       if (foundRank) return foundRank.rank;
     }
-    return 'N/A';
-  }, [levels, currentLevel]);
+    return connected ? 'N/A' : 'Please connect wallet';
+  }, [levels, currentLevel, connected]);
 
   const gmfcNextTier = useMemo(() => {
     if (levels && currentLevel) {
@@ -392,8 +392,8 @@ const Staking: React.FC = () => {
         if (foundRank) return foundRank.minAllocation;
       }
     }
-    return (levels && levels[0].minAllocation) || 'N/A';
-  }, [levels, currentLevel]);
+    return connected ? levels[0].minAllocation : 'Please connect wallet';
+  }, [levels, currentLevel, connected]);
 
   return (
     <Layout title={PageTitle.StakingPage}>
