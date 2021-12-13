@@ -387,16 +387,40 @@ const Staking: React.FC = () => {
   }, [levels, currentLevel, connected]);
 
   const gmfcNextTier = useMemo(() => {
-    if (levels && currentLevel) {
-      if (currentLevel === 5) {
-        return levels[4].minAllocation;
+    let html: JSX.Element = <span>Please connect wallet</span>;
+    if (connected) {
+      let checkFound = 0;
+      if (levels && currentLevel) {
+        if (currentLevel === 5) {
+          checkFound = levels[4].minAllocation;
+        } else {
+          const foundRank = levels.find((level) => level.level === currentLevel + 1);
+          if (foundRank) checkFound = foundRank.minAllocation;
+        }
       } else {
-        const foundRank = levels.find((level) => level.level === currentLevel + 1);
-        if (foundRank) return foundRank.minAllocation;
+        checkFound = levels[0].minAllocation;
+      }
+      html = <NumberFormat value={checkFound} displayType={'text'} thousandSeparator={true} />;
+    }
+
+    return html;
+  }, [levels, currentLevel, connected]);
+
+  const getAmountMessageForNextLevel = useMemo(() => {
+    let html = '';
+    if (connected && currentLevel !== 0) {
+      if (currentLevel === 5) {
+        html = 'Congratulations for reaching Platinum!';
+      } else {
+        const foundNextRank = levels.find((level) => level.level === currentLevel + 1);
+        if (foundNextRank) {
+          const { minAllocation, rank } = foundNextRank;
+          html = `You will be level ${rank} with ${minAllocation - totalStaked} GMFC more`;
+        }
       }
     }
-    return connected ? levels[0].minAllocation : 'Please connect wallet';
-  }, [levels, currentLevel, connected]);
+    return html;
+  }, [connected, currentLevel, totalStaked, levels]);
 
   return (
     <Layout title={PageTitle.StakingPage}>
@@ -424,7 +448,11 @@ const Staking: React.FC = () => {
                 <div className="text-center border-r border-white border-opacity-10 p-4">
                   <div className="text-sm font-bold">Total staked GMFC</div>
                   <div className="text-pool_focus_1 text-xl mt-3.5 w-full truncate">
-                    {totalStaked}
+                    <NumberFormat
+                      value={totalStaked}
+                      displayType={'text'}
+                      thousandSeparator={true}
+                    />
                   </div>
                 </div>
                 <div className="text-center p-4 text-base">
@@ -468,104 +496,132 @@ const Staking: React.FC = () => {
                   </div>
                   <div className="mt-8">
                     <div className="text-white">Staking Information</div>
-                    <div className="overflow-x-auto">
-                      <div className="table border-collapse text-white rounded-lg text-sm bg-222228 mt-3 mx-auto">
-                        <div className="table-row overflow-visible font-bold bg-191920">
-                          <div className="table-cell px-6 py-3 rounded-tl-lg"></div>
-                          <div className="table-cell px-6 py-3">Balance GMFC</div>
-                          <div className="table-cell px-6 py-3">Notice</div>
-                          <div className="table-cell px-6 py-3"></div>
+                    {connected ? (
+                      <>
+                        <div className="overflow-x-auto">
+                          <div className="table border-collapse text-white rounded-lg text-sm bg-222228 mt-3 mx-auto w-full">
+                            <div className="table-row overflow-visible font-bold bg-191920">
+                              <div className="table-cell px-6 py-3 rounded-tl-lg"></div>
+                              <div className="table-cell px-6 py-3">Balance GMFC</div>
+                              <div className="table-cell px-6 py-3">Notice</div>
+                              <div className="table-cell px-6 py-3"></div>
+                            </div>
+                            <div className="table-row border-37373D border-b">
+                              <div className="table-cell px-6 py-3">Wallet Balance</div>
+                              <div className="table-cell px-6 py-3">
+                                <NumberFormat
+                                  value={unStakeBalance}
+                                  displayType={'text'}
+                                  thousandSeparator={true}
+                                />
+                              </div>
+                              <div className="table-cell px-6 py-3">
+                                {getAmountMessageForNextLevel}
+                              </div>
+                              <div className="table-cell px-6 py-3">
+                                <button
+                                  className="px-4 py-1 text-xs text-white uppercase rounded-md shadow-lg top-1/2 bg-secondary-500"
+                                  onClick={getMaxValueStake}
+                                >
+                                  max
+                                </button>
+                              </div>
+                            </div>
+                            {currentLevel !== 0 && (
+                              <div className="table-row">
+                                <div className="table-cell px-6 py-3">Staked GMFC</div>
+                                <div className="table-cell px-6 py-3">
+                                  <NumberFormat
+                                    value={totalStaked}
+                                    displayType={'text'}
+                                    thousandSeparator={true}
+                                  />
+                                </div>
+                                <div className="table-cell px-6 py-3">
+                                  Prematurely unstaking GMFC (before{' '}
+                                  {moment.unix(maturityTime).utc().format('MM/DD/YYYY @ LT')} (UTC))
+                                  will lead to 5% penalty.
+                                </div>
+                                <div className="table-cell px-6 py-3">
+                                  <button
+                                    className="px-4 py-1 text-xs text-white uppercase rounded-md shadow-lg top-1/2 bg-secondary-500"
+                                    onClick={getMaxValueUnStake}
+                                  >
+                                    max
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <div className="table-row border-37373D border-b">
-                          <div className="table-cell px-6 py-3">Wallet Balance</div>
-                          <div className="table-cell px-6 py-3">14,000</div>
-                          <div className="table-cell px-6 py-3">
-                            You will be leveled Silver with 30,000 GMFC more
-                          </div>
-                          <div className="table-cell px-6 py-3">
-                            <button
-                              className="px-4 py-1 text-xs text-white uppercase rounded-md shadow-lg top-1/2 bg-secondary-500"
-                              onClick={getMaxValueStake}
-                            >
-                              max
-                            </button>
-                          </div>
-                        </div>
-                        <div className="table-row">
-                          <div className="table-cell px-6 py-3">Staked GMFC</div>
-                          <div className="table-cell px-6 py-3">20,000</div>
-                          <div className="table-cell px-6 py-3">
-                            Prematurely unstaking GMFC (before{' '}
-                            {moment.unix(maturityTime).utc().format('MM/DD/YYYY @ LT')} (UTC)) will
-                            lead to 5% penalty.
-                          </div>
-                          <div className="table-cell px-6 py-3">
-                            <button
-                              className="px-4 py-1 text-xs text-white uppercase rounded-md shadow-lg top-1/2 bg-secondary-500"
-                              onClick={getMaxValueUnStake}
-                            >
-                              max
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-8 flex flex-col items-center">
-                    <NumberFormat
-                      thousandSeparator={true}
-                      value={amountStake.value.toNumber()}
-                      onValueChange={(values) => {
-                        const { formattedValue, value } = values;
-                        if (!isEmpty(value)) {
-                          if (
-                            new Decimal(value).toNumber() <= new Decimal(unStakeBalance).toNumber()
-                          ) {
-                            /* setSliderValue(() => {
+                        <div className="mt-8 flex flex-col items-center">
+                          <NumberFormat
+                            thousandSeparator={true}
+                            value={amountStake.value.toNumber()}
+                            onValueChange={(values) => {
+                              const { formattedValue, value } = values;
+                              if (!isEmpty(value)) {
+                                if (
+                                  new Decimal(value).toNumber() <=
+                                  new Decimal(unStakeBalance).toNumber()
+                                ) {
+                                  /* setSliderValue(() => {
                               return new Decimal(value)
                                 .times(100)
                                 .dividedBy(unStakeBalance)
                                 .toNumber();
                             }); */
-                            setAmountStake({
-                              value: new Decimal(value),
-                              formatted: formattedValue,
-                            });
-                          }
-                        } else {
-                          /* setSliderValue(() => {
+                                  setAmountStake({
+                                    value: new Decimal(value),
+                                    formatted: formattedValue,
+                                  });
+                                } else {
+                                  setAmountStake({
+                                    value: new Decimal(unStakeBalance),
+                                    formatted: formattedValue,
+                                  });
+                                }
+                              } else {
+                                /* setSliderValue(() => {
                             return new Decimal(0).toNumber();
                           }); */
-                          setAmountStake({
-                            value: new Decimal(0),
-                            formatted: '0',
-                          });
-                        }
-                      }}
-                      onFocus={(e) => e.target.select()}
-                      className="flex-1 px-2 py-2 text-2xl text-right bg-transparent border border-gray-500 rounded-md text-interteal focus:outline-none w-full md:max-w-xl"
-                    />
-                    <div className="flex mt-8 gap-2 flex-col md:flex-row">
-                      <button
-                        className="h-12 px-2 py-1 text-base text-center text-white rounded-full bg-8A2020 hover:bg-opacity-60 w-48"
-                        onClick={confirmStake}
-                      >
-                        Stake
-                      </button>
-                      <button
-                        className={clsx(
-                          'text-center text-base h-12 px-2 py-1 text-staking_btn rounded-full w-48 bg-transparent border border-8A2020',
-                          {
-                            'hover:border-white hover:text-white': !unStakeDisabled,
-                            'cursor-not-allowed': unStakeDisabled,
-                          },
-                        )}
-                        onClick={confirmUnStake}
-                        disabled={unStakeDisabled}
-                      >
-                        Unstake
-                      </button>
-                    </div>
+                                setAmountStake({
+                                  value: new Decimal(0),
+                                  formatted: '0',
+                                });
+                              }
+                            }}
+                            onFocus={(e) => e.target.select()}
+                            className="flex-1 px-2 py-2 text-2xl text-right bg-transparent border border-gray-500 rounded-md text-interteal focus:outline-none w-full md:max-w-xl"
+                          />
+                          <div className="flex mt-8 gap-2 flex-col md:flex-row">
+                            <button
+                              className="h-12 px-2 py-1 text-base text-center text-white rounded-full bg-8A2020 hover:bg-opacity-60 w-48"
+                              onClick={confirmStake}
+                            >
+                              Stake
+                            </button>
+                            <button
+                              className={clsx(
+                                'text-center text-base h-12 px-2 py-1 text-staking_btn rounded-full w-48 bg-transparent border border-8A2020',
+                                {
+                                  'hover:border-white hover:text-white': !unStakeDisabled,
+                                  'cursor-not-allowed': unStakeDisabled,
+                                },
+                              )}
+                              onClick={confirmUnStake}
+                              disabled={unStakeDisabled}
+                            >
+                              Unstake
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mt-8 text-center text-base">
+                        Please connect wallet to show details
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

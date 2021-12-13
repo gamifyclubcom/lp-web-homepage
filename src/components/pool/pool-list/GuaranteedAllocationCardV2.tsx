@@ -60,7 +60,7 @@ const GuaranteedAllocationCard: React.FC<Props> = ({
     case 5:
       imageLevel =
         currentLevel && currentLevel >= 5
-          ? '/images/staking/checked_level.svg'
+          ? '/images/staking/diamond_active.svg'
           : '/images/staking/diamond.svg';
       ovalLevel =
         currentLevel && currentLevel >= 5

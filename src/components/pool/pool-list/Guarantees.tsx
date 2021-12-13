@@ -14,6 +14,7 @@ const Guarantees: React.FC<Props> = ({ levels, isNew, currentLevel }) => {
     <ul
       className={clsx('flex items-center justify-between w-full', {
         'list-stacker-level relative md:px-4': isNew,
+        'list-stacker-level-full relative md:px-4': isNew && levels.length === currentLevel,
         'px-4': !isNew,
       })}
     >
