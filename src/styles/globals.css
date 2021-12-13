@@ -364,3 +364,15 @@ a {
   position: absolute;
   z-index: 0;
 }
+
+.list-stacker-level-full::before {
+  content: "";
+  width: calc(100% - 3rem);
+  height: 7px;
+  background-color: #B8B8FF;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  z-index: 0;
+}
