@@ -20,7 +20,7 @@ export enum PoolsSectionFilter {
   JOINED = 'joined',
   CREATED = 'created',
   PAST = 'past',
-  UPCOMING_FEATURED = 'upcoming_featured'
+  UPCOMING_FEATURED = 'upcoming_featured',
 }
 
 export enum PoolsVotingFilter {
@@ -47,4 +47,10 @@ export enum PoolRoundType {
 export enum PoolCountdownType {
   ToOpen = 'countdown-to-open',
   ToClose = 'countdown-to-close',
+}
+
+export enum JoinPoolStatusEnum {
+  Succeeded = 'succeeded',
+  Pending = 'pending',
+  Failed = 'failed',
 }

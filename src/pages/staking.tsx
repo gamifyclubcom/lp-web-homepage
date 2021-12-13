@@ -2,9 +2,9 @@ import clsx from 'clsx';
 import Decimal from 'decimal.js';
 import moment from 'moment';
 import Image from 'next/image';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import NumberFormat from 'react-number-format';
 import Layout from '../components/shared/Layout';
@@ -15,7 +15,7 @@ import StakeSuccessModal from '../components/pool/pool-details/modals/StakeSucce
 import UnStakeSuccessModal from '../components/pool/pool-details/modals/UnStakeSuccessModal';
 import Guarantees from '../components/pool/pool-list/Guarantees';
 import LoadingScreen from '../components/shared/LoadingScreen';
-import InputRange from '../components/shared/Slider/InputRange';
+// import InputRange from '../components/shared/Slider/InputRange';
 import { allocationLevels, envConfig } from '../configs';
 import { useAlert } from '../hooks/useAlert';
 import useSmartContract from '../hooks/useSmartContract';
@@ -23,7 +23,7 @@ import { useGlobal } from '../hooks/useGlobal';
 import { poolAPI } from '../sdk/pool';
 import { IAllocationLevel } from '../shared/interface';
 import { getUserAllocationLevel, isEmpty } from '../utils/helper';
-import VideoGameIcon from '../components/shared/icons/VideoGameIcon';
+// import VideoGameIcon from '../components/shared/icons/VideoGameIcon';
 
 const { ISOLA_TOKEN_ADDRESS, ISOLA_TOKEN_NAME } = envConfig;
 
@@ -43,7 +43,7 @@ const Staking: React.FC = () => {
     getUserTokenBalance,
     loading,
   } = useSmartContract();
-  const [sliderValue, setSliderValue] = useState(0);
+  // const [sliderValue, setSliderValue] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [levels, setLevels] = useState<IAllocationLevel[]>(allocationLevels);
   const [penaltyWidthDraw, setPenaltyWidthDraw] = useState(0);
@@ -62,14 +62,17 @@ const Staking: React.FC = () => {
     value: new Decimal(0),
     formatted: '0',
   });
-  const [amountUnStake, setAmountUnStake] = useState<{
+  /* const [amountUnStake, setAmountUnStake] = useState<{
     value: Decimal;
     formatted: string;
   }>({
     value: new Decimal(0),
     formatted: '0',
-  });
+  }); */
   const [tierUserTab, setTierUserTab] = useState<number>(0);
+  const unStakeDisabled = useMemo(() => {
+    return Boolean(totalStaked <= 0);
+  }, [totalStaked]);
 
   useEffect(() => {
     fetchOnChainData();
@@ -132,10 +135,10 @@ const Staking: React.FC = () => {
         value: new Decimal(0),
         formatted: '0',
       });
-      setAmountUnStake({
+      /* setAmountUnStake({
         value: new Decimal(0),
         formatted: '0',
-      });
+      }); */
     } else {
       try {
         const { start_staked, allocation_level, total_staked } = await getUserStakeData();
@@ -549,16 +552,19 @@ const Staking: React.FC = () => {
                       >
                         Stake
                       </button>
-                      {totalStaked > 0 && (
-                        <button
-                          className={
-                            'text-center text-base h-12 px-2 py-1 text-staking_btn rounded-full w-48 hover:border-white hover:text-white bg-transparent border border-8A2020'
-                          }
-                          onClick={confirmUnStake}
-                        >
-                          Unstake
-                        </button>
-                      )}
+                      <button
+                        className={clsx(
+                          'text-center text-base h-12 px-2 py-1 text-staking_btn rounded-full w-48 bg-transparent border border-8A2020',
+                          {
+                            'hover:border-white hover:text-white': !unStakeDisabled,
+                            'cursor-not-allowed': unStakeDisabled,
+                          },
+                        )}
+                        onClick={confirmUnStake}
+                        disabled={unStakeDisabled}
+                      >
+                        Unstake
+                      </button>
                     </div>
                   </div>
                 </div>
