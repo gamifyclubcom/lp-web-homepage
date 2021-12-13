@@ -4,7 +4,7 @@ import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import NumberFormat from 'react-number-format';
 import Layout from '../components/shared/Layout';
@@ -69,6 +69,9 @@ const Staking: React.FC = () => {
     value: new Decimal(0),
     formatted: '0',
   });
+  const unStakeDisabled = useMemo(() => {
+    return Boolean(totalStaked <= 0);
+  }, [totalStaked]);
 
   useEffect(() => {
     fetchOnChainData();
@@ -396,7 +399,7 @@ const Staking: React.FC = () => {
           </div>
 
           <div className="pt-10">
-            <div className="grid w-full max-w-screen-lg gap-5 has-1-col bg-hero-pattern bg-hero-pattern bg-100% bg-no-repeat bg-center-50%">
+            <div className="grid w-full max-w-screen-lg gap-5 has-1-col bg-hero-pattern bg-100% bg-no-repeat bg-center-50%">
               {currentLevel > 0 && (
                 <div className="flex justify-center w-full max-w-screen-lg pb-10 pt-25 ralative ">
                   <div className="relative staked-bars">
@@ -414,7 +417,7 @@ const Staking: React.FC = () => {
               )}
 
               {(!totalStaked || totalStaked <= 0) && (
-                <div className="p-6 text-center text-base border border-white rounded-xl">
+                <div className="p-6 text-base text-center border border-white rounded-xl">
                   You have <b>NOT</b> staked any GMFC yet
                 </div>
               )}
@@ -447,7 +450,7 @@ const Staking: React.FC = () => {
                         />
                       </div>
                     </div>
-                    <div className="md:min-w-280px text-center">
+                    <div className="text-center md:min-w-280px">
                       <div className="px-10 py-2 border border-white rounded-lg">
                         Level {currentLevel}
                       </div>
@@ -482,24 +485,28 @@ const Staking: React.FC = () => {
                         className="flex-1 w-full px-2 py-3 pl-16 pr-2 text-3xl font-medium text-right bg-black bg-opacity-75 border border-gray-500 rounded-md text-interteal focus:outline-none"
                       />
                     </div>
-                    {totalStaked > 0 && (
-                      <>
-                        <button
-                          className={clsx(
-                            'mt-3 flex items-center justify-center text-center text-lg h-12 px-2 py-1 text-white rounded-full w-full hover:bg-opacity-60 bg-secondary-500',
-                          )}
-                          onClick={confirmUnStake}
-                        >
-                          Unstake
-                        </button>
-                        {currentLevel > 0 && (
-                          <span className="max-w-xs my-6 text-sm text-center">
-                            You will be able to unstake these tokens on without penalty on{' '}
-                            {moment.unix(maturityTime).utc().format('MM/DD/YYYY @ LT')} (UTC)
-                          </span>
+
+                    <>
+                      <button
+                        className={clsx(
+                          'mt-3 flex items-center justify-center text-center text-lg h-12 px-2 py-1 text-white rounded-full w-full',
+                          {
+                            'bg-secondary-500 hover:bg-opacity-60': !unStakeDisabled,
+                            'bg-secondary-700 cursor-not-allowed text-gray-400': unStakeDisabled,
+                          },
                         )}
-                      </>
-                    )}
+                        onClick={confirmUnStake}
+                        disabled={unStakeDisabled}
+                      >
+                        Unstake
+                      </button>
+                      {currentLevel > 0 && (
+                        <span className="max-w-xs my-6 text-sm text-center">
+                          You will be able to unstake these tokens on without penalty on{' '}
+                          {moment.unix(maturityTime).utc().format('MM/DD/YYYY @ LT')} (UTC)
+                        </span>
+                      )}
+                    </>
                   </div>
                 </div>
                 {/* END HAS STAKED ISOLA STATE */}

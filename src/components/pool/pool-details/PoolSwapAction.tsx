@@ -183,6 +183,8 @@ const PoolSwapAction: React.FC<Props> = ({
     let txId: string;
     setSpinning(true);
 
+    let userJoinPoolDoc: any;
+
     try {
       let walletBalance = await refreshWalletBalance();
       if (amountSwap.value.toNumber() >= walletBalance!) {
@@ -216,6 +218,12 @@ const PoolSwapAction: React.FC<Props> = ({
         return;
       }
 
+      userJoinPoolDoc = await poolAPI.userJoinPool(
+        publicKey!.toString(),
+        pool.contract_address,
+        amountSwap.value.toNumber(),
+        participantAddress || undefined,
+      );
       txId = await handleUserJoinPool(pool, amountSwap.value.toNumber());
 
       walletBalance = await refreshWalletBalance();
@@ -232,12 +240,6 @@ const PoolSwapAction: React.FC<Props> = ({
 
       const newMaxContributeSize = await getUserMaxContributeSize(pool, allocationLevel);
       setMaxContributeSize(new Decimal(newMaxContributeSize));
-      await poolAPI.userJoinPool(
-        publicKey!.toString(),
-        pool.contract_address,
-        amountSwap.value.toNumber(),
-        participantAddress || undefined,
-      );
 
       const newUserJoinPoolHistories = await poolAPI.getUserJoinPoolHistory(
         publicKey!.toString(),
@@ -271,7 +273,10 @@ const PoolSwapAction: React.FC<Props> = ({
       });
       alertSuccess('User swap amount success!');
     } catch (err) {
+      console.log({ err });
       setSpinning(false);
+      const result = await poolAPI.userJoinPoolFail(userJoinPoolDoc._id);
+      console.log({ result });
       if ((err as any).name !== 'WalletSignTransactionError') {
         setAmountSwap({
           value: new Decimal(0),
