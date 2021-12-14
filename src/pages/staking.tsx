@@ -74,6 +74,10 @@ const Staking: React.FC = () => {
     return Boolean(totalStaked <= 0);
   }, [totalStaked]);
 
+  const stakeDisabled = useMemo(() => {
+    return Boolean(unStakeBalance <= 0);
+  }, [unStakeBalance]);
+
   useEffect(() => {
     fetchOnChainData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -203,6 +207,8 @@ const Staking: React.FC = () => {
   const confirmStake = () => {
     if (amountStake.value.lessThanOrEqualTo(0)) {
       alertError('Please enter greater amount');
+    } else if (amountStake.value.greaterThan(unStakeBalance)) {
+      alertError('Your GMFC balance is not enough');
     } else {
       const newLevel = getUserAllocationLevel(
         new Decimal(totalStaked).plus(amountStake.value).toNumber(),
@@ -232,7 +238,7 @@ const Staking: React.FC = () => {
     if (amountStake.value.lessThanOrEqualTo(0)) {
       alertError('Please enter greater amount');
     } else if (amountStake.value.greaterThan(totalStaked)) {
-      alertError('Please enter a smaller amount. It does not exceed the total staked amount.');
+      alertError('Your GMFC balance is not enough');
     } else {
       try {
         const { start_staked } = await getUserStakeData();
@@ -433,16 +439,16 @@ const Staking: React.FC = () => {
       <div className="staking-bg">
         <div className="flex flex-col items-center w-full max-w-screen-xl px-5 mx-auto text-white xl:px-0">
           <div className="max-w-screen-lg">
-            <div className="pt-12 text-2xl md:text-3xl text-staking text-center">
+            <div className="pt-12 text-xl md:text-2xl text-staking text-center">
               Stake your GMFC to gain access to the upcoming quality projects
             </div>
-            <div className="mt-8 text-lg text-center md:max-w-2xl mx-auto">
+            <div className="mt-8 text-base text-center md:max-w-2xl mx-auto">
               In order to participate in pools on Gamify, you will need to stake GMFC tokens. The
               amount of tokens you hold will dictate how much allocation you will get.
             </div>
           </div>
 
-          <div className="mt-20 mb-40 bg-303035 px-4 pt-6 md:px-9 pb-9 max-w-screen-lg w-full rounded-xl">
+          <div className="mt-20 mb-40 bg-303035 px-4 pt-6 md:px-9 pb-9 max-w-4xl w-full rounded-xl">
             <div className="text-white">
               <h4 className="uppercase text-base">Your Tier</h4>
               <div className="grid bg-191920 grid-cols-3 rounded-lg mt-3.5">
@@ -606,16 +612,23 @@ const Staking: React.FC = () => {
                           />
                           <div className="flex mt-8 gap-2 flex-col md:flex-row">
                             <button
-                              className="h-12 px-2 py-1 text-base text-center text-white rounded-full bg-8A2020 hover:bg-opacity-60 w-48"
+                              className={clsx(
+                                'h-12 px-2 py-1 text-base text-center text-white rounded-full bg-FA0A00 bg-opacity-50 drop-shadow-4px text-shadow-custom w-48',
+                                {
+                                  'hover:bg-opacity-60': !stakeDisabled,
+                                  'cursor-not-allowed': stakeDisabled,
+                                },
+                              )}
                               onClick={confirmStake}
+                              disabled={stakeDisabled}
                             >
                               Stake
                             </button>
                             <button
                               className={clsx(
-                                'text-center text-base h-12 px-2 py-1 text-staking_btn rounded-full w-48 bg-transparent border border-8A2020',
+                                'text-center text-base h-12 px-2 py-1 text-staking_unstake rounded-full w-48 bg-white bg-opacity-50 drop-shadow-4px text-shadow-custom',
                                 {
-                                  'hover:border-white hover:text-white': !unStakeDisabled,
+                                  'hover:bg-opacity-60': !unStakeDisabled,
                                   'cursor-not-allowed': unStakeDisabled,
                                 },
                               )}
