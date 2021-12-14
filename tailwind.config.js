@@ -57,7 +57,8 @@ module.exports = {
         },
         pool_focus_1: '#6398FF',
         staking_btn: '#8A2020',
-        staking_gmfc: '#AEAEAE'
+        staking_gmfc: '#AEAEAE',
+        staking_unstake: '#FA0A00'
       },
       backgroundImage: {
         'pools-voting-list': "url('/images/gamify_bg_orb.jpeg')",
@@ -86,7 +87,8 @@ module.exports = {
         '191920': '#191920',
         '8A2020': '#8A2020',
         '44454B': '#44454B',
-        'B8B8FF': '#B8B8FF'
+        'B8B8FF': '#B8B8FF',
+        'FA0A00': '#FA0A00'
       },
       borderColor: {
         '20459B': '#20459B',
@@ -141,6 +143,9 @@ module.exports = {
           '100%': { transform: 'translateX(-924px)' },
         }
       },
+      dropShadow: {
+        '4px': '0px 4px 4px rgba(0, 0, 0, 0.25)'
+      }
     },
     fontFamily: {
       sans: ['Gilroy', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],

@@ -74,6 +74,10 @@ const Staking: React.FC = () => {
     return Boolean(totalStaked <= 0);
   }, [totalStaked]);
 
+  const stakeDisabled = useMemo(() => {
+    return Boolean(unStakeBalance <= 0);
+  }, [unStakeBalance]);
+
   useEffect(() => {
     fetchOnChainData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -203,6 +207,8 @@ const Staking: React.FC = () => {
   const confirmStake = () => {
     if (amountStake.value.lessThanOrEqualTo(0)) {
       alertError('Please enter greater amount');
+    } else if (amountStake.value.greaterThan(unStakeBalance)) {
+      alertError('Your GMFC balance is not enough');
     } else {
       const newLevel = getUserAllocationLevel(
         new Decimal(totalStaked).plus(amountStake.value).toNumber(),
@@ -232,7 +238,7 @@ const Staking: React.FC = () => {
     if (amountStake.value.lessThanOrEqualTo(0)) {
       alertError('Please enter greater amount');
     } else if (amountStake.value.greaterThan(totalStaked)) {
-      alertError('Please enter a smaller amount. It does not exceed the total staked amount.');
+      alertError('Your GMFC balance is not enough');
     } else {
       try {
         const { start_staked } = await getUserStakeData();
@@ -433,26 +439,26 @@ const Staking: React.FC = () => {
       <div className="staking-bg">
         <div className="flex flex-col items-center w-full max-w-screen-xl px-5 mx-auto text-white xl:px-0">
           <div className="max-w-screen-lg">
-            <div className="pt-12 text-2xl md:text-3xl text-staking text-center">
+            <div className="pt-12 text-xl md:text-2xl text-staking text-center">
               Stake your GMFC to gain access to the upcoming quality projects
             </div>
-            <div className="mt-8 text-lg text-center md:max-w-2xl mx-auto">
+            <div className="mt-6 text-base text-center md:max-w-2xl mx-auto">
               In order to participate in pools on Gamify, you will need to stake GMFC tokens. The
               amount of tokens you hold will dictate how much allocation you will get.
             </div>
           </div>
 
-          <div className="mt-20 mb-40 bg-303035 px-4 pt-6 md:px-9 pb-9 max-w-screen-lg w-full rounded-xl">
+          <div className="mt-12 mb-20 bg-303035 px-4 pt-6 md:px-9 pb-9 max-w-4xl w-full rounded-xl">
             <div className="text-white">
               <h4 className="uppercase text-base">Your Tier</h4>
               <div className="grid bg-191920 grid-cols-3 rounded-lg mt-3.5">
                 <div className="text-center border-r border-white border-opacity-10 p-4">
                   <div className="text-sm font-bold">Current Tier</div>
-                  <div className="text-pool_focus_1 text-xl mt-3.5">{currentRank}</div>
+                  <div className="text-pool_focus_1 text-xl mt-2.5">{currentRank}</div>
                 </div>
                 <div className="text-center border-r border-white border-opacity-10 p-4">
                   <div className="text-sm font-bold">Total staked GMFC</div>
-                  <div className="text-pool_focus_1 text-xl mt-3.5 w-full truncate">
+                  <div className="text-pool_focus_1 text-xl mt-2.5 w-full truncate">
                     <NumberFormat
                       value={totalStaked}
                       displayType={'text'}
@@ -462,7 +468,7 @@ const Staking: React.FC = () => {
                 </div>
                 <div className="text-center p-4 text-base">
                   <div className="text-sm font-bold">GMFC left to next tier</div>
-                  <div className="text-pool_focus_1 text-xl mt-3.5 w-full truncate">
+                  <div className="text-pool_focus_1 text-xl mt-2.5 w-full truncate">
                     {gmfcNextTier}
                   </div>
                 </div>
@@ -491,7 +497,7 @@ const Staking: React.FC = () => {
               </div>
 
               {tierUserTab === 0 && (
-                <div className="mt-10">
+                <div className="mt-8">
                   <div className="h-28">
                     <Guarantees
                       levels={allocationLevels}
@@ -499,31 +505,31 @@ const Staking: React.FC = () => {
                       currentLevel={currentLevel}
                     />
                   </div>
-                  <div className="mt-8">
+                  <div className="mt-6">
                     <div className="text-white">Staking Information</div>
                     {connected ? (
                       <>
                         <div className="overflow-x-auto">
                           <div className="table border-collapse text-white rounded-lg text-sm bg-222228 mt-3 mx-auto w-full">
                             <div className="table-row overflow-visible font-bold bg-191920">
-                              <div className="table-cell px-6 py-3 rounded-tl-lg"></div>
-                              <div className="table-cell px-6 py-3">Balance GMFC</div>
-                              <div className="table-cell px-6 py-3">Notice</div>
-                              <div className="table-cell px-6 py-3"></div>
+                              <div className="table-cell px-6 py-2 rounded-tl-lg"></div>
+                              <div className="table-cell px-6 py-2">Balance GMFC</div>
+                              <div className="table-cell px-6 py-2">Notice</div>
+                              <div className="table-cell px-6 py-2"></div>
                             </div>
                             <div className="table-row border-37373D border-b">
-                              <div className="table-cell px-6 py-3">Wallet Balance</div>
-                              <div className="table-cell px-6 py-3">
+                              <div className="table-cell px-6 py-2">Wallet Balance</div>
+                              <div className="table-cell px-6 py-2">
                                 <NumberFormat
                                   value={unStakeBalance}
                                   displayType={'text'}
                                   thousandSeparator={true}
                                 />
                               </div>
-                              <div className="table-cell px-6 py-3">
+                              <div className="table-cell px-6 py-2">
                                 {getAmountMessageForNextLevel}
                               </div>
-                              <div className="table-cell px-6 py-3">
+                              <div className="table-cell px-6 py-2">
                                 <button
                                   className="px-4 py-1 text-xs text-white uppercase rounded-md shadow-lg top-1/2 bg-secondary-500"
                                   onClick={getMaxValueStake}
@@ -534,20 +540,20 @@ const Staking: React.FC = () => {
                             </div>
                             {currentLevel !== 0 && (
                               <div className="table-row">
-                                <div className="table-cell px-6 py-3">Staked GMFC</div>
-                                <div className="table-cell px-6 py-3">
+                                <div className="table-cell px-6 py-2">Staked GMFC</div>
+                                <div className="table-cell px-6 py-2">
                                   <NumberFormat
                                     value={totalStaked}
                                     displayType={'text'}
                                     thousandSeparator={true}
                                   />
                                 </div>
-                                <div className="table-cell px-6 py-3">
+                                <div className="table-cell px-6 py-2">
                                   Prematurely unstaking GMFC (before{' '}
                                   {moment.unix(maturityTime).utc().format('MM/DD/YYYY @ LT')} (UTC))
                                   will lead to 5% penalty.
                                 </div>
-                                <div className="table-cell px-6 py-3">
+                                <div className="table-cell px-6 py-2">
                                   <button
                                     className="px-4 py-1 text-xs text-white uppercase rounded-md shadow-lg top-1/2 bg-secondary-500"
                                     onClick={getMaxValueUnStake}
@@ -604,18 +610,25 @@ const Staking: React.FC = () => {
                             onFocus={(e) => e.target.select()}
                             className="flex-1 px-2 py-2 text-2xl text-right bg-transparent border border-gray-500 rounded-md text-interteal focus:outline-none w-full md:max-w-xl"
                           />
-                          <div className="flex mt-8 gap-2 flex-col md:flex-row">
+                          <div className="flex mt-4 gap-2 flex-col md:flex-row">
                             <button
-                              className="h-12 px-2 py-1 text-base text-center text-white rounded-full bg-8A2020 hover:bg-opacity-60 w-48"
+                              className={clsx(
+                                'h-12 px-2 py-1 text-base text-center text-white rounded-full bg-FA0A00 bg-opacity-50 drop-shadow-4px text-shadow-custom w-48',
+                                {
+                                  'hover:bg-opacity-60': !stakeDisabled,
+                                  'cursor-not-allowed': stakeDisabled,
+                                },
+                              )}
                               onClick={confirmStake}
+                              disabled={stakeDisabled}
                             >
                               Stake
                             </button>
                             <button
                               className={clsx(
-                                'text-center text-base h-12 px-2 py-1 text-staking_btn rounded-full w-48 bg-transparent border border-8A2020',
+                                'text-center text-base h-12 px-2 py-1 text-staking_unstake rounded-full w-48 bg-white bg-opacity-50 drop-shadow-4px text-shadow-custom',
                                 {
-                                  'hover:border-white hover:text-white': !unStakeDisabled,
+                                  'hover:bg-opacity-60': !unStakeDisabled,
                                   'cursor-not-allowed': unStakeDisabled,
                                 },
                               )}
