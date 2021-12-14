@@ -421,7 +421,9 @@ const Staking: React.FC = () => {
         }
       } else {
         const lowestRank = levels[0];
-        html = `You will be level ${lowestRank.rank} with ${lowestRank.minAllocation} GMFC more`;
+        html = totalStaked
+          ? `You will be level ${lowestRank.rank} with ${lowestRank.minAllocation} GMFC`
+          : `You will be level ${lowestRank.rank} with ${lowestRank.minAllocation} GMFC more`;
       }
     }
     return html;
