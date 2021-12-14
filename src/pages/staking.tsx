@@ -408,15 +408,20 @@ const Staking: React.FC = () => {
 
   const getAmountMessageForNextLevel = useMemo(() => {
     let html = '';
-    if (connected && currentLevel !== 0) {
-      if (currentLevel === 5) {
-        html = 'Congratulations for reaching Platinum!';
-      } else {
-        const foundNextRank = levels.find((level) => level.level === currentLevel + 1);
-        if (foundNextRank) {
-          const { minAllocation, rank } = foundNextRank;
-          html = `You will be level ${rank} with ${minAllocation - totalStaked} GMFC more`;
+    if (connected) {
+      if (currentLevel !== 0) {
+        if (currentLevel === 5) {
+          html = 'Congratulations for reaching Platinum!';
+        } else {
+          const foundNextRank = levels.find((level) => level.level === currentLevel + 1);
+          if (foundNextRank) {
+            const { minAllocation, rank } = foundNextRank;
+            html = `You will be level ${rank} with ${minAllocation - totalStaked} GMFC more`;
+          }
         }
+      } else {
+        const lowestRank = levels[0];
+        html = `You will be level ${lowestRank.rank} with ${lowestRank.minAllocation} GMFC more`;
       }
     }
     return html;
