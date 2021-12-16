@@ -353,7 +353,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
                 <div className="w-full h-full overflow-hidden rounded-lg bg-303035">
                   <PoolRounds
                     pool={pool}
-                    loading={fetching}
+                    loading={fetching || spinning}
                     allowContribute={allowContribute}
                     alreadyContribute={Boolean(allocation && allocation > 0)}
                     poolTimes={poolTimes}
