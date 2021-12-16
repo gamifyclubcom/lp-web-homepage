@@ -36,7 +36,12 @@ interface Props {
 const PoolDetails: React.FC<Props> = ({ poolServer }) => {
   const { connected, publicKey } = useWallet();
   const { now } = useGlobal();
-  const { refreshAllocation, getUserAllocationLevel, getParticipantAddress } = useSmartContract();
+  const {
+    refreshAllocation,
+    getUserAllocationLevel,
+    getParticipantAddress,
+    getUserMaxContributeSize,
+  } = useSmartContract();
   const { getPoolFullInfo, getMaxIndividualAllocationForStaker } = usePool();
   const [fetching, setFetching] = useState(true);
   const [spinning, setSpinning] = useState(false);
@@ -281,8 +286,11 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
     setSpinning(true);
     try {
       await fetchPool();
-      setSpinning(false);
+      const newMaxContributeSize = await getUserMaxContributeSize(pool, allocationLevel);
+      setMaxContributeSize(new Decimal(newMaxContributeSize));
     } catch (err) {
+      console.log({ err });
+    } finally {
       setSpinning(false);
     }
   };
