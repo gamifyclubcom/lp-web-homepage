@@ -11,7 +11,7 @@ import { useContext, useEffect, useState } from 'react';
 import PoolContext from '../contexts/pool';
 import fetchWrapper from '../sdk/fetch-wrapper';
 import { IPool, IPoolVoting } from '../sdk/pool/interface';
-import { IPoolTimes, ITimeline } from '../shared/interface';
+import { ITimeline } from '../shared/interface';
 import { isInExclusiveRound, isInFCFSForStakerRound } from '../utils/helper';
 import { mappingPoolOnChainResponse, mappingPoolVotingOnChainResponse } from './../sdk/pool/index';
 import { useGlobal } from './useGlobal';
@@ -198,31 +198,31 @@ export function usePool() {
     };
   };
 
-  const getPoolTimelines = (params: IPoolTimes): ITimeline[] => {
+  const getPoolTimelines = (pool: IPool): ITimeline[] => {
     const {
       join_pool_start,
       private_join_enabled,
       private_join_start,
       private_join_end,
-      exclusive_join_enabled,
+      exclusive_join_enable,
       exclusive_join_start,
       exclusive_join_end,
-      fcfs_staker_join_enabled,
-      fcfs_staker_join_start,
-      fcfs_staker_join_end,
+      fcfs_join_for_staker_enabled,
+      fcfs_join_for_staker_start,
+      fcfs_join_for_staker_end,
       public_join_enabled,
       public_join_start,
       public_join_end,
       join_pool_end,
       claim_at,
-    } = params;
+    } = pool;
     let index = 2;
     let result: ITimeline[] = [
       {
         key: 'upcoming',
         index: 1,
         name: 'Upcoming',
-        endAt: join_pool_start,
+        endAt: new Date(pool.join_pool_start),
       },
     ];
     if (private_join_enabled) {
@@ -235,7 +235,7 @@ export function usePool() {
       });
       index += 1;
     }
-    if (exclusive_join_enabled) {
+    if (exclusive_join_enable) {
       result.push({
         key: 'exclusive',
         index,
@@ -245,13 +245,13 @@ export function usePool() {
       });
       index += 1;
     }
-    if (fcfs_staker_join_enabled) {
+    if (fcfs_join_for_staker_enabled) {
       result.push({
         key: 'fcfs-staker',
         index,
         name: 'Stakers Round 2',
-        startAt: fcfs_staker_join_start,
-        endAt: fcfs_staker_join_end,
+        startAt: fcfs_join_for_staker_start,
+        endAt: fcfs_join_for_staker_end,
       });
       index += 1;
     }
@@ -269,7 +269,7 @@ export function usePool() {
       key: 'claimable',
       index,
       name: 'Claimable',
-      startAt: claim_at,
+      startAt: new Date(claim_at),
     });
 
     return result;
