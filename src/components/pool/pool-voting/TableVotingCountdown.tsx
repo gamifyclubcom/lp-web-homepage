@@ -1,6 +1,8 @@
+import moment from 'moment';
 import { useRouter } from 'next/router';
 import Countdown from 'react-countdown';
 import { useCountDown } from '../../../hooks/useCountDown';
+import { useGlobal } from '../../../hooks/useGlobal';
 import { PoolVotingStatusType } from '../../../shared/enum';
 
 interface Props {
@@ -11,6 +13,7 @@ interface Props {
 
 const TableVotingCountdown: React.FC<Props> = ({ date, loading, status }) => {
   const router = useRouter();
+  const { now } = useGlobal();
   const { renderCountDownValue } = useCountDown();
 
   if (loading) {
@@ -39,6 +42,7 @@ const TableVotingCountdown: React.FC<Props> = ({ date, loading, status }) => {
           }
         }}
         date={date}
+        now={() => new Date(moment.unix(now).toISOString()).getTime()}
         renderer={({ days, hours, minutes, seconds, completed }) => {
           const daysValue = renderCountDownValue({
             targetDate: date,

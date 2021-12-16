@@ -133,6 +133,7 @@ const PoolRounds: React.FC<Props> = ({
               refreshData();
             }}
             date={countDownDate}
+            now={() => new Date(moment.unix(now).toISOString()).getTime()}
             renderer={({ days, hours, minutes, seconds, completed }) => {
               const daysValue = renderCountDownValue({
                 targetDate: countDownDate,
