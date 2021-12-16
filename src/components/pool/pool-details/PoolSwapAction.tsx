@@ -149,13 +149,16 @@ const PoolSwapAction: React.FC<Props> = ({
   const confirmJoin = () => {
     if (amountSwap.value.toNumber() <= 0) {
       alertError('Please enter a greater amount');
-    } else if (amountSwap.value.greaterThan(maxContributeSize)) {
+    } else if (isInWhitelistRound(pool, now) && !Boolean(participantAddress)) {
+    /*
+    else if (amountSwap.value.greaterThan(maxContributeSize)) {
       alertError(
         `Please enter a smaller amount. You enter ${amountSwap.value.toNumber()} ${
           pool.token_to
         }. Your available is ${maxContributeSize.toFixed(TOKEN_TO_DECIMALS)} ${pool.token_to}`,
       );
-    } else if (isInWhitelistRound(pool, now) && !Boolean(participantAddress)) {
+    } 
+    */
       alertError('You are not whitelisted. Please wait for the FCFS round.');
     } else {
       confirmAlert({
