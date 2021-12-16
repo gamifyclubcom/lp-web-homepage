@@ -90,6 +90,10 @@ const PoolRounds: React.FC<Props> = ({
     return null;
   }, [activeKey, pool.is_active, timelines]);
 
+  const handleRefresh = async () => {
+    await refreshData();
+  };
+
   const countdownMarkup = useMemo(() => {
     if (!isInitTimestamp) {
       return <div className="h-12 bg-gray-500 rounded-lg w-72 animate-pulse"></div>;
@@ -129,9 +133,7 @@ const PoolRounds: React.FC<Props> = ({
           <div className="h-12 bg-gray-500 rounded-lg w-72 animate-pulse"></div>
         ) : (
           <Countdown
-            onComplete={() => {
-              refreshData();
-            }}
+            onComplete={handleRefresh}
             date={countDownDate}
             now={() => new Date(moment.unix(now).toISOString()).getTime()}
             renderer={({ days, hours, minutes, seconds, completed }) => {
