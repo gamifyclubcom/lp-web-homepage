@@ -55,7 +55,10 @@ module.exports = {
         gcpurp: {
           200: 'rgba(217,191,245,1)'
         },
-        pool_focus_1: '#6398FF'
+        pool_focus_1: '#6398FF',
+        staking_btn: '#8A2020',
+        staking_gmfc: '#AEAEAE',
+        staking_unstake: '#FA0A00'
       },
       backgroundImage: {
         'pools-voting-list': "url('/images/gamify_bg_orb.jpeg')",
@@ -80,10 +83,18 @@ module.exports = {
         '1e1945': '#1e1945',
         '303035': '#303035',
         pool_focus_1: '#6398FF',
-        'B91D1D': '#B91D1D'
+        'B91D1D': '#B91D1D',
+        '191920': '#191920',
+        '8A2020': '#8A2020',
+        '44454B': '#44454B',
+        'B8B8FF': '#B8B8FF',
+        'FA0A00': '#FA0A00'
       },
       borderColor: {
-        '20459B': '#20459B'
+        '20459B': '#20459B',
+        '6398FF': '#6398FF',
+        '37373D': '#37373D',
+        '8A2020': '#8A2020'
       },
       padding: {
         325: '325px',
@@ -99,9 +110,13 @@ module.exports = {
         '80v': '80vh',
         '90v': '90vh',
         '100v': '100vh',
+        '7p': '7px',
+        '46p': '46px'
       },
       width: {
-        '300p': '300px'
+        '300p': '300px',
+        '200p': '200px',
+        '46p': '46px'
       },
       fontSize: {
         '4.25xl': ['4.25rem', '5rem'],
@@ -128,6 +143,9 @@ module.exports = {
           '100%': { transform: 'translateX(-924px)' },
         }
       },
+      dropShadow: {
+        '4px': '0px 4px 4px rgba(0, 0, 0, 0.25)'
+      }
     },
     fontFamily: {
       sans: ['Gilroy', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],

@@ -41,7 +41,7 @@ export const allocationLevels: IAllocationLevel[] = [
   {
     level: 5,
     title: 'Level 5',
-    rank: 'Plantinum',
+    rank: 'Platinum',
     minAllocation: EXCLUSIVE_WEIGHTS_CONFIG.level5.amount,
     allocationRatio: EXCLUSIVE_WEIGHTS_CONFIG.level5.weight,
     color: '#62F3D4',

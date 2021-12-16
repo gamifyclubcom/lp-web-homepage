@@ -1,7 +1,9 @@
 import clsx from 'clsx';
+import moment from 'moment';
 import { useRouter } from 'next/router';
 import Countdown from 'react-countdown';
 import { useCountDown } from '../../../hooks/useCountDown';
+import { useGlobal } from '../../../hooks/useGlobal';
 import PoolCountDownItem from '../../shared/pool/PoolCountDownItem';
 
 interface Props {
@@ -11,6 +13,7 @@ interface Props {
 
 const VotingCountdown: React.FC<Props> = ({ date, active }) => {
   const router = useRouter();
+  const { now } = useGlobal();
   const { renderCountDownValue } = useCountDown();
 
   return (
@@ -25,6 +28,7 @@ const VotingCountdown: React.FC<Props> = ({ date, active }) => {
           }
         }}
         date={date}
+        now={() => new Date(moment.unix(now).toISOString()).getTime()}
         renderer={({ days, hours, minutes, seconds, completed }) => {
           const daysValue = renderCountDownValue({
             targetDate: date,

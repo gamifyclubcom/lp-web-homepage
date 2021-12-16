@@ -1,13 +1,11 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import moment from 'moment';
-import { useRouter } from 'next/router';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import Countdown from 'react-countdown';
 import { useCountDown } from '../../../hooks/useCountDown';
 import { useGlobal } from '../../../hooks/useGlobal';
 import { usePool } from '../../../hooks/usePool';
 import { IPool } from '../../../sdk/pool/interface';
-import { IPoolTimes } from '../../../shared/interface';
 import PoolCardTitle from '../../shared/pool/PoolCardTitle';
 import PoolCountDownItem from '../../shared/pool/PoolCountDownItem';
 import PoolTimelines from './PoolTimelines';
@@ -17,7 +15,6 @@ interface Props {
   loading: boolean;
   allowContribute: boolean;
   alreadyContribute: boolean;
-  poolTimes: IPoolTimes;
   refreshData: () => Promise<void>;
 }
 
@@ -26,14 +23,13 @@ const PoolRounds: React.FC<Props> = ({
   allowContribute,
   alreadyContribute,
   loading,
-  poolTimes,
   refreshData,
 }) => {
   const { renderCountDownValue } = useCountDown();
   const { getPoolTimelines } = usePool();
   const { now, isInitTimestamp } = useGlobal();
   const { connected } = useWallet();
-  const timelines = getPoolTimelines(poolTimes);
+  const timelines = getPoolTimelines(pool);
 
   const activeKey = useMemo(() => {
     if (!isInitTimestamp) {
@@ -54,19 +50,19 @@ const PoolRounds: React.FC<Props> = ({
       }
     }
 
-    if (moment.unix(now).isAfter(poolTimes.join_pool_end)) {
+    if (moment.unix(now).isAfter(pool.join_pool_end)) {
       return 'claimable';
     }
 
     return null;
-  }, [isInitTimestamp, pool.is_active, now, poolTimes.join_pool_end, timelines]);
+  }, [isInitTimestamp, pool.is_active, pool.join_pool_end, now, timelines]);
   const countdownTitle = useMemo(() => {
     switch (activeKey) {
       case null:
       case 'upcoming':
         return 'Opens In:';
       case 'fcfs':
-        if (moment.unix(now).isBefore(poolTimes.join_pool_end)) {
+        if (moment.unix(now).isBefore(pool.join_pool_end)) {
           return 'Closes In:';
         }
 
@@ -76,7 +72,7 @@ const PoolRounds: React.FC<Props> = ({
       default:
         return 'Closes In:';
     }
-  }, [activeKey, now, poolTimes.join_pool_end]);
+  }, [activeKey, now, pool.join_pool_end]);
   const activeTimeline = useMemo(() => {
     if (!pool.is_active) {
       return timelines[0];
@@ -90,6 +86,23 @@ const PoolRounds: React.FC<Props> = ({
     return null;
   }, [activeKey, pool.is_active, timelines]);
 
+  const handleRefresh = async () => {
+    await refreshData();
+  };
+
+  const countDownDate = useMemo(() => {
+    return activeTimeline?.endAt;
+  }, [activeTimeline]);
+
+  const countdownNow = useMemo(() => {
+    return new Date(moment.unix(now).toISOString()).getTime();
+  }, [now]);
+
+  useEffect(() => {
+    handleRefresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeKey]);
+
   const countdownMarkup = useMemo(() => {
     if (!isInitTimestamp) {
       return <div className="h-12 bg-gray-500 rounded-lg w-72 animate-pulse"></div>;
@@ -99,15 +112,15 @@ const PoolRounds: React.FC<Props> = ({
       return <span className="text-sm font-semibold text-white uppercase">TBA</span>;
     }
     if (activeKey === 'claimable') {
-      if (moment.unix(now).isAfter(poolTimes.claim_at)) {
+      if (moment.unix(now).isAfter(pool.claim_at)) {
         return <h5 className="mt-8 text-lg font-semibold text-white">Pool is claimable!</h5>;
-      } else if (moment.unix(now).isBetween(poolTimes.join_pool_end, poolTimes.claim_at)) {
+      } else if (moment.unix(now).isBetween(pool.join_pool_end, pool.claim_at)) {
         return (
           <h5 className="mt-8 text-sm font-semibold text-white">
             {!connected
               ? 'Please connect wallet to continue'
               : alreadyContribute
-              ? `Please wait until ${moment(poolTimes.claim_at)
+              ? `Please wait until ${moment(pool.claim_at)
                   .utc()
                   .format('MMM DD, LT')} (UTC) to claim all tokens`
               : 'Your address did not participate in this pool.'}
@@ -115,7 +128,6 @@ const PoolRounds: React.FC<Props> = ({
         );
       }
     }
-    const countDownDate = activeTimeline?.endAt;
 
     return (
       <>
@@ -129,10 +141,12 @@ const PoolRounds: React.FC<Props> = ({
           <div className="h-12 bg-gray-500 rounded-lg w-72 animate-pulse"></div>
         ) : (
           <Countdown
-            onComplete={() => {
-              refreshData();
-            }}
+            onComplete={handleRefresh}
+            // date={countDownDate}
             date={countDownDate}
+            now={() => {
+              return countdownNow;
+            }}
             renderer={({ days, hours, minutes, seconds, completed }) => {
               const daysValue = renderCountDownValue({
                 targetDate: countDownDate,
@@ -178,18 +192,18 @@ const PoolRounds: React.FC<Props> = ({
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    activeKey,
     isInitTimestamp,
-    activeTimeline?.endAt,
-    allowContribute,
-    alreadyContribute,
-    connected,
-    countdownTitle,
-    loading,
-    now,
     pool.is_active,
-    poolTimes.claim_at,
-    poolTimes.join_pool_end,
+    pool.claim_at,
+    pool.join_pool_end,
+    activeKey,
+    loading,
+    countdownTitle,
+    countDownDate,
+    now,
+    connected,
+    alreadyContribute,
+    allowContribute,
   ]);
 
   return (

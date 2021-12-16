@@ -63,6 +63,7 @@ const ConfirmUnStakeModal: React.FC<Props> = ({
             right: (
               <Countdown
                 date={moment.unix(maturityTime).toLocaleString()}
+                now={() => new Date(moment.unix(now).toISOString()).getTime()}
                 renderer={({ days, hours, minutes, seconds, completed }) => {
                   const daysValue = renderCountDownValue({
                     targetDate: maturityTime,
@@ -96,9 +97,7 @@ const ConfirmUnStakeModal: React.FC<Props> = ({
       loading={false}
       variant="confirm"
       modalName={
-        moment.unix(now).isBefore(moment.unix(maturityTime))
-          ? 'Penalty Notice'
-          : 'Unstake Gamify'
+        moment.unix(now).isBefore(moment.unix(maturityTime)) ? 'Penalty Notice' : 'Unstake Gamify'
       }
       modalIcon={
         moment.unix(now).isBefore(moment.unix(maturityTime)) ? <AiOutlineWarning /> : undefined
