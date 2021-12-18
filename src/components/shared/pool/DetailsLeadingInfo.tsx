@@ -50,7 +50,7 @@ const DetailsLeadingInfo: React.FC<Props> = ({
       const rawDescription = convertFromRaw(descriptionParse);
       return stateToHTML(rawDescription, options);
     }
-    return description;
+    return description || '';
   };
 
   return (
