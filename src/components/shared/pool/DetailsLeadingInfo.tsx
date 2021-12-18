@@ -70,9 +70,9 @@ const DetailsLeadingInfo: React.FC<Props> = ({
       </div>
 
       {description && (
-        <span className="max-w-md mb-4 text-sm font-light text-left text-white truncate">
-          {parseDescription()}
-        </span>
+        <div className="max-w-md mb-4 text-sm font-light text-left text-white truncate">
+          <div dangerouslySetInnerHTML={{ __html: parseDescription() }} />
+        </div>
       )}
 
       <ul className="flex justify-start items-left">
