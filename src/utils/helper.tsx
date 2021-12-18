@@ -467,3 +467,13 @@ export const getCurrCountDown = (pool: IPool, now: number): PoolRoundType | null
 
   return null;
 };
+
+export const isJSON = (data: any) => {
+  var ret = true;
+  try {
+    JSON.parse(data);
+  } catch (e) {
+    ret = false;
+  }
+  return ret;
+};
