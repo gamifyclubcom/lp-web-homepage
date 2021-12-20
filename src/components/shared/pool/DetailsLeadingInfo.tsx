@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import { FaTelegramPlane, FaTwitter } from 'react-icons/fa';
-import { generateOnChainUrl, getPoolLogo } from '../../../utils/helper';
+import { generateOnChainUrl, getPoolLogo, isJSON } from '../../../utils/helper';
+import { convertFromRaw } from 'draft-js';
+import { stateToHTML } from 'draft-js-export-html';
 
 interface Props {
   name: string;
@@ -26,6 +28,31 @@ const DetailsLeadingInfo: React.FC<Props> = ({
   const logo = getPoolLogo(image);
   const tokenAddressUrl = generateOnChainUrl('address', tokenAddress);
 
+  const parseDescription = () => {
+    if (description && isJSON(description)) {
+      const options = {
+        entityStyleFn: (entity: any) => {
+          const entityType = entity.get('type').toLowerCase();
+          if (entityType === 'image') {
+            const data = entity.getData();
+            return {
+              element: 'img',
+              attributes: {
+                src: data.url,
+              },
+              style: {},
+            };
+          }
+        },
+      };
+
+      const descriptionParse = JSON.parse(description);
+      const rawDescription = convertFromRaw(descriptionParse);
+      return stateToHTML(rawDescription, options);
+    }
+    return description || '';
+  };
+
   return (
     <div className="flex flex-col items-left">
       <div className="flex mb-2 items-left">
@@ -43,9 +70,9 @@ const DetailsLeadingInfo: React.FC<Props> = ({
       </div>
 
       {description && (
-        <span className="max-w-md mb-4 text-sm font-light text-left text-white truncate">
-          {description}
-        </span>
+        <div className="max-w-md mb-4 text-sm font-light text-left text-white truncate">
+          <div dangerouslySetInnerHTML={{ __html: parseDescription() }} />
+        </div>
       )}
 
       <ul className="flex justify-start items-left">
