@@ -31,11 +31,17 @@ const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel, participantAd
     );
   }, [pool.token_total_raise, pool.token_ratio]);
   const tokenDistribution = useMemo(() => {
+    if (!pool.is_active) {
+      return 'TBA';
+    }
     return `${moment(new Date(pool.claim_at)).utc().format('MMM Do YYYY, LT')} UTC`;
-  }, [pool.claim_at]);
+  }, [pool.claim_at, pool.is_active]);
   const tokenSwapTime = useMemo(() => {
+    if (!pool.is_active) {
+      return 'TBA';
+    }
     return `${moment(new Date(pool.join_pool_start)).utc().format('MMM Do YYYY, LT')} UTC`;
-  }, [pool.join_pool_start]);
+  }, [pool.is_active, pool.join_pool_start]);
   const tokenAddressUrl = useMemo(() => {
     return generateOnChainUrl('address', pool.token_address);
   }, [pool.token_address]);
