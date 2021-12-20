@@ -11,9 +11,12 @@ import {
   getPoolAccess,
   renderTokenBalance,
   tokenToSOL,
+  isJSON,
 } from '../../../utils/helper';
 import Accordion from '../Accordion';
 import BalanceBadge from '../BalanceBadge';
+import { convertFromRaw } from 'draft-js';
+import { stateToHTML } from 'draft-js-export-html';
 
 interface Props {
   pool: IPool;
@@ -130,22 +133,6 @@ const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel, participantAd
         {/* left */}
         <div className="col-span-2 lg:col-span-1">
           <div className="flex flex-col text-white">
-            {pool.description && (
-              <div className="mb-5 text-sm">
-                <ShowMoreText
-                  lines={3}
-                  more="see more"
-                  less="see less"
-                  // className="content-css"
-                  anchorClass="text-pool_focus_1"
-                  expanded={false}
-                  // width={280}
-                  truncatedEndingComponent={'... '}
-                >
-                  {pool.description}
-                </ShowMoreText>
-              </div>
-            )}
             <div className="flex items-center mt-4 text-sm">
               <div className="w-1/3 opacity-30">Token Swap Time</div>
               <div className="w-2/3">{tokenSwapTime}</div>
