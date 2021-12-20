@@ -324,6 +324,17 @@ export const roundNumberByDecimal = (
   ).dividedBy(Decimal.pow(10, decimal));
 };
 
+export const getTimesFromDate = (date?: Date): number => {
+  // return in seconds unit
+  if (!date) {
+    return 0;
+  }
+
+  const result = new Decimal(date.getTime() || 0).dividedBy(1000);
+
+  return new Decimal(roundNumberByDecimal(result, 0)).times(1000).toNumber();
+};
+
 export const isInWhitelistRound = (pool: IPool, now: number): boolean => {
   return (
     Boolean(pool?.campaign?.early_join_phase?.is_active) &&

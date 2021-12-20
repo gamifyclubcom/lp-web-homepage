@@ -1,11 +1,12 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import moment from 'moment';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import Countdown from 'react-countdown';
 import { useCountDown } from '../../../hooks/useCountDown';
 import { useGlobal } from '../../../hooks/useGlobal';
 import { usePool } from '../../../hooks/usePool';
 import { IPool } from '../../../sdk/pool/interface';
+import { getTimesFromDate } from '../../../utils/helper';
 import PoolCardTitle from '../../shared/pool/PoolCardTitle';
 import PoolCountDownItem from '../../shared/pool/PoolCountDownItem';
 import PoolTimelines from './PoolTimelines';
@@ -91,17 +92,8 @@ const PoolRounds: React.FC<Props> = ({
   };
 
   const countDownDate = useMemo(() => {
-    return activeTimeline?.endAt;
+    return getTimesFromDate(activeTimeline?.endAt);
   }, [activeTimeline]);
-
-  const countdownNow = useMemo(() => {
-    return new Date(moment.unix(now).toISOString()).getTime();
-  }, [now]);
-
-  useEffect(() => {
-    handleRefresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeKey]);
 
   const countdownMarkup = useMemo(() => {
     if (!isInitTimestamp) {
@@ -142,11 +134,8 @@ const PoolRounds: React.FC<Props> = ({
         ) : (
           <Countdown
             onComplete={handleRefresh}
-            // date={countDownDate}
             date={countDownDate}
-            now={() => {
-              return countdownNow;
-            }}
+            now={() => now * 1000}
             renderer={({ days, hours, minutes, seconds, completed }) => {
               const daysValue = renderCountDownValue({
                 targetDate: countDownDate,
