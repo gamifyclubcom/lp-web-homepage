@@ -296,7 +296,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
 
             <div className="col-span-2 lg:col-span-1">
               {isShowPoolUserWhitelist && (
-                <div className="w-full h-full">
+                <div className="w-full min-h-115p">
                   <PoolUserWhitelist
                     connected={connected}
                     allocationLevel={allocationLevel}
