@@ -2,21 +2,11 @@ import Decimal from 'decimal.js';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import NumberFormat from 'react-number-format';
-import ShowMoreText from 'react-show-more-text';
 import { usePool } from '../../../hooks/usePool';
 import { IPool } from '../../../sdk/pool/interface';
 import { TOKEN_TO_DECIMALS } from '../../../utils/constants';
-import {
-  generateOnChainUrl,
-  getPoolAccess,
-  renderTokenBalance,
-  tokenToSOL,
-  isJSON,
-} from '../../../utils/helper';
-import Accordion from '../Accordion';
+import { generateOnChainUrl, getPoolAccess, renderTokenBalance } from '../../../utils/helper';
 import BalanceBadge from '../BalanceBadge';
-import { convertFromRaw } from 'draft-js';
-import { stateToHTML } from 'draft-js-export-html';
 
 interface Props {
   pool: IPool;

@@ -3,6 +3,7 @@ import { FaTelegramPlane, FaTwitter } from 'react-icons/fa';
 import { generateOnChainUrl, getPoolLogo, isJSON } from '../../../utils/helper';
 import { convertFromRaw } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
+import ShowMoreText from 'react-show-more-text';
 
 interface Props {
   name: string;
@@ -70,8 +71,19 @@ const DetailsLeadingInfo: React.FC<Props> = ({
       </div>
 
       {description && (
-        <div className="max-w-md mb-4 text-sm font-light text-left text-white truncate">
-          <div dangerouslySetInnerHTML={{ __html: parseDescription() }} />
+        <div className="w-full mb-4 text-sm font-light text-left text-white">
+          <ShowMoreText
+            lines={5}
+            more="see more"
+            less="see less"
+            // className="content-css"
+            anchorClass="text-pool_focus_1"
+            expanded={false}
+            // width={280}
+            truncatedEndingComponent={'... '}
+          >
+            <span dangerouslySetInnerHTML={{ __html: parseDescription() }} />
+          </ShowMoreText>
         </div>
       )}
 
