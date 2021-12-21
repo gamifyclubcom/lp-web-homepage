@@ -36,6 +36,15 @@ const DetailsLeadingInfo: React.FC<Props> = ({
           const entityType = entity.get('type').toLowerCase();
           if (entityType === 'image') {
             const data = entity.getData();
+            if (data?.type && data.type === 'video') {
+              return {
+                element: 'video',
+                attributes: {
+                  src: data.url,
+                  controls: true,
+                },
+              };
+            }
             return {
               element: 'img',
               attributes: {
