@@ -29,6 +29,15 @@ const DetailsLeadingInfo: React.FC<Props> = ({
   const logo = getPoolLogo(image);
   const tokenAddressUrl = generateOnChainUrl('address', tokenAddress);
 
+  const matchYoutubeUrl = (url: any) => {
+    var p =
+      /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+    if (url.match(p)) {
+      return url.match(p)[1];
+    }
+    return false;
+  };
+
   const parseDescription = () => {
     if (description && isJSON(description)) {
       const options = {
@@ -37,10 +46,16 @@ const DetailsLeadingInfo: React.FC<Props> = ({
           if (entityType === 'image') {
             const data = entity.getData();
             if (data?.type && data.type === 'video') {
+              let attElement = 'video';
+              let attUrl = data.url;
+              if (matchYoutubeUrl(data.url)) {
+                attElement = 'iframe';
+                attUrl = `https://www.youtube.com/embed/${matchYoutubeUrl(data.url)}`;
+              }
               return {
-                element: 'video',
+                element: attElement,
                 attributes: {
-                  src: data.url,
+                  src: attUrl,
                   controls: true,
                 },
               };
