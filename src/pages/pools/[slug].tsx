@@ -294,7 +294,7 @@ const PoolDetails: React.FC<Props> = ({ poolServer }) => {
               </div>
             </div>
 
-            <div className="col-span-2 lg:col-span-1">
+            <div className="col-span-2 lg:col-span-1 flex items-end">
               {isShowPoolUserWhitelist && (
                 <div className="w-full min-h-115p">
                   <PoolUserWhitelist
