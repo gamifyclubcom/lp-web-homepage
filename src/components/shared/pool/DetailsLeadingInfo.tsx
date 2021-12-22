@@ -47,10 +47,10 @@ const DetailsLeadingInfo: React.FC<Props> = ({
             const data = entity.getData();
             if (data?.type && data.type === 'video') {
               let attElement = 'video';
-              let attUrl = data.url;
-              if (matchYoutubeUrl(data.url)) {
+              let attUrl = data.src;
+              if (matchYoutubeUrl(data.src)) {
                 attElement = 'iframe';
-                attUrl = `https://www.youtube.com/embed/${matchYoutubeUrl(data.url)}`;
+                attUrl = `https://www.youtube.com/embed/${matchYoutubeUrl(data.src)}`;
               }
               return {
                 element: attElement,
@@ -63,7 +63,7 @@ const DetailsLeadingInfo: React.FC<Props> = ({
             return {
               element: 'img',
               attributes: {
-                src: data.url,
+                src: data.src,
               },
               style: {},
             };
