@@ -72,8 +72,8 @@ const DetailsLeadingInfo: React.FC<Props> = ({
         inlineStyleFn: (styles: any) => {
           let key = 'color-';
           let key_bg = 'bgcolor-';
-          let color = styles.filter((value) => value.startsWith(key)).first();
-          let bgcolor = styles.filter((value) => value.startsWith(key_bg)).first();
+          let color = styles.filter((value: any) => value.startsWith(key)).first();
+          let bgcolor = styles.filter((value: any) => value.startsWith(key_bg)).first();
 
           if (color) {
             return {
