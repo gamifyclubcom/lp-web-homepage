@@ -69,10 +69,34 @@ const DetailsLeadingInfo: React.FC<Props> = ({
             };
           }
         },
+        inlineStyleFn: (styles: any) => {
+          let key = 'color-';
+          let key_bg = 'bgcolor-';
+          let color = styles.filter((value) => value.startsWith(key)).first();
+          let bgcolor = styles.filter((value) => value.startsWith(key_bg)).first();
+
+          if (color) {
+            return {
+              element: 'span',
+              style: {
+                color: color.replace(key, ''),
+              },
+            };
+          }
+          if (bgcolor) {
+            return {
+              element: 'span',
+              style: {
+                backgroundColor: bgcolor.replace(key, ''),
+              },
+            };
+          }
+        },
       };
 
       const descriptionParse = JSON.parse(description);
       const rawDescription = convertFromRaw(descriptionParse);
+      console.log(rawDescription);
       return stateToHTML(rawDescription, options);
     }
     return description || '';
