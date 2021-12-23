@@ -75,7 +75,11 @@ const DetailsLeadingInfo: React.FC<Props> = ({
           let color = styles.filter((value: any) => value.startsWith(key)).first();
           let bgcolor = styles.filter((value: any) => value.startsWith(key_bg)).first();
 
-          if (color) {
+          if (
+            color &&
+            !color.replace(key, '').includes('rgb(0,0,0') &&
+            !color.replace(key, '').includes('rgba(0,0,0')
+          ) {
             return {
               element: 'span',
               style: {
@@ -96,7 +100,6 @@ const DetailsLeadingInfo: React.FC<Props> = ({
 
       const descriptionParse = JSON.parse(description);
       const rawDescription = convertFromRaw(descriptionParse);
-      console.log(rawDescription);
       return stateToHTML(rawDescription, options);
     }
     return description || '';
