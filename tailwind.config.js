@@ -145,6 +145,9 @@ module.exports = {
       },
       dropShadow: {
         '4px': '0px 4px 4px rgba(0, 0, 0, 0.25)'
+      },
+      minHeight: {
+        '115p': '115px'
       }
     },
     fontFamily: {

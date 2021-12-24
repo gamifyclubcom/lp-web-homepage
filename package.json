@@ -18,6 +18,8 @@
     "@solana/web3.js": "^1.30.2",
     "buffer-layout": "^1.2.2",
     "clsx": "^1.1.1",
+    "draft-js": "^0.11.7",
+    "draft-js-export-html": "^1.4.1",
     "framer-motion": "^4.1.17",
     "moment": "^2.29.1",
     "next": "12.0.2",
@@ -36,6 +38,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/draft-js": "^0.11.7",
     "@types/node": "16.11.6",
     "@types/nprogress": "^0.2.0",
     "@types/react": "17.0.33",

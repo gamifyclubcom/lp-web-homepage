@@ -2,17 +2,10 @@ import Decimal from 'decimal.js';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import NumberFormat from 'react-number-format';
-import ShowMoreText from 'react-show-more-text';
 import { usePool } from '../../../hooks/usePool';
 import { IPool } from '../../../sdk/pool/interface';
 import { TOKEN_TO_DECIMALS } from '../../../utils/constants';
-import {
-  generateOnChainUrl,
-  getPoolAccess,
-  renderTokenBalance,
-  tokenToSOL,
-} from '../../../utils/helper';
-import Accordion from '../Accordion';
+import { generateOnChainUrl, getPoolAccess, renderTokenBalance } from '../../../utils/helper';
 import BalanceBadge from '../BalanceBadge';
 
 interface Props {
@@ -31,11 +24,17 @@ const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel, participantAd
     );
   }, [pool.token_total_raise, pool.token_ratio]);
   const tokenDistribution = useMemo(() => {
+    if (!pool.is_active) {
+      return 'TBA';
+    }
     return `${moment(new Date(pool.claim_at)).utc().format('MMM Do YYYY, LT')} UTC`;
-  }, [pool.claim_at]);
+  }, [pool.claim_at, pool.is_active]);
   const tokenSwapTime = useMemo(() => {
+    if (!pool.is_active) {
+      return 'TBA';
+    }
     return `${moment(new Date(pool.join_pool_start)).utc().format('MMM Do YYYY, LT')} UTC`;
-  }, [pool.join_pool_start]);
+  }, [pool.is_active, pool.join_pool_start]);
   const tokenAddressUrl = useMemo(() => {
     return generateOnChainUrl('address', pool.token_address);
   }, [pool.token_address]);
@@ -130,22 +129,6 @@ const DetailsMainInfo: React.FC<Props> = ({ pool, allocationLevel, participantAd
         {/* left */}
         <div className="col-span-2 lg:col-span-1">
           <div className="flex flex-col text-white">
-            {pool.description && (
-              <div className="mb-5 text-sm">
-                <ShowMoreText
-                  lines={3}
-                  more="see more"
-                  less="see less"
-                  // className="content-css"
-                  anchorClass="text-pool_focus_1"
-                  expanded={false}
-                  // width={280}
-                  truncatedEndingComponent={'... '}
-                >
-                  {pool.description}
-                </ShowMoreText>
-              </div>
-            )}
             <div className="flex items-center mt-4 text-sm">
               <div className="w-1/3 opacity-30">Token Swap Time</div>
               <div className="w-2/3">{tokenSwapTime}</div>
